@@ -37,8 +37,8 @@ public class RedisConfig {
    private String redisPassword;
 
    // to be used for inserting api key in service
-   @Value("${my.api.key}")
-   private String API_KEY;
+   // @Value("${my.api.key}")
+   // private String API_KEY;
 
    @Bean(REDIS_STRING)
    public RedisTemplate<String, String> createRedisTemplateObject() {

@@ -12,9 +12,9 @@ export class TipCouponComponent implements OnInit {
   private tipSvc = inject(TipService)
 
   amount$ = this.tipSvc.amount$;
-  buskerId$ = this.tipSvc.buskerId$;
+  musicianId$ = this.tipSvc.musicianId$;
 
   ngOnInit() {
-    this.tipSvc.setTip({ amount: 5, buskerId: 'busker1' });
+    this.tipSvc.setTip({ amount: 5, musicianId: 'musician1' });
   }
 }

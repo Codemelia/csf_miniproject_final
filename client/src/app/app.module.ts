@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home.component';
-import { BuskerListComponent } from './components/busker-list.component';
+import { MusicianListComponent } from './components/musician-list.component';
 import { TipCouponComponent } from './components/tip-coupon.component';
 import { DashboardComponent } from './components/dashboard.component';
 import { RouterModule, Routes } from '@angular/router';
@@ -15,7 +15,7 @@ import { MatButtonModule } from '@angular/material/button';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'buskers', component: BuskerListComponent },
+  { path: 'musicians', component: MusicianListComponent },
   { path: 'tip', component: TipCouponComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: '**', redirectTo: '', pathMatch: 'full' }
@@ -25,7 +25,7 @@ const routes: Routes = [
   declarations: [
     AppComponent,
     HomeComponent,
-    BuskerListComponent,
+    MusicianListComponent,
     TipCouponComponent,
     DashboardComponent
   ],

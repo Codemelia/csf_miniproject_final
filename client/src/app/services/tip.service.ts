@@ -9,19 +9,19 @@ export class TipService extends ComponentStore<TipState> {
 
   // tip state variables
   constructor() {
-    super({ amount: 0, buskerId: null });
+    super({ amount: 0, musicianId: null });
   }
 
   // selects variables from state as readonly
   readonly amount$ = this.select(state => state.amount)
-  readonly buskerId$ = this.select(state => state.buskerId)
+  readonly musicianId$ = this.select(state => state.musicianId)
 
   // set tip as readonly variable
   readonly setTip = this.updater((state, tip: 
-    { amount: number, buskerId: string }) => ({
+    { amount: number, musicianId: string }) => ({
       ...state,
       amount: tip.amount,
-      buskerId: tip.buskerId
+      musicianId: tip.musicianId
   }))
 
 }
