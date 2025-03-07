@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.stripe.exception.StripeException;
+
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
 // PURPOSE OF THIS HANDLER
@@ -15,6 +17,31 @@ import redis.clients.jedis.exceptions.JedisConnectionException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    // handle custom stripe exception
+    @ExceptionHandler(StripeParamException.class)
+    public ResponseEntity<ApiError> handleStripeParamException(StripeParamException e) {
+        ApiError error = new ApiError(
+            HttpStatus.BAD_REQUEST.value(), 
+            "Stripe Parameter Error", 
+            e.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(error);
+    }
+
+    // handle stripe exception
+    // handle all unexpected errors
+    @ExceptionHandler(StripeException.class)
+    public ResponseEntity<ApiError> handleStripeException(StripeException e) {
+        ApiError error = new ApiError(
+            HttpStatus.BAD_REQUEST.value(), 
+            "Stripe Payment Error", 
+            e.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(error);
+    }
 
     // handle custom exception
     @ExceptionHandler(MusicianNotFoundException.class)

@@ -1,7 +1,7 @@
 package csf.finalmp.app.server.exceptions;
 
 // PURPOSE OF THIS EXCEPTION CLASS
-// CUSTOM EXCEPTION
+// CUSTOM MUSICIAN NOT FOUND EXCEPTION
 
 public class MusicianNotFoundException extends RuntimeException {
     

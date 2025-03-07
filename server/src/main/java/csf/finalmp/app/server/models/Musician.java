@@ -1,7 +1,7 @@
 package csf.finalmp.app.server.models;
 
 // PURPOSE OF THIS MODEL
-// STORE BASIC INFO OF MUSICIANS FOR CLIENT DISPLAY
+// STORE AND RETRIEVE BASIC INFO OF MUSICIANS
 
 public class Musician {
     

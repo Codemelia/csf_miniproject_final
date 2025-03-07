@@ -42,31 +42,39 @@ public class MusicianService {
 
     // create table
     public void createTable() {
+
         musicRepo.createTable();
         logger.info(">>> MySQL: Musicians table created");
+
     }
 
     // insert musician into table and retrieve musician obj with id
-    public Musician insertMusician(Musician inMusician) {
-        Musician outMusician = musicRepo.insertMusician(inMusician);
+    public Musician insertMusician(Musician musician) {
+
+        Long id = musicRepo.insertMusician(musician);
+        musician.setId(id); // set mysql id to musician obj
         logger.info(
-            ">>> MySQL: New musician inserted with ID: %d".formatted(outMusician.getId())
+            ">>> MySQL: New musician inserted with ID: %d".formatted(musician.getId())
         );
-        return outMusician;
+        return musician;
+
     }
 
     // get musician by id
     public Musician getMusicianById(Long id) {
+
         Musician retrMusician = musicRepo.getMusicianById(id);
         logger.info(
             ">>> MySQL: Retrieved musician with ID: %d".formatted(retrMusician.getId())
         );
         return retrMusician;
+
     }
 
     // get musicians based on location
     // if no location given, get all musicians
     public List<Musician> getMusicians(String location) {
+
         List<Musician> retrMusicians = new ArrayList<>();
 
         if (location == null || location.isBlank()) {
@@ -83,6 +91,15 @@ public class MusicianService {
         }
                 
         return retrMusicians;
+
+    }
+    
+    // check if row for id exists in db
+    // returns true if rows > 0, false if rows <= 0
+    public boolean checkMusicianId(Long id) {
+
+        return musicRepo.checkMusicianId(id) > 0;
+
     }
 
     // update musician data
@@ -100,7 +117,7 @@ public class MusicianService {
                 ">>> MySQL: Failed to update musician with ID: %d".formatted(id)
             );
             throw new MusicianNotFoundException(
-                ">>> Failed to update musician with ID: %d".formatted(id)
+                "Musician with ID %d could not be found for update".formatted(id)
             );
         }
 
@@ -121,19 +138,24 @@ public class MusicianService {
                 ">>> MySQL: Failed to delete musician with ID: %d".formatted(id)
             );
             throw new MusicianNotFoundException(
-                ">>> Failed to delete musician with ID: %d".formatted(id)
+                "Musician with ID %d could not be found for deletion".formatted(id)
             );
         }
 
     }
 
     // shared method to conv musician obj to json
-    public JsonObject convMusicianToJson(Musician musician) {
+    // unused
+    /*
+        public JsonObject convMusicianToJson(Musician musician) {
+
         return Json.createObjectBuilder()
             .add("id", musician.getId())
             .add("name", musician.getName())
             .add("location", musician.getLocation())
             .build();
-    }
+
+        }
+    */
 
 }

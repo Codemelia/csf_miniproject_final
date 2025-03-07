@@ -1,14 +1,17 @@
 package csf.finalmp.app.server.utils;
 
-public class Sql {
+// PURPOSE OF THIS UTIL CLASS
+// SQL QUERY STATEMENTS FOR MUSICIANS
+
+public class MusicSql {
 
     // check count in table
-    public static final String CHECK_TABLE_COUNT = """
+    public static final String CHECK_MUSICIANS_TABLE_COUNT = """
         SELECT COUNT(*) FROM musicians;        
     """;
     
     // create table
-    public static final String CREATE_TABLE = """
+    public static final String CREATE_MUSICIANS_TABLE = """
         CREATE TABLE IF NOT EXISTS musicians (
             id bigint auto_increment primary key,
             name varchar(255) not null,
@@ -37,6 +40,11 @@ public class Sql {
     // select all musicians
     public static final String SELECT_ALL_MUSICIANS = """
         SELECT * FROM musicians;        
+    """;
+
+    // check if row for id exists in db
+    public static final String CHECK_MUSICIAN_ID = """
+        SELECT EXISTS(SELECT 1 FROM users WHERE id = ?);
     """;
 
     // update musician info

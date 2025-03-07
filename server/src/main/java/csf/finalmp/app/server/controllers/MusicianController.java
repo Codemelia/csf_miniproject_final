@@ -23,7 +23,7 @@ import csf.finalmp.app.server.models.Musician;
 import csf.finalmp.app.server.services.MusicianService;
 
 // PURPOSE OF THIS CONTROLLER
-// REST ENDPOINTS FOR CLIENT TO ACCESS DB
+// PROVIDE REST ENDPOINTS FOR MUSICIAN REQUESTS FROM CLIENT
 
 @CrossOrigin(origins = "*", allowedHeaders = "*",
     methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
@@ -38,30 +38,38 @@ public class MusicianController {
     private Logger logger = Logger.getLogger(MusicianController.class.getName());
 
     // insert musician to mysql db
+    // return musician obj
     @PostMapping(path = "/musician/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Musician> insertMusician(@RequestBody Musician inMusician) {
-        logger.info(">>> Creating musician: %s".formatted(inMusician));
-        Musician outMusician = musicSvc.insertMusician(inMusician); // insert
+
+        logger.info(">>> Creating musician: %s".formatted(inMusician.toString()));
+        Musician outMusician = musicSvc.insertMusician(inMusician);
         return ResponseEntity.status(HttpStatus.CREATED).body(outMusician);
+
     }
 
     // get musician by id
+    // return musician obj
     @GetMapping(path = "/musician/{id}")
     public ResponseEntity<Musician> getMusicianById(@PathVariable Long id) {
+
         logger.info(">>> Fetching musician with ID: %d".formatted(id));
         Musician musician = musicSvc.getMusicianById(id);
         return ResponseEntity.ok().body(musician);
+
     }
 
     // get musicians by location
     // if no location given, get all musicians
+    // return musician obj
     @GetMapping(path = "/musicians")
     public ResponseEntity<List<Musician>> getMusicians(
-        @RequestParam(required = false) String location
-    ) {
+        @RequestParam(required = false) String location) {
+
         logger.info(">>> Fetching all musicians at LOCATION: %s".formatted(location));
         List<Musician> musicians = musicSvc.getMusicians(location);
         return ResponseEntity.ok().body(musicians);
+
     }
 
     // update musician
@@ -69,20 +77,23 @@ public class MusicianController {
     @PutMapping(path = "/musician/{id}/update")
     public ResponseEntity<Long> updateMusician(
         @PathVariable Long id,
-        @RequestBody Musician inMusician
-    ) {
+        @RequestBody Musician inMusician) {
+
         logger.info(">>> Updating musician with ID: %d".formatted(id));
         Long updateId = musicSvc.updateMusician(id, inMusician);
         return ResponseEntity.ok().body(updateId);
+
     }
 
     // delete musician
     // returns id if delete op successful
     @DeleteMapping(path = "/musician/{id}/delete")
     public ResponseEntity<Long> deleteMusician(@PathVariable Long id) {
-        logger.info(">>> Deleting musician withID: %d".formatted(id));
+
+        logger.info(">>> Deleting musician with ID: %d".formatted(id));
         Long deleteId = musicSvc.deleteMusician(id);
         return ResponseEntity.ok().body(deleteId);
+
     }
     
 }
