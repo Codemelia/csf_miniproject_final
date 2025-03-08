@@ -20,12 +20,19 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTableModule } from '@angular/material/table';
+import { LoginComponent } from './components/authentication/login.component';
+import { AuthGuard } from './guards/auth.guard';
+import { RegisterComponent } from './components/authentication/register.component';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'home', component: HomeComponent },
   { path: 'musicians', component: MusicianListComponent },
   { path: 'tip', component: TipCouponComponent },
-  { path: 'dashboard', component: DashboardComponent },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '', pathMatch: 'full' }
 ]
 
@@ -35,7 +42,9 @@ const routes: Routes = [
     HomeComponent,
     MusicianListComponent,
     TipCouponComponent,
-    DashboardComponent
+    DashboardComponent,
+    LoginComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
@@ -47,7 +56,9 @@ const routes: Routes = [
     MatButtonModule,
     MatCardModule,
     MatToolbarModule,
-    MatTableModule
+    MatTableModule,
+    MatOptionModule,
+    MatSelectModule
   ],
   providers: [
     provideHttpClient(),

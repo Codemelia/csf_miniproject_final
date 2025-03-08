@@ -5,6 +5,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import csf.finalmp.app.server.services.UserService;
 import csf.finalmp.app.server.services.MusicianService;
 import csf.finalmp.app.server.services.TipService;
 
@@ -16,6 +17,9 @@ public class ServerApplication implements CommandLineRunner {
 
 	@Autowired
 	private TipService tipSvc;
+
+	@Autowired
+	private UserService userSvc;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ServerApplication.class, args);
@@ -35,6 +39,12 @@ public class ServerApplication implements CommandLineRunner {
 		boolean tipsExists = tipSvc.tableExists();
 		if(!tipsExists) {
 			tipSvc.createTable();
+		}
+
+		// check if users table exists, if not create table
+		boolean usersExists = userSvc.tableExists();
+		if(!usersExists) {
+			userSvc.createTable();
 		}
 
 	}

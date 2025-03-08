@@ -10,6 +10,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.stripe.exception.StripeException;
 
+import csf.finalmp.app.server.exceptions.custom.InvalidCredentialsException;
+import csf.finalmp.app.server.exceptions.custom.MusicianNotFoundException;
+import csf.finalmp.app.server.exceptions.custom.StripeParamException;
+import csf.finalmp.app.server.exceptions.custom.UserAlreadyExistsException;
+import csf.finalmp.app.server.exceptions.custom.UserNotFoundException;
+import csf.finalmp.app.server.exceptions.custom.UserAuthenticationException;
+
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
 // PURPOSE OF THIS HANDLER
@@ -17,6 +24,65 @@ import redis.clients.jedis.exceptions.JedisConnectionException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    // handle custom auth exception
+    @ExceptionHandler(UserAuthenticationException.class)
+    public ResponseEntity<ApiError> handleUserAuthenticationException(UserAuthenticationException e) {
+
+        String message = e.getMessage();
+        if (message.contains("registration")) {
+            ApiError error = new ApiError(
+                HttpStatus.BAD_REQUEST.value(), 
+                "User Registration Error", 
+                message);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(error);
+        } else {
+            ApiError error = new ApiError(
+                HttpStatus.UNAUTHORIZED.value(), 
+                "User Login Error", 
+                message);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(error);
+        }
+        
+    }
+
+    // handle custom username already exists exception
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<ApiError> handleUserAlreadyExistsException(UserAlreadyExistsException e) {
+        ApiError error = new ApiError(
+            HttpStatus.BAD_REQUEST.value(), 
+            "User Already Exists Error", 
+            e.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(error);
+    }
+    
+    // handle custom username not found exception
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ApiError> handleUserNotFoundException(UserNotFoundException e) {
+        ApiError error = new ApiError(
+            HttpStatus.NOT_FOUND.value(), 
+            "User Not Found Error", 
+            e.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(error);
+    }
+
+    // handle custom invalid login credentials exception
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ApiError> handleInvalidCredentialsException(InvalidCredentialsException e) {
+        ApiError error = new ApiError(
+            HttpStatus.UNAUTHORIZED.value(), 
+            "Invalid Login Credentials Error", 
+            e.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+            .body(error);
+    }
 
     // handle custom stripe exception
     @ExceptionHandler(StripeParamException.class)
@@ -47,7 +113,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MusicianNotFoundException.class)
     public ResponseEntity<ApiError> handleMusicianNotFound(MusicianNotFoundException e) {
         ApiError error = new ApiError(
-            HttpStatus.INTERNAL_SERVER_ERROR.value(), 
+            HttpStatus.NOT_FOUND.value(), 
             "Musician Not Found Error", 
             e.getMessage()
         );

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
-import csf.finalmp.app.server.exceptions.MusicianNotFoundException;
+import csf.finalmp.app.server.exceptions.custom.MusicianNotFoundException;
 import csf.finalmp.app.server.models.Musician;
 import csf.finalmp.app.server.repositories.MusicianRepository;
 
@@ -12,8 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-// PURPOSE OF THIS SERVICE
-// ALLOW USE OF DB CRUD FUNCTIONS IN CONTROLLER
+// FOR MUSICIAN CRUD OPERATIONS
 
 @Service
 public class MusicianService {
@@ -115,7 +114,7 @@ public class MusicianService {
                 ">>> MySQL: Failed to update musician with ID: %d".formatted(id)
             );
             throw new MusicianNotFoundException(
-                "Musician with ID %d could not be found for update".formatted(id)
+                "Musician could not be found for update"
             );
         }
 
@@ -136,7 +135,7 @@ public class MusicianService {
                 ">>> MySQL: Failed to delete musician with ID: %d".formatted(id)
             );
             throw new MusicianNotFoundException(
-                "Musician with ID %d could not be found for deletion".formatted(id)
+                "Musician could not be found for deletion"
             );
         }
 

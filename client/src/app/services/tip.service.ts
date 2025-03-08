@@ -10,9 +10,7 @@ export interface TipState {
   musicianId: string | null;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class TipService extends ComponentStore<TipState> {
 
   // tip state variables

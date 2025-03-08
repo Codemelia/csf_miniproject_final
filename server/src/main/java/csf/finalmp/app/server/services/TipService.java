@@ -14,19 +14,21 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
 
-import csf.finalmp.app.server.exceptions.MusicianNotFoundException;
-import csf.finalmp.app.server.exceptions.StripeParamException;
+import csf.finalmp.app.server.exceptions.custom.MusicianNotFoundException;
+import csf.finalmp.app.server.exceptions.custom.StripeParamException;
 import csf.finalmp.app.server.models.Tip;
 import csf.finalmp.app.server.models.TipRequest;
 import csf.finalmp.app.server.repositories.TipRepository;
 import jakarta.annotation.PostConstruct;
+
+// FOR TIPPING FUNCTIONS
 
 @Service
 public class TipService {
 
     // stripe secret key
     @Value("${stripe.secret.key}")
-    private String stripeSecretKey;
+    private String stripeKey;
 
     @Autowired
     private TipRepository tipRepo;
@@ -35,10 +37,10 @@ public class TipService {
     @Autowired
     private MusicianService musicSvc;
 
-    // initialise service with stripe api key
+    // initialise stripe api key
     @PostConstruct
     public void init() {
-        Stripe.apiKey = stripeSecretKey;
+        Stripe.apiKey = stripeKey;
     }
 
     // logger to ensure proper tracking
@@ -83,13 +85,13 @@ public class TipService {
             // avoid unnecessary api calls
             if (stripeToken == null || stripeToken.isEmpty()) {
                 throw new StripeParamException(
-                    "Stripe param STRINGTOKEN is invalid: %s".formatted(stripeToken)
+                    "Stripe param STRINGTOKEN is invalid"
                 );
             }
 
             if (amount == null || amount <= 0) {
                 throw new StripeParamException(
-                    "Stripe param AMOUNT is invalid: %d".formatted(amount)
+                    "Stripe param AMOUNT is invalid"
                 );
             }
 
@@ -116,7 +118,7 @@ public class TipService {
 
         } else {
             throw new MusicianNotFoundException(
-                "Musician with ID %d could not be found for Stripe payment".formatted(musicianId));
+                "Musician could not be found for Stripe transaction");
         }
  
     }

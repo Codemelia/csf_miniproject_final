@@ -1,0 +1,22 @@
+.login-card {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+.full-width {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.feedback {
+    margin-bottom: 20px;
+    mat-error {
+        font-size: 14px;
+    }
+}
+
+mat-card-actions {
+    display: flex;
+    justify-content: center;
+}

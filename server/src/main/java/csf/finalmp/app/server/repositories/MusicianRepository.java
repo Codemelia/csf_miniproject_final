@@ -14,7 +14,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import csf.finalmp.app.server.exceptions.MusicianNotFoundException;
+import csf.finalmp.app.server.exceptions.custom.MusicianNotFoundException;
 import csf.finalmp.app.server.models.Musician;
 
 // PURPOSE OF THIS REPO: DB CRUD OPS FOR MUSICIANS
@@ -71,8 +71,7 @@ public class MusicianRepository {
                 id);
         } catch (Exception e) {
             throw new MusicianNotFoundException(
-                String.format("Musician with ID %d could not be found: %s", id, e.getMessage())
-            );
+                "Musician with ID %d could not be found: %s".formatted(id, e.getMessage()));
         }
 
     }
@@ -86,9 +85,7 @@ public class MusicianRepository {
                 rs.getLong("id"), 
                 rs.getString("name"),
                 rs.getString("location")
-            ),
-            location
-        );
+            ), location);
 
     }
 
@@ -100,9 +97,7 @@ public class MusicianRepository {
             (rs, rowNum) -> new Musician(
                 rs.getLong("id"), 
                 rs.getString("name"), 
-                rs.getString("location")
-            )
-        );
+                rs.getString("location")));
 
     }
 
@@ -122,8 +117,7 @@ public class MusicianRepository {
         return template.update(
             UPDATE_MUSICIAN, 
             musician.getName(), musician.getLocation(),
-            id
-        );
+            id);
 
     }
 

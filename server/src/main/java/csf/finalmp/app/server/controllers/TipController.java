@@ -28,7 +28,7 @@ import csf.finalmp.app.server.services.TipService;
 @CrossOrigin(origins = "*", allowedHeaders = "*",
     methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RestController
-@RequestMapping(path = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/api/tips", produces = MediaType.APPLICATION_JSON_VALUE)
 public class TipController {
 
     @Autowired
@@ -39,7 +39,7 @@ public class TipController {
 
     // insert tip from client
     // returns tip object
-    @PostMapping(path="/tips/insert", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path="/insert", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Tip> insertTip(
         @RequestBody TipRequest request) throws StripeException { // throw exception for global handler
 
@@ -51,7 +51,7 @@ public class TipController {
 
     // get tip by musician id
     // returns tip object
-    @GetMapping(path = "tips/{musicianId}")
+    @GetMapping(path = "/{musicianId}")
     public ResponseEntity<List<Tip>> getTipsByMusicianId(
         @PathVariable Long musicianId
     ) {

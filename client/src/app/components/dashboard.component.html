@@ -1,7 +1,9 @@
 <mat-card class="dashboard-card">
+
     <mat-card-header>
         <mat-card-title>Your Earnings</mat-card-title>
     </mat-card-header>
+
     <mat-card-content>
         <h3>Total Tips: {{ totalTips | currency:'SGD' }}</h3>
         <table mat-table [dataSource]="tips" class="mat-elevation-z2">
@@ -21,4 +23,5 @@
             <tr mat-row *matRowDef="let row; columns: columns;"></tr>
         </table>
     </mat-card-content>
+    
 </mat-card>

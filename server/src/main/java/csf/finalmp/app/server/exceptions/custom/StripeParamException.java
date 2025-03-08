@@ -1,4 +1,4 @@
-package csf.finalmp.app.server.exceptions;
+package csf.finalmp.app.server.exceptions.custom;
 
 // PURPOSE OF THIS EXCEPTION CLASS
 // CUSTOM INCORRECT STRIPE PARAMS EXCEPTION
