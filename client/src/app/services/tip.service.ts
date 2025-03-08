@@ -1,6 +1,14 @@
 import { Injectable } from '@angular/core';
 import { ComponentStore } from '@ngrx/component-store';
-import { TipState } from '../models/app.models';
+import { Tip, TipRequest } from '../models/app.models';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+
+// inserted here to avoid confusion; only used in service
+export interface TipState {
+  amount: number;
+  musicianId: string | null;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +16,7 @@ import { TipState } from '../models/app.models';
 export class TipService extends ComponentStore<TipState> {
 
   // tip state variables
-  constructor() {
+  constructor(private http: HttpClient) {
     super({ amount: 0, musicianId: null });
   }
 
@@ -23,5 +31,11 @@ export class TipService extends ComponentStore<TipState> {
       amount: tip.amount,
       musicianId: tip.musicianId
   }))
+
+  // send tip as tip request obj to server
+  // retrieves tip as tip object from server
+  insertTip(request: TipRequest): Observable<Tip> {
+    return this.http.post<Tip>('/api/tips', { request });
+  }
 
 }

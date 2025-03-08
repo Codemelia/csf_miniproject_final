@@ -1,9 +1,63 @@
-h1 {
-    color: #6200ea;
-    text-align: center;
+mat-card-header {
+    display: flex;
+    justify-content: center;
 }
 
-p {
-    color: #333;
-    text-align: center;
+mat-card-title {
+    color: #6200ea;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-shadow: 
+    0.5px 0.5px 0px rgba(255, 255, 255, 0.8),   /* Horizontal, Vertical, Blur radius, Color (White) */
+    -0.5px -0.5px 0px rgba(255, 255, 255, 0.8),  /* Negative Horizontal, Negative Vertical */
+    0.5px -0.5px 0px rgba(255, 255, 255, 0.8),   /* Positive Horizontal, Negative Vertical */
+    -0.5px 0.5px 0px rgba(255, 255, 255, 0.8);   /* Negative Horizontal, Positive Vertical */
+}
+
+.tip-card {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 10px;
+}
+
+.full-width {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.stripe-container {
+
+    margin-bottom: 20px;
+
+    label {
+        display: block;
+        font-size: 16px;
+        color: #d81b60;
+        margin-bottom: 20px;
+    }
+
+    #card-element {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: white;
+    }
+}
+
+.feedback {
+    margin-bottom: 20px;
+
+    .success-message {
+        color: #6200ea;
+        font-size: 14px;
+    }
+
+    mat-error {
+        font-size: 14px;
+    }
+}
+
+mat-card-actions {
+    display: flex;
+    justify-content: center;
 }

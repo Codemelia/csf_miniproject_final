@@ -7,8 +7,6 @@ import org.springframework.stereotype.Service;
 import csf.finalmp.app.server.exceptions.MusicianNotFoundException;
 import csf.finalmp.app.server.models.Musician;
 import csf.finalmp.app.server.repositories.MusicianRepository;
-import jakarta.json.Json;
-import jakarta.json.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
