@@ -17,7 +17,7 @@ public class TipSql {
             amount double not null,
             stripe_charge_id varchar(255) not null,
             musician_id bigint not null,
-            foreign key (musician_id) references musician(id)
+            foreign key (musician_id) references musicians(id)
         );
     """;
 
@@ -34,8 +34,8 @@ public class TipSql {
     """;
 
     // select tips by musician ID
-    public static final String SELECT_TIP_BY_MID = """
-        SELECT amount FROM tips
+    public static final String SELECT_TIPS_BY_MID = """
+        SELECT * FROM tips
             WHERE musician_id = ?;    
     """;
 

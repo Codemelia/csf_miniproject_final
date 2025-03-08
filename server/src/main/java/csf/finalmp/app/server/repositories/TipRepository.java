@@ -11,6 +11,7 @@ import static csf.finalmp.app.server.utils.TipSql.*;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.List;
 
 @Repository
 public class TipRepository {
@@ -55,6 +56,18 @@ public class TipRepository {
         Long id = keyHolder.getKey().longValue();
         return id;
         
+    }
+
+    // get tips for musician by fk musician id
+    public List<Tip> getTipsByMusicianId(Long musicianId) {
+        return template.query(
+            SELECT_TIPS_BY_MID, 
+            (rs, rowNum) -> new Tip(
+                rs.getLong("id"), 
+                rs.getDouble("amount"), 
+                rs.getString("stripe_charge_id"), 
+                rs.getLong("musician_id")),
+            musicianId);
     }
     
 }

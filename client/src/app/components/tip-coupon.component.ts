@@ -151,7 +151,9 @@ export class TipCouponComponent implements OnInit, OnDestroy {
 
   // unsub from svc on destroy
   ngOnDestroy(): void {
-    this.tipSub.unsubscribe()
+    if (this.tipSub) {
+      this.tipSub.unsubscribe()
+    }
   }
 
 }

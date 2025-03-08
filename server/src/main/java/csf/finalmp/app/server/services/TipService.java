@@ -1,6 +1,7 @@
 package csf.finalmp.app.server.services;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -118,6 +119,11 @@ public class TipService {
                 "Musician with ID %d could not be found for Stripe payment".formatted(musicianId));
         }
  
+    }
+
+    // get tips for musician by fk musician id
+    public List<Tip> getTipsByMusicianId(Long musicianId) {
+        return tipRepo.getTipsByMusicianId(musicianId);
     }
 
 }

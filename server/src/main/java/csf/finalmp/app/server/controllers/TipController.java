@@ -1,5 +1,6 @@
 package csf.finalmp.app.server.controllers;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,13 +39,26 @@ public class TipController {
 
     // insert tip from client
     // returns tip object
-    @PostMapping(path="/tips", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path="/tips/insert", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Tip> insertTip(
         @RequestBody TipRequest request) throws StripeException { // throw exception for global handler
 
         logger.info(">>> Processing tip request: %s".formatted(request.toString()));
         Tip tip = tipSvc.insertTip(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(tip);
+
+    }
+
+    // get tip by musician id
+    // returns tip object
+    @GetMapping(path = "tips/{musicianId}")
+    public ResponseEntity<List<Tip>> getTipsByMusicianId(
+        @PathVariable Long musicianId
+    ) {
+        
+        logger.info(">>> Fetching tips for musician with ID: %d".formatted(musicianId));
+        List<Tip> tips = tipSvc.getTipsByMusicianId(musicianId);
+        return ResponseEntity.ok().body(tips);
 
     }
 

@@ -35,7 +35,7 @@ export class TipService extends ComponentStore<TipState> {
   // send tip as tip request obj to server
   // retrieves tip as tip object from server
   insertTip(request: TipRequest): Observable<Tip> {
-    return this.http.post<Tip>('/api/tips', { request });
+    return this.http.post<Tip>('/api/tips/insert', { request });
   }
 
 }

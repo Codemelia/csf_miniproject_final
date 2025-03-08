@@ -1,4 +1,32 @@
-h1 {
-    color: #d81b60;
-    text-align: center;
+mat-card-title {
+    color: #6200ea;
+    font-weight: bold;
+    text-shadow: 
+        0.5px 0.5px 0px rgba(255, 255, 255, 0.8),  
+        -0.5px -0.5px 0px rgba(255, 255, 255, 0.8),
+        0.5px -0.5px 0px rgba(255, 255, 255, 0.8), 
+        -0.5px 0.5px 0px rgba(255, 255, 255, 0.8); 
+}
+
+.dashboard-card {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+h3 {
+    color: #ff7363;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+}
+
+th {
+    color: #ffb4ab;
+}
+
+td {
+    color: #333;
 }

@@ -8,10 +8,10 @@ mat-card-title {
     margin-bottom: 20px;
     font-weight: bold;
     text-shadow: 
-    0.5px 0.5px 0px rgba(255, 255, 255, 0.8),   /* Horizontal, Vertical, Blur radius, Color (White) */
-    -0.5px -0.5px 0px rgba(255, 255, 255, 0.8),  /* Negative Horizontal, Negative Vertical */
-    0.5px -0.5px 0px rgba(255, 255, 255, 0.8),   /* Positive Horizontal, Negative Vertical */
-    -0.5px 0.5px 0px rgba(255, 255, 255, 0.8);   /* Negative Horizontal, Positive Vertical */
+    0.5px 0.5px 0px rgba(255, 255, 255, 0.8),  
+    -0.5px -0.5px 0px rgba(255, 255, 255, 0.8),
+    0.5px -0.5px 0px rgba(255, 255, 255, 0.8),
+    -0.5px 0.5px 0px rgba(255, 255, 255, 0.8);
 }
 
 .tip-card {
