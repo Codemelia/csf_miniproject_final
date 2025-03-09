@@ -16,11 +16,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import csf.finalmp.app.server.models.Musician;
-import csf.finalmp.app.server.services.MusicianService;
+import csf.finalmp.app.server.models.MusicianProfile;
+import csf.finalmp.app.server.services.MusicianProfileService;
 
 // PURPOSE OF THIS CONTROLLER
 // PROVIDE REST ENDPOINTS FOR MUSICIAN REQUESTS FROM CLIENT
@@ -32,7 +31,7 @@ import csf.finalmp.app.server.services.MusicianService;
 public class MusicianController {
 
     @Autowired
-    private MusicianService musicSvc;
+    private MusicianProfileService musicSvc;
 
     // logger to ensure proper tracking
     private Logger logger = Logger.getLogger(MusicianController.class.getName());
@@ -40,10 +39,10 @@ public class MusicianController {
     // insert musician to mysql db
     // return musician obj
     @PostMapping(path = "/musician/create", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Musician> insertMusician(@RequestBody Musician inMusician) {
+    public ResponseEntity<MusicianProfile> insertMusician(@RequestBody MusicianProfile inMusician) {
 
         logger.info(">>> Creating musician: %s".formatted(inMusician.toString()));
-        Musician outMusician = musicSvc.insertMusician(inMusician);
+        MusicianProfile outMusician = musicSvc.saveMusician(inMusician);
         return ResponseEntity.status(HttpStatus.CREATED).body(outMusician);
 
     }
@@ -51,23 +50,20 @@ public class MusicianController {
     // get musician by id
     // return musician obj
     @GetMapping(path = "/musician/{id}")
-    public ResponseEntity<Musician> getMusicianById(@PathVariable Long id) {
+    public ResponseEntity<MusicianProfile> getMusicianById(@PathVariable Long id) {
 
         logger.info(">>> Fetching musician with ID: %d".formatted(id));
-        Musician musician = musicSvc.getMusicianById(id);
+        MusicianProfile musician = musicSvc.getMusicianById(id);
         return ResponseEntity.ok().body(musician);
 
     }
 
     // get musicians by location
-    // if no location given, get all musicians
-    // return musician obj
     @GetMapping(path = "/musicians")
-    public ResponseEntity<List<Musician>> getMusicians(
-        @RequestParam(required = false) String location) {
+    public ResponseEntity<List<MusicianProfile>> getMusicians() {
 
-        logger.info(">>> Fetching all musicians at LOCATION: %s".formatted(location));
-        List<Musician> musicians = musicSvc.getMusicians(location);
+        logger.info(">>> Fetching all musicians");
+        List<MusicianProfile> musicians = musicSvc.getAllMusicians();
         return ResponseEntity.ok().body(musicians);
 
     }
@@ -77,10 +73,10 @@ public class MusicianController {
     @PutMapping(path = "/musician/{id}/update")
     public ResponseEntity<Long> updateMusician(
         @PathVariable Long id,
-        @RequestBody Musician inMusician) {
+        @RequestBody MusicianProfile musician) {
 
         logger.info(">>> Updating musician with ID: %d".formatted(id));
-        Long updateId = musicSvc.updateMusician(id, inMusician);
+        Long updateId = musicSvc.updateMusician(id, musician);
         return ResponseEntity.ok().body(updateId);
 
     }

@@ -35,7 +35,7 @@ public class TipService {
 
     // for inter-table validation only
     @Autowired
-    private MusicianService musicSvc;
+    private MusicianProfileService musicSvc;
 
     // initialise stripe api key
     @PostConstruct
@@ -70,6 +70,7 @@ public class TipService {
     public Tip insertTip(TipRequest request) throws StripeException {
 
         // get request details
+        Long tipperId = request.getTipperId();
         Long musicianId = request.getMusicianId();
         Double amount = request.getAmount();
         String stripeToken = request.getStripeToken();
@@ -84,15 +85,15 @@ public class TipService {
             // handle invalid stripe params
             // avoid unnecessary api calls
             if (stripeToken == null || stripeToken.isEmpty()) {
+                logger.severe(">>> Stripe param STRINGTOKEN is invalid");
                 throw new StripeParamException(
-                    "Stripe param STRINGTOKEN is invalid"
-                );
+                    "Stripe transaction failed. Please ensure your card details are correct.");
             }
 
             if (amount == null || amount <= 0) {
+                logger.severe(">>> Stripe param AMOUNT is invalid");
                 throw new StripeParamException(
-                    "Stripe param AMOUNT is invalid"
-                );
+                    "Stripe transaction failed. Please ensure your card details are correct.");
             }
 
             // set charge params
@@ -107,18 +108,21 @@ public class TipService {
 
             // set current tip variables
             Tip tip = new Tip();
+            tip.setTipperId(tipperId);
             tip.setMusicianId(musicianId);
             tip.setAmount(amount);
             tip.setStripeChargeId(charge.getId());
 
             // insert tip to db
-            Long id = tipRepo.insertTip(tip);
+            Long id = tipRepo.saveTip(tip);
             tip.setId(id); // set new id to tip object
             return tip; // return updated tip object
 
         } else {
+            logger.severe(
+                ">>> Failed to process tip as musician with ID %d could not be found".formatted(request.getMusicianId()));
             throw new MusicianNotFoundException(
-                "Musician could not be found for Stripe transaction");
+                "Vibee does not exist. Please ensure you have the correct Vibee ID.");
         }
  
     }

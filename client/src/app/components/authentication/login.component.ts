@@ -28,7 +28,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   protected error!: ApiError
 
   // subscription
-  protected loginSub!: Subscription
+  protected loginSub?: Subscription
+
+  // success message
+  successMsg: string | null = null
 
   ngOnInit(): void {
     this.createForm() // create form on init
@@ -50,11 +53,12 @@ export class LoginComponent implements OnInit, OnDestroy {
       const { username, password } = this.form.value
       this.loginSub = this.authSvc.login(username, password).subscribe({
         next: () => {
+          this.successMsg = 'Registration successful! Please log in.'
           console.log('>>> User login successful')
           this.router.navigate(['dashboard'])
         },
-        error: (error) => {
-          this.error = error
+        error: (err) => {
+          this.error = err.error
           console.error('>>> User login failed: ', this.error)
         }
       })
@@ -63,7 +67,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   // unsub
   ngOnDestroy(): void {
-      this.loginSub.unsubscribe()
+      this.loginSub?.unsubscribe()
   }
 
 }

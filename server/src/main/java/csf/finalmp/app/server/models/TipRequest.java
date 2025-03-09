@@ -6,19 +6,23 @@ package csf.finalmp.app.server.models;
 public class TipRequest {
 
     // variables
+    private Long tipperId;
     private Long musicianId;
     private Double amount;
     private String stripeToken;
 
     // constructors
     public TipRequest() {}
-    public TipRequest(Long musicianId, Double amount, String stripeToken) {
+    public TipRequest(Long tipperId, Long musicianId, Double amount, String stripeToken) {
+        this.tipperId = tipperId;
         this.musicianId = musicianId;
         this.amount = amount;
         this.stripeToken = stripeToken;
     }
 
     // getters and setters
+    public Long getTipperId() { return tipperId; }
+    public void setTipperId(Long tipperId) { this.tipperId = tipperId; } 
     public Long getMusicianId() { return musicianId; }
     public void setMusicianId(Long musicianId) { this.musicianId = musicianId; }
     public Double getAmount() { return amount; }
@@ -26,10 +30,10 @@ public class TipRequest {
     public String getStripeToken() { return stripeToken; }
     public void setStripeToken(String stripeToken) { this.stripeToken = stripeToken; }
     
-    // to string
     @Override
     public String toString() {
-        return "TipRequest [musicianId=" + musicianId + ", amount=" + amount + ", stripeToken=" + stripeToken + "]";
-    }   
+        return "TipRequest [tipperId=" + tipperId + ", musicianId=" + musicianId + ", amount=" + amount
+                + ", stripeToken=" + stripeToken + "]";
+    }  
     
 }

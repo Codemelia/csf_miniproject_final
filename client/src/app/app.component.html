@@ -1,10 +1,13 @@
 <mat-toolbar color="primary">
   <span>VIBEY</span>
   <div>
-      <button mat-button routerLink="/home">Home</button>
-      <button mat-button routerLink="/musicians">Musicians</button>
-      <button mat-button routerLink="/tip">Tip</button>
-      <button mat-button routerLink="/dashboard">Dashboard</button>
+      <button mat-button routerLink="/home" *ngIf="authSvc.isLoggedIn()">Home</button>
+      <button mat-button routerLink="/musicians" *ngIf="authSvc.isLoggedIn()">Musicians</button>
+      <button mat-button routerLink="/tip" *ngIf="authSvc.isLoggedIn()">Tip</button>
+      <button mat-button routerLink="/dashboard" *ngIf="authSvc.isLoggedIn() && authSvc.getUserRole() === 'VIBEE'">Dashboard</button>
+      <button mat-button (click)="authSvc.logout()" *ngIf="authSvc.isLoggedIn()">Logout</button>
+      <button mat-button routerLink="/login" *ngIf="!authSvc.isLoggedIn()">Login</button>
+      <button mat-button routerLink="/register" *ngIf="!authSvc.isLoggedIn()">Register</button>
   </div>
 </mat-toolbar>
 <main>

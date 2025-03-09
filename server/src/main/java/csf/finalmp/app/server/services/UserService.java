@@ -52,7 +52,7 @@ public class UserService {
     }
     
     // insert user into table and retrieve id from db
-    public Long register(AuthRequest request) {
+    public Long registerUser(AuthRequest request) {
 
         // get auth request details
         String username = request.getUsername();
@@ -65,23 +65,22 @@ public class UserService {
 
         // if user already exists in db, throw custom exception
         if(userExists) {
-            throw new UserAlreadyExistsException("User already exists");
+            throw new UserAlreadyExistsException("User already exists. Please use another username.");
         }
 
         User user = new User();
         user.setUsername(username);
-        user.setPassword(password);
+        user.setPassword(encoder.encode(password)); // encode password before storage
         user.setRole(role);
-        Long id = userRepo.insertUser(user);
+        Long id = userRepo.saveUser(user);
         logger.info(
-            ">>> AUTH: New user inserted with ID: %d".formatted(user.getId())
-        );
+            ">>> AUTH: New user inserted with ID: %d".formatted(id));
         return id;
 
     }
 
     // login user and return generated token
-    public String login(AuthRequest request) {
+    public String loginUser(AuthRequest request) {
 
         // get auth request details
         String username = request.getUsername();
@@ -94,10 +93,11 @@ public class UserService {
         // if user doesn't exist in db
         // throw custom user not found exception
         if (!userExists) {
-            throw new UserNotFoundException("User not found");
+            throw new UserNotFoundException("User not found. Please try again.");
         } 
 
         User user = userRepo.getUserByUsername(username); // get user from db
+        System.out.println(user.toString());
 
         // if user not null and received password matches stored password
         if (user != null && encoder.matches(password, user.getPassword())) {
@@ -111,8 +111,35 @@ public class UserService {
                 ">>> AUTH: User with ID %d login failed".formatted(user.getId())
             );
             throw new InvalidCredentialsException(
-                "Invalid credentials provided");
+                "Invalid credentials provided. Please try again.");
         }
+
+    }
+
+    // update user details
+    public Long updateUser(AuthRequest request, Long userId) {
+
+        // get auth request details
+        String password = request.getPassword();
+        String role = request.getRole();
+
+        // check if username exists in db
+        // returns true if > 0 rows found with username | false if none found
+        boolean userExists = userRepo.userExists(request.getUsername()) > 0;
+
+        // if user does not exist in db, throw custom exception
+        if(!userExists) {
+            throw new UserNotFoundException("User not found.");
+        }
+
+        User user = new User();
+        user.setPassword(encoder.encode(password)); // encode password before storage
+        user.setRole(role);
+        user.setId(userId); // set id for validation before update
+        userRepo.saveUser(user);
+        logger.info(
+            ">>> AUTH: Updated user with ID: %d".formatted(userId));
+        return userId;
 
     }
 

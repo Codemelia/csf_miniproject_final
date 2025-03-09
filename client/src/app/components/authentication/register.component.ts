@@ -27,7 +27,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   protected error!: ApiError
 
   // subscription
-  protected regisSub!: Subscription
+  protected regisSub?: Subscription
 
   // success message
   successMsg: string | null = null
@@ -41,9 +41,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
       username: this.fb.control('', 
         [ Validators.required, Validators.minLength(8) ]),
       password: this.fb.control('', 
-        [ Validators.required, Validators.minLength(12),
-          // password must contain at least 1 uppercase letter, 1 digit, 1 special char
-          Validators.pattern('^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$')]),
+        [ Validators.required, Validators.minLength(12), Validators.maxLength(42),
+          // password must contain at least 1 uppercase letter, 1 lowercase letter, 1 digit, 1 special char 12-42 length
+          Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};:'",.<>/?])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};:'",.<>/?]{12,42}$/)]),
       role: this.fb.control('',
         [ Validators.required ])
     })
@@ -59,8 +59,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
           console.log('>>> Registration successful', response)
           setTimeout(() => this.router.navigate(['/login']), 3000) // redirect to login page aft 3 secs
         },
-        error: (error) => {
-          this.error = error
+        error: (err) => {
+          this.error = err.error
           console.error('>>> Registration error', this.error)
         }
       })
@@ -69,7 +69,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   // unsub
   ngOnDestroy(): void {
-      this.regisSub.unsubscribe()
+      this.regisSub?.unsubscribe()
   }
 
 }

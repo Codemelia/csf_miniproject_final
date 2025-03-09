@@ -2,10 +2,11 @@ package csf.finalmp.app.server.repositories;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 
-import static csf.finalmp.app.server.utils.MusicSql.*;
+import static csf.finalmp.app.server.utils.MusicianProfileSql.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -15,12 +16,12 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import csf.finalmp.app.server.exceptions.custom.MusicianNotFoundException;
-import csf.finalmp.app.server.models.Musician;
+import csf.finalmp.app.server.models.MusicianProfile;
 
 // PURPOSE OF THIS REPO: DB CRUD OPS FOR MUSICIANS
 
 @Repository
-public class MusicianRepository {
+public class MusicianProfileRepository {
     
     @Autowired
     private JdbcTemplate template;
@@ -39,35 +40,55 @@ public class MusicianRepository {
     }
 
     // insert musician into table and return id
-    public Long insertMusician(Musician musician) {
+    // update musician if profile id is passed in
+    public Long saveMusician(MusicianProfile musician) {
+
+        // boolean based on id
+        Boolean isInsert = musician.getId() == null;
 
         // new key holder to hold key of latest inserted musician
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        // insert musican into db
-        template.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(
-                INSERT_MUSICIAN,
-                Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, musician.getName());
-            ps.setString(2, musician.getLocation());
-            return ps;}, 
-            keyHolder);
+        // dtf to format dates before storing
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-        // return id from mysql
-        Long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
-        return id;
+        // insert musican profile into db if id does not exist
+        // update musician profile if id exists
+        template.update(connection -> {
+            PreparedStatement ps;
+    
+            if (isInsert) {
+                ps = connection.prepareStatement(INSERT_MUSICIAN, 
+                    Statement.RETURN_GENERATED_KEYS);
+                ps.setLong(1, musician.getUserId());
+                ps.setString(2, musician.getDisplayName());
+                ps.setString(3, musician.getBio());
+                ps.setBytes(4, musician.getPhoto());
+            } else {
+                ps = connection.prepareStatement(UPDATE_MUSICIAN);
+                ps.setString(1, musician.getDisplayName());
+                ps.setString(2, musician.getBio());
+                ps.setBytes(3, musician.getPhoto());
+                ps.setLong(4, musician.getId());
+            }
+    
+            return ps;
+        }, keyHolder);
+    
+        // return new id if is insert, existing id otherwise
+        return isInsert ? Objects.requireNonNull(keyHolder.getKey())
+            .longValue() : musician.getId();
 
     }
 
     // get musician by id
     // on error, throw custom error
-    public Musician getMusicianById(Long id) {
+    public MusicianProfile getMusicianById(Long id) {
 
         try {
             return template.queryForObject(
                 SELECT_MUSICIAN_BY_ID, 
-                new BeanPropertyRowMapper<>(Musician.class),
+                new BeanPropertyRowMapper<>(MusicianProfile.class),
                 id);
         } catch (Exception e) {
             throw new MusicianNotFoundException(
@@ -76,28 +97,12 @@ public class MusicianRepository {
 
     }
 
-    // get musicians based on location
-    public List<Musician> getMusiciansByLocation(String location) {
-        
-        return template.query(
-            SELECT_MUSICIANS_BY_LOCATION,
-            (rs, rowNum) -> new Musician(
-                rs.getLong("id"), 
-                rs.getString("name"),
-                rs.getString("location")
-            ), location);
-
-    }
-
     // get all musicians in db
-    public List<Musician> getAllMusicians() {
+    public List<MusicianProfile> getAllMusicians() {
 
         return template.query(
             SELECT_ALL_MUSICIANS, 
-            (rs, rowNum) -> new Musician(
-                rs.getLong("id"), 
-                rs.getString("name"), 
-                rs.getString("location")));
+            new BeanPropertyRowMapper<>(MusicianProfile.class));
 
     }
 
@@ -112,11 +117,11 @@ public class MusicianRepository {
 
     // update musician data
     // return int of rows affected
-    public int updateMusician(Long id, Musician musician) {
+    public int updateMusician(Long id, MusicianProfile musician) {
 
         return template.update(
             UPDATE_MUSICIAN, 
-            musician.getName(), musician.getLocation(),
+            musician.getDisplayName(), musician.getBio(), musician.getPhoto(),
             id);
 
     }
@@ -124,8 +129,9 @@ public class MusicianRepository {
     // delete musician from db
     // return int of rows affected
     public int deleteMusician(Long id) {
-        return template.update(DELETE_MUSICIAN, 
-            id);
+
+        return template.update(DELETE_MUSICIAN, id);
+
     }
 
 }

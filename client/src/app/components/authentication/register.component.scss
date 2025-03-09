@@ -4,6 +4,17 @@
     padding: 20px;
 }
 
+mat-card-title {
+    color: #6200ea;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-shadow: 
+    0.5px 0.5px 0px rgba(255, 255, 255, 0.8),  
+    -0.5px -0.5px 0px rgba(255, 255, 255, 0.8),
+    0.5px -0.5px 0px rgba(255, 255, 255, 0.8),
+    -0.5px 0.5px 0px rgba(255, 255, 255, 0.8);
+}
+
 .full-width {
     width: 100%;
     margin-bottom: 15px;
@@ -15,7 +26,7 @@
         font-size: 14px;
     }
     .success-message {
-        color: #6200ea; // Purple
+        color: #d81b60; // Purple
         font-size: 14px;
     }
 }

@@ -6,14 +6,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import csf.finalmp.app.server.services.UserService;
-import csf.finalmp.app.server.services.MusicianService;
+import csf.finalmp.app.server.services.MusicianProfileService;
 import csf.finalmp.app.server.services.TipService;
 
 @SpringBootApplication
 public class ServerApplication implements CommandLineRunner {
 
 	@Autowired
-	private MusicianService musicSvc;
+	private MusicianProfileService musicSvc;
 
 	@Autowired
 	private TipService tipSvc;

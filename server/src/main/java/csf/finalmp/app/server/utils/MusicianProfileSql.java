@@ -3,59 +3,57 @@ package csf.finalmp.app.server.utils;
 // PURPOSE OF THIS UTIL CLASS
 // SQL QUERY STATEMENTS FOR MUSICIANS
 
-public class MusicSql {
+public class MusicianProfileSql {
 
     // check count in table
     public static final String CHECK_MUSICIANS_TABLE_COUNT = """
-        SELECT COUNT(*) FROM musicians;        
+        SELECT COUNT(*) FROM musician_profiles;        
     """;
     
     // create table
     public static final String CREATE_MUSICIANS_TABLE = """
-        CREATE TABLE IF NOT EXISTS musicians (
-            id bigint auto_increment primary key,
-            name varchar(255) not null,
-            location varchar(255) not null
-        );
+        CREATE TABLE IF NOT EXISTS musician_profiles (
+            id BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+            user_id BIGINT NOT NULL, 
+            display_name VARCHAR(255), 
+            bio TEXT, 
+            photo BLOB,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id));
     """;
 
     // insert musician into table
     public static final String INSERT_MUSICIAN = """
-        INSERT INTO musicians (name, location)
-        VALUES (?, ?);
+        INSERT INTO musician_profiles (user_id, display_name, bio, photo)
+            VALUES (?, ?, ?, ?);
     """;
 
     // select musician by ID
     public static final String SELECT_MUSICIAN_BY_ID = """
-        SELECT * FROM musicians
+        SELECT * FROM musician_profiles
             WHERE id = ?;        
-    """;
-
-    // select musicians by location
-    public static final String SELECT_MUSICIANS_BY_LOCATION = """
-        SELECT * FROM musicians
-            WHERE location = ?;        
     """;
 
     // select all musicians
     public static final String SELECT_ALL_MUSICIANS = """
-        SELECT * FROM musicians;        
+        SELECT * FROM musician_profiles;        
     """;
 
     // check if row for id exists in db
     public static final String CHECK_MUSICIAN_ID = """
-        SELECT EXISTS(SELECT 1 FROM users WHERE id = ?);
+        SELECT EXISTS(SELECT 1 FROM musician_profiles WHERE id = ?);
     """;
 
     // update musician info
     public static final String UPDATE_MUSICIAN = """
-        UPDATE musicians SET name = ?, location = ?
+        UPDATE musician_profiles SET display_name = ?, bio = ?, photo = ?
             WHERE id = ?;        
     """;
 
     // delete musician from db
     public static final String DELETE_MUSICIAN = """
-        DELETE FROM musicians
+        DELETE FROM musician_profiles
             WHERE id = ?;        
     """;
 

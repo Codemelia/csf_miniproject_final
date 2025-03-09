@@ -7,30 +7,31 @@
             <mat-form-field appearance="fill" class="full-width">
                 <mat-label>Username</mat-label>
                 <input matInput formControlName="username" placeholder="Enter username">
-                <mat-error *ngIf="form.get('username')?.hasError('required')">
-                    Please enter your username
+                <mat-error *ngIf="form.get('username')?.hasError('required')">Please enter your username
                 </mat-error>
             </mat-form-field>
 
             <mat-form-field appearance="fill" class="full-width">
                 <mat-label>Password</mat-label>
                 <input matInput type="password" formControlName="password" placeholder="Enter password">
-                <mat-error *ngIf="form.get('password')?.hasError('required')">
-                    Please enter your password
+                <mat-error *ngIf="form.get('password')?.hasError('required')">Please enter your password
                 </mat-error>
             </mat-form-field>
 
             <div class="feedback">
                 <mat-error *ngIf="error">Error {{ error.status }}: {{ error.message }}</mat-error>
+                <span class="success-message" *ngIf="successMsg">{{ successMsg }}</span>
             </div>
+        
+            <mat-card-actions>
+                <button mat-raised-button color="accent" type="submit" [disabled]="form.invalid">
+                    Login
+                </button>
+                <button mat-raised-button color="accent" type="button" [routerLink]="(['/register'])">
+                    New User
+                </button>
+            </mat-card-actions>
+
         </form>
     </mat-card-content>
-    <mat-card-actions>
-        <button mat-raised-button color="accent" type="submit" [disabled]="form.invalid">
-            Login
-        </button>
-        <button mat-raised-button color="accent" type="button" [routerLink]="(['/register'])">
-            New User
-        </button>
-    </mat-card-actions>
 </mat-card>

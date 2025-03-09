@@ -1,23 +1,51 @@
-CREATE DATABASE vibetip;
-USE vibetip;
+CREATE DATABASE vibey;
+USE vibey;
 
-CREATE TABLE IF NOT EXISTS musicians (
-	id bigint auto_increment primary key,
-	name varchar(255) not null,
-	location varchar(255) not null
-);
-
-CREATE TABLE IF NOT EXISTS tips (
-	id bigint auto_increment primary key,
-	amount double not null,
-	stripe_charge_id varchar(255) not null,
-    musician_id bigint not null,
-	foreign key (musician_id) references musician(id)
-);
+DROP TABLE musician_profiles;
 
 CREATE TABLE IF NOT EXISTS users (
-	id bigint auto_increment primary key,
-	username varchar(255) unique not null,
-	password varchar(255) not null,
-	role varchar(50) not null
-);
+	id BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL, 
+	username VARCHAR(255) UNIQUE NOT NULL, 
+	password VARCHAR(255) NOT NULL, 
+	role VARCHAR(50) NOT NULL, 
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+
+CREATE TABLE IF NOT EXISTS musician_profiles (
+	id BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	user_id BIGINT NOT NULL, 
+	display_name VARCHAR(255), 
+	bio TEXT, 
+	photo BLOB,
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	FOREIGN KEY (user_id) REFERENCES users(id));
+
+CREATE TABLE IF NOT EXISTS tips (
+	id BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL, 
+	tipper_id BIGINT NOT NULL, 
+	musician_id BIGINT NOT NULL, 
+	amount DECIMAL(10, 2) DEFAULT 0, 
+	stripe_charge_id VARCHAR(255) NOT NULL, 
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (tipper_id) REFERENCES users(id),
+    FOREIGN KEY(musician_id) REFERENCES musician_profiles(id));
+    
+CREATE TABLE IF NOT EXISTS coupons (
+	id BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL, 
+    tip_id BIGINT NOT NULL, 
+    sponsor_name VARCHAR(255) NOT NULL, 
+    code VARCHAR(50) NOT NULL, 
+    discount VARCHAR(50) NOT NULL, 
+    expires_at DATETIME,
+    FOREIGN KEY (tip_id) REFERENCES tips(id));
+    
+CREATE TABLE IF NOT EXISTS playlists (
+	id BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL, 
+    musician_id BIGINT NOT NULL, 
+    name VARCHAR(255),
+    FOREIGN KEY (musician_id) REFERENCES users(id));
+    
+CREATE TABLE IF NOT EXISTS playlist_songs (
+	playlist_id BIGINT NOT NULL, 
+    song_title VARCHAR(255) NOT NULL);

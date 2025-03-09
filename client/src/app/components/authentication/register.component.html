@@ -8,8 +8,7 @@
                 <mat-label>Username</mat-label>
                 <input matInput formControlName="username" placeholder="Enter username">
                 <mat-error *ngIf="form.get('username')?.hasError('required') || 
-                    form.get('username')?.hasError('minlength')">
-                    Username must be at least 8 characters
+                    form.get('username')?.hasError('minlength')">Username must be at least 8 characters
                 </mat-error>
             </mat-form-field>
 
@@ -17,18 +16,22 @@
                 <mat-label>Password</mat-label>
                 <input matInput type="password" formControlName="password" placeholder="Enter password">
                 <mat-error *ngIf="form.get('password')?.hasError('required') || 
-                    form.get('password')?.hasError('minlength') || 
-                    form.get('password')?.hasError('pattern')">
-                    Password must be at least 12 characters,
-                        with at least 1 uppercase letter, 1 digit, and 1 special character
+                    form.get('password')?.hasError('minlength') ||
+                    form.get('password')?.hasError('maxLength'); else patternError">Password must be between 12 and 42 characters
                 </mat-error>
+
+                <ng-template #patternError>
+                    <mat-error *ngIf="form.get('password')?.hasError('pattern')">Password must contain at least 
+                        1 uppercase, 1 lowercase, 1 digit, and 1 special characters
+                    </mat-error>
+                </ng-template>
             </mat-form-field>
 
             <mat-form-field appearance="fill" class="full-width">
                 <mat-label>Role</mat-label>
                 <mat-select formControlName="role">
-                    <mat-option value="VIBEE">Vibee</mat-option>
-                    <mat-option value="VIBER">Viber</mat-option>
+                    <mat-option value="MUSICIAN">Vibee</mat-option>
+                    <mat-option value="TIPPER">Viber</mat-option>
                 </mat-select>
                 <mat-error *ngIf="form.get('role')?.hasError('required')">
                     Please select a role
@@ -39,14 +42,16 @@
                 <mat-error *ngIf="error">Error {{ error.status }}: {{ error.message }}</mat-error>
                 <span class="success-message" *ngIf="successMsg">{{ successMsg }}</span>
             </div>
+        
+            <mat-card-actions>
+                <button mat-raised-button color="accent" type="submit" [disabled]="form.invalid">
+                    Register
+                </button>
+                <button mat-button color="primary" [routerLink]="(['/'])">
+                    Back to Login
+                </button>
+            </mat-card-actions>
+
         </form>
     </mat-card-content>
-    <mat-card-actions>
-        <button mat-raised-button color="accent" type="submit" [disabled]="form.invalid">
-            Register
-        </button>
-        <button mat-button color="primary" [routerLink]="(['/'])">
-            Back to Login
-        </button>
-    </mat-card-actions>
 </mat-card>

@@ -32,8 +32,8 @@ public class JwtUtil {
     @PostConstruct
     public void init() {
         System.out.println("JWT Secret Key: " + jwtKey);
-        if (jwtKey == null) {
-            throw new IllegalArgumentException("JWT secret key is not set");
+        if (jwtKey == null || jwtKey.length() < 64) {
+            throw new IllegalArgumentException("JWT secret key is too short. Use at least 64 characters.");
         }
         // secret key and parser
         secretKey = Keys.hmacShaKeyFor(jwtKey.getBytes());

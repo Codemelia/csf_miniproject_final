@@ -1,6 +1,5 @@
-// IDs are taken as strings to avoid going over number limit and ensure accuracy
-
 export interface TipRequest {
+    tipperId: number
     musicianId: number
     amount: number
     stripeToken: string
@@ -8,9 +7,11 @@ export interface TipRequest {
 
 export interface Tip {
     id: number,
+    tipperId: number
     musicianId: number,
     amount: number,
     stripeChargeId: string
+    createdAt: Date
 }
 
 export interface AuthResponse {

@@ -3,21 +3,24 @@ import { ActivatedRouteSnapshot, CanActivate, GuardResult, MaybeAsync, Router, R
 import { AuthService } from "../services/auth.service";
 
 @Injectable({ providedIn: 'root' })
-export class AuthGuard implements CanActivate {
+export class RoleGuard implements CanActivate {
 
     // inject services
     private authSvc = inject(AuthService)
     private router = inject(Router)
 
-    // can activate method
-    // validates if user is logged in, if not navigates to login page
-    canActivate(): boolean {
-        if (this.authSvc.isLoggedIn()) {
+    canActivate(route: ActivatedRouteSnapshot): boolean {
+        
+        const expectedRole = route.data['expectedRole']
+        const userRole = this.authSvc.getUserRole()
+
+        if (this.authSvc.isLoggedIn() && userRole === expectedRole) {
             return true
-        } else {
-            this.router.navigate(['/'])
-            return false
         }
+
+        this.router.navigate(['/home']) // redirect to home page if logged in
+        return false
+
     }
 
 }

@@ -5,23 +5,22 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import csf.finalmp.app.server.exceptions.custom.MusicianNotFoundException;
-import csf.finalmp.app.server.models.Musician;
-import csf.finalmp.app.server.repositories.MusicianRepository;
+import csf.finalmp.app.server.models.MusicianProfile;
+import csf.finalmp.app.server.repositories.MusicianProfileRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 // FOR MUSICIAN CRUD OPERATIONS
 
 @Service
-public class MusicianService {
+public class MusicianProfileService {
 
     @Autowired
-    private MusicianRepository musicRepo;
+    private MusicianProfileRepository musicRepo;
 
     // logger to ensure proper tracking
-    private Logger logger = Logger.getLogger(MusicianService.class.getName());
+    private Logger logger = Logger.getLogger(MusicianProfileService.class.getName());
 
     // check if table exists by checking count
     public boolean tableExists() {
@@ -46,46 +45,32 @@ public class MusicianService {
     }
 
     // insert musician into table and retrieve musician obj with id
-    public Musician insertMusician(Musician musician) {
+    public MusicianProfile saveMusician(MusicianProfile musician) {
 
-        Long id = musicRepo.insertMusician(musician);
+        Long id = musicRepo.saveMusician(musician);
         musician.setId(id); // set mysql id to musician obj
         logger.info(
-            ">>> MySQL: New musician inserted with ID: %d".formatted(musician.getId())
-        );
+            ">>> MySQL: New musician inserted with ID: %d".formatted(musician.getId()));
         return musician;
 
     }
 
     // get musician by id
-    public Musician getMusicianById(Long id) {
+    public MusicianProfile getMusicianById(Long id) {
 
-        Musician retrMusician = musicRepo.getMusicianById(id);
+        MusicianProfile retrMusician = musicRepo.getMusicianById(id);
         logger.info(
-            ">>> MySQL: Retrieved musician with ID: %d".formatted(retrMusician.getId())
-        );
+            ">>> MySQL: Retrieved musician with ID: %d".formatted(retrMusician.getId()));
         return retrMusician;
 
     }
 
-    // get musicians based on location
-    // if no location given, get all musicians
-    public List<Musician> getMusicians(String location) {
+    // get all musicians
+    public List<MusicianProfile> getAllMusicians() {
 
-        List<Musician> retrMusicians = new ArrayList<>();
-
-        if (location == null || location.isBlank()) {
-            retrMusicians = musicRepo.getAllMusicians();
+        List<MusicianProfile> retrMusicians = musicRepo.getAllMusicians();
             logger.info(
-                ">>> MySQL: Retrieved all musicians of SIZE %d".formatted(retrMusicians.size())
-            );
-        } else {
-            retrMusicians = musicRepo.getMusiciansByLocation(location);
-            logger.info(
-                ">>> MySQL: Retrieved musicians of SIZE %d from LOCATION %s"
-                    .formatted(retrMusicians.size(), location)
-            );
-        }
+                ">>> MySQL: Retrieved all musicians of SIZE %d".formatted(retrMusicians.size()));
                 
         return retrMusicians;
 
@@ -101,21 +86,18 @@ public class MusicianService {
 
     // update musician data
     // returns id if update successful; throws error otherwise
-    public Long updateMusician(Long id, Musician musician) {
+    public Long updateMusician(Long id, MusicianProfile musician) {
 
         int rows = musicRepo.updateMusician(id, musician);
         if (rows > 0) {
             logger.info(
-                ">>> MySQL: Successfully updated musician with ID: %d".formatted(id)
-            );
+                ">>> MySQL: Successfully updated musician with ID: %d".formatted(id));
             return id;
         } else {
             logger.severe(
-                ">>> MySQL: Failed to update musician with ID: %d".formatted(id)
-            );
+                ">>> MySQL: Failed to update musician with ID: %d".formatted(id));
             throw new MusicianNotFoundException(
-                "Musician could not be found for update"
-            );
+                "Vibee does not exist. Please ensure you have the correct Vibee ID.");
         }
 
     }
@@ -127,16 +109,13 @@ public class MusicianService {
         int rows = musicRepo.deleteMusician(id);
         if (rows > 0) {
             logger.info(
-                ">>> MySQL: Successfully deleted musician with ID: %d".formatted(id)
-            );
+                ">>> MySQL: Successfully deleted musician with ID: %d".formatted(id));
             return id;
         } else {
             logger.severe(
-                ">>> MySQL: Failed to delete musician with ID: %d".formatted(id)
-            );
+                ">>> MySQL: Failed to delete musician with ID: %d".formatted(id));
             throw new MusicianNotFoundException(
-                "Musician could not be found for deletion"
-            );
+                "Vibee does not exist. Please ensure you have the correct Vibee ID.");
         }
 
     }

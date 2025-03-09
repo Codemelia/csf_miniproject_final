@@ -11,6 +11,7 @@ import static csf.finalmp.app.server.utils.TipSql.*;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Repository
@@ -37,19 +38,23 @@ public class TipRepository {
     }
 
     // insert tip into db and return mysql id
-    public Long insertTip(Tip tip) {
+    public Long saveTip(Tip tip) {
 
         // keyholder to hold new id
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+
+        // dtf to format dates before storing
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         // insert tip
         template.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
                 INSERT_TIP,
                 Statement.RETURN_GENERATED_KEYS);
-            ps.setLong(1, tip.getMusicianId());
-            ps.setDouble(2, tip.getAmount());
-            ps.setString(3, tip.getStripeChargeId());
+            ps.setLong(1, tip.getTipperId());
+            ps.setLong(2, tip.getMusicianId());
+            ps.setDouble(3, tip.getAmount());
+            ps.setString(4, tip.getStripeChargeId());
             return ps;},
             keyHolder);
 
@@ -64,10 +69,13 @@ public class TipRepository {
             SELECT_TIPS_BY_MID, 
             (rs, rowNum) -> new Tip(
                 rs.getLong("id"), 
+                rs.getLong("tipper_id"),
+                rs.getLong("musician_id"),
                 rs.getDouble("amount"), 
                 rs.getString("stripe_charge_id"), 
-                rs.getLong("musician_id")),
+                rs.getTimestamp("created_at").toLocalDateTime()),
             musicianId);
+
     }
     
 }

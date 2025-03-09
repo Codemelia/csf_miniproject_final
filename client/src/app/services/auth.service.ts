@@ -3,11 +3,15 @@ import { inject, Injectable } from "@angular/core";
 import { catchError, Observable, tap } from "rxjs";
 import { ApiError, AuthResponse, UserLogin, UserRegistration } from "../models/app.models";
 
+import { jwtDecode } from 'jwt-decode';
+import { Router } from "@angular/router";
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
-    // inject httpclient
+    // inject services
     private http = inject(HttpClient)
+    private router = inject(Router)
 
     // auth request to build
     protected userLogin!: UserLogin
@@ -32,19 +36,39 @@ export class AuthService {
             .pipe(tap(response => localStorage.setItem(this.tokenKey, response.token)));
     }
 
-    // get token
+    // get token for auth guard
     getToken(): string | null {
         return localStorage.getItem(this.tokenKey)
     }
+
+    // get user role for role guard
+    getUserRole(): string | null {
+
+        const token = this.getToken() // get token for validation
+        if (token) {
+            try {
+                const decoded: any = jwtDecode(token) // decode token
+                console.log('>>> Decoded token: ', decoded as string)
+                return decoded.role || null
+            } catch (error) {
+                console.error('>>> Error decoding token: ', error)
+                return null
+            }
+        }
+        return null
+
+    }
     
     // check if user logged in
+    // used to authenticate user for routing
     isLoggedIn(): boolean {
         return !!this.getToken()
     }
 
     // log out user
-    logOut(): void {
-        localStorage.removeItem(this.tokenKey)
+    logout(): void {
+        localStorage.removeItem(this.tokenKey) // remove token key from local storage
+        this.router.navigate(['/']) // redirect to login page
     }
 
 }
