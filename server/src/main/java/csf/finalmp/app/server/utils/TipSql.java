@@ -17,8 +17,8 @@ public class TipSql {
             tipper_id BIGINT NOT NULL, 
             musician_id BIGINT NOT NULL, 
             amount DECIMAL(10, 2) DEFAULT 0.00 NOT NULL, 
-            stripe_charge_id VARCHAR(255) NOT NULL UNIQUE, 
-            transaction_status VARCHAR(30) DEFAULT 'pending' NOT NULL,
+            payment_intent_id VARCHAR(255) NOT NULL UNIQUE, 
+            payment_status VARCHAR(30) DEFAULT 'pending' NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
             FOREIGN KEY (tipper_id) REFERENCES users(id),
@@ -27,20 +27,8 @@ public class TipSql {
 
     // insert tip into table
     public static final String INSERT_TIP = """
-        INSERT INTO tips (tipper_id, musician_id, amount, stripe_charge_id, transaction status)
+        INSERT INTO tips (tipper_id, musician_id, amount, payment_intent_id, payment_status)
             VALUES (?, ?, ?, ?, ?);
-    """;
-
-    // select tip by tip ID
-    public static final String SELECT_TIP_BY_ID = """
-        SELECT * FROM tips
-            WHERE id = ?;        
-    """;
-
-    // select tips by tipper ID
-    public static final String SELECT_TIPS_BY_TID = """
-        SELECT * FROM tips
-            WHERE tipper_id = ?;    
     """;
 
     // select tips by musician ID
@@ -49,9 +37,21 @@ public class TipSql {
             WHERE musician_id = ?;    
     """;
 
+    // select tip by tip ID
+    public static final String SELECT_TIP_BY_PID = """
+        SELECT * FROM tips
+            WHERE payment_intent_id = ?;        
+    """;
+
     // select all tips
     public static final String SELECT_ALL_TIPS = """
         SELECT * FROM tips;        
+    """;
+
+    // update payment status
+    public static final String UPDATE_PAYMENT_STATUS = """
+        UPDATE tips SET payment_status = ?
+            WHERE payment_intent_id = ?;        
     """;
 
 }

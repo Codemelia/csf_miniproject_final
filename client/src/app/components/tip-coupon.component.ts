@@ -2,8 +2,8 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { TipService } from '../services/tip.service';
 import { loadStripe, Stripe, StripeCardElement, StripeCardElementChangeEvent } from '@stripe/stripe-js';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { TipRequest } from '../models/app.models';
-import { catchError, map, of, Subscription } from 'rxjs';
+import { TipRequest, TipResponse } from '../models/app.models';
+import { catchError, map, of, Subscription, switchMap } from 'rxjs';
 import { InvalidTokenError, jwtDecode } from 'jwt-decode';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
@@ -33,10 +33,12 @@ export class TipCouponComponent implements OnInit, OnDestroy {
   // receiving tip state
   amount: number = 0
   musicianId: number | null = null
+  tipperName: string = 'Anonymous'
+  tipperEmail: string = ''
 
   // for stripe token generation
   stripe: Stripe | null = null
-  card: StripeCardElement | null = null
+  card!: StripeCardElement
   cardComplete: boolean = false
 
   // feedback messages for view
@@ -87,6 +89,8 @@ export class TipCouponComponent implements OnInit, OnDestroy {
   // card validation handled separately
   createTipFrom() {
     return this.fb.group({
+      tipperName: this.fb.control<string>(''),
+      tipperEmail: this.fb.control<string>(''), 
       amount: this.fb.control<number>(0,
         [ Validators.required, Validators.min(1) ]),
       musicianId: this.fb.control<string>('', 
@@ -104,13 +108,19 @@ export class TipCouponComponent implements OnInit, OnDestroy {
     // take in form values
     this.musicianId = Number(this.form.value.musicianId)
     this.amount = this.form.value.amount
+    if (this.form.value.tipperName) {
+      this.tipperName = this.form.value.tipperName
+    }
+    if (this.form.value.tipperEmail) {
+      this.tipperEmail = this.form.value.tipperEmail
+    }
 
     // if tipper id invalid, request user to login again and navigate to login page
     if (this.tipperId == null) {
       this.errorMsg = 'Invalid JWT token. Please log in again.'
       setTimeout(() => this.router.navigate(['/']), 3000)
       return
-    }
+    } else
 
     // if either field does not exist, return error message for display
     if (this.musicianId == null || this.amount == 0) {
@@ -130,44 +140,54 @@ export class TipCouponComponent implements OnInit, OnDestroy {
       return
     }
 
-    // generate stripe token
-    const result = await this.stripe.createToken(this.card)
-
-    // if stripe result error, set error message
-    if (result.error && result.error.message) {
-      this.errorMsg = result.error.message
-    } 
-    
-    // if success and stripe result has token
-    // prepare tip request
-    if (result.token) {
-
-      this.request = {
-        tipperId: this.tipperId,
-        musicianId: this.musicianId,
-        amount: this.amount,
-        stripeToken: result.token.id // gets token id from stripe result
-      }
-      console.log('>>> Tip request built: ', this.request)
-
-      // send tip to server
-      // subscribe to the svc and return response/error accordingly
-      this.tipSub = this.tipSvc.insertTip(this.request).pipe(
-        map(response => {
-          this.successMsg = 'Tip successful!'
-          this.errorMsg = null // set to null to prevent confusion
-          console.log('>>> Tip successful: ', response)
-        }),
-        catchError(error => {
-          this.errorMsg = 'Payment failed. Please try again.'
-          this.successMsg = null // set to null to prevent confusion
-          console.error('>>> Tip failed: ', error)
-          return of(null)
-        })).subscribe()
-
-    } else {
-      this.errorMsg = 'Stripe token generation failed. Please try again.' // if token generation fails
+    // build tip request to server backend
+    this.request = {
+      tipperId: this.tipperId,
+      musicianId: this.musicianId,
+      amount: this.amount
     }
+    console.log('>>> Tip request built: ', this.request)
+
+    // send tip to server
+    // subscribe to the svc and return response/error accordingly
+    this.tipSub = this.tipSvc.processTip(this.request).pipe(
+      switchMap(async (response: TipResponse) => {
+        // extract the client secret from the response
+        const clientSecret = response.clientSecret
+        console.log('>>> Received client secret: ', clientSecret)
+
+        // use Stripe.js to confirm the payment
+        const confirmResult = await this.stripe!.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: this.card,
+            billing_details: { name: this.tipperName, email: this.tipperEmail }
+          }
+        })
+
+        // check if payment confirmation failed or succeeded
+        if (confirmResult.error && confirmResult.error.message) {
+          this.errorMsg = confirmResult.error.message
+          this.successMsg = null
+          console.error('>>> Payment confirmation error: ', confirmResult.error);
+        } else if (confirmResult.paymentIntent && confirmResult.paymentIntent.status === 'succeeded') {
+          this.successMsg = 'Tip successful!'
+          this.errorMsg = null
+          console.log('>>> Payment succeeded: ', confirmResult.paymentIntent)
+        }
+
+        // send update request to backend
+        if (confirmResult.paymentIntent) {
+          this.tipSvc.confirmTip(confirmResult.paymentIntent.id, confirmResult.paymentIntent.status)
+        }
+
+      }),
+      catchError(error => {
+        this.errorMsg = 'Payment failed. Please try again.'
+        this.successMsg = null
+        console.error('>>> Tip failed: ', error)
+        return of(null)
+      })
+    ).subscribe()
 
   }
 

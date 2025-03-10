@@ -24,8 +24,9 @@ import csf.finalmp.app.server.services.MusicianProfileService;
 // PURPOSE OF THIS CONTROLLER
 // PROVIDE REST ENDPOINTS FOR MUSICIAN REQUESTS FROM CLIENT
 
-@CrossOrigin(origins = "*", allowedHeaders = "*",
-    methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
+@CrossOrigin(originPatterns = "http://localhost:4200", allowedHeaders = "*",
+    methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE},
+    allowCredentials = "true")
 @RestController
 @RequestMapping(path = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 public class MusicianController {

@@ -93,9 +93,9 @@ public class UserService {
 
         // if user not null and received password matches stored password
         if (fullUser != null && encoder.matches(password, fullUser.getPassword())) {
-            String token = jwtUtil.generateToken(fullUser.getId(), fullUser.getRole());
+            String token = jwtUtil.generateToken(fullUser.getId(), fullUser.getRole()); // gen jwt token every time user logs in
             logger.info(
-                ">>> AUTH: User logged in: %s".formatted(token));
+                ">>> AUTH: User logged in with TOKEN: %s".formatted(token));
             return token;
         } else {
             logger.info(

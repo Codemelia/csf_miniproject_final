@@ -12,15 +12,9 @@ export class DashboardService {
   private http = inject(HttpClient)
   private authSvc = inject(AuthService)
 
-  // set headers with token
-  private getHeaders(): HttpHeaders {
-    const token = this.authSvc.getToken()
-    return new HttpHeaders().set('Authorization', `Bearer ${token}`)
-  }
-
   // send jwt token and get tips from mysql
   getTips(musicianId: string): Observable<Tip[]> {
-    return this.http.get<Tip[]>(`/api/tips/${musicianId}`, { headers: this.getHeaders() })
+    return this.http.get<Tip[]>(`/api/tips/${musicianId}`, { headers: this.authSvc.getHeaders() })
   }
 
 }

@@ -1,13 +1,19 @@
 <mat-toolbar color="primary">
   <span>VIBEY</span>
   <div>
-      <button mat-button routerLink="/home" *ngIf="authSvc.isLoggedIn()">Home</button>
-      <button mat-button routerLink="/musicians" *ngIf="authSvc.isLoggedIn()">Musicians</button>
-      <button mat-button routerLink="/tip" *ngIf="authSvc.isLoggedIn()">Tip</button>
-      <button mat-button routerLink="/dashboard" *ngIf="authSvc.isLoggedIn() && authSvc.getUserRole() === 'VIBEE'">Dashboard</button>
-      <button mat-button (click)="authSvc.logout()" *ngIf="authSvc.isLoggedIn()">Logout</button>
-      <button mat-button routerLink="/login" *ngIf="!authSvc.isLoggedIn()">Login</button>
-      <button mat-button routerLink="/register" *ngIf="!authSvc.isLoggedIn()">Register</button>
+
+      <div *ngIf="authSvc.authState$ | async as auth">
+
+        <button mat-button routerLink="/home" *ngIf="auth.loggedIn">Home</button>
+        <button mat-button routerLink="/musicians" *ngIf="auth.loggedIn">Musicians</button>
+        <button mat-button routerLink="/tip" *ngIf="auth.loggedIn">Tip</button>
+        <button mat-button routerLink="/dashboard" *ngIf="auth.loggedIn && auth.role === 'MUSICIAN'">Dashboard</button>
+        <button mat-button (click)="authSvc.logout()" *ngIf="auth.loggedIn">Logout</button>
+        <button mat-button routerLink="/login" *ngIf="!auth.loggedIn">Login</button>
+        <button mat-button routerLink="/register" *ngIf="!auth.loggedIn">Register</button>
+
+      </div>
+      
   </div>
 </mat-toolbar>
 <main>

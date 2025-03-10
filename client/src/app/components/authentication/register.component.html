@@ -9,16 +9,16 @@
                 <input matInput formControlName="email" placeholder="Enter email">
                 <mat-error *ngIf="form.get('email')?.hasError('required') || 
                     form.get('email')?.hasError('email') ||
-                    form.get('email')?.hasError('maxLength')">Email must be a valid email address
+                    form.get('email')?.hasError('maxlength')">Email must be a valid email address
                 </mat-error>
             </mat-form-field>
 
             <mat-form-field appearance="fill" class="full-width">
                 <mat-label>Username</mat-label>
-                <input matInput formControlName="username" placeholder="Enter email">
+                <input matInput formControlName="username" placeholder="Enter username">
                 <mat-error *ngIf="form.get('username')?.hasError('required') || 
-                    form.get('username')?.hasError('minLength') ||
-                    form.get('username')?.hasError('maxLength')">Username must be between 8 and 30 characters
+                    form.get('username')?.hasError('minlength') ||
+                    form.get('username')?.hasError('maxlength')">Username must be between 8 and 30 characters
                 </mat-error>
             </mat-form-field>
 
@@ -27,7 +27,7 @@
                 <input matInput type="password" formControlName="password" placeholder="Enter password">
                 <mat-error *ngIf="form.get('password')?.hasError('required') || 
                     form.get('password')?.hasError('minlength') ||
-                    form.get('password')?.hasError('maxLength'); else patternError">Password must be between 12 and 42 characters
+                    form.get('password')?.hasError('maxlength'); else patternError">Password must be between 12 and 42 characters
                 </mat-error>
 
                 <ng-template #patternError>

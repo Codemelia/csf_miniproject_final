@@ -41,7 +41,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   createForm() {
     this.form = this.fb.group({
       email: this.fb.control('', 
-        [ Validators.required ]),
+        [ Validators.required, Validators.email ]),
       password: this.fb.control('', 
         [ Validators.required ])
     })
@@ -55,7 +55,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         next: () => {
           this.successMsg = 'Registration successful! Please log in.'
           console.log('>>> User login successful')
-          this.router.navigate(['dashboard'])
+          this.router.navigate(['/home'])
         },
         error: (err) => {
           this.error = err.error

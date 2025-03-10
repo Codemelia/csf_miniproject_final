@@ -8,11 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.stripe.exception.SignatureVerificationException;
 import com.stripe.exception.StripeException;
 
 import csf.finalmp.app.server.exceptions.custom.InvalidCredentialsException;
 import csf.finalmp.app.server.exceptions.custom.MusicianNotFoundException;
-import csf.finalmp.app.server.exceptions.custom.StripeParamException;
+import csf.finalmp.app.server.exceptions.custom.StripePaymentException;
 import csf.finalmp.app.server.exceptions.custom.UserAlreadyExistsException;
 import csf.finalmp.app.server.exceptions.custom.UserNotFoundException;
 import csf.finalmp.app.server.exceptions.custom.UserAuthenticationException;
@@ -24,6 +25,18 @@ import redis.clients.jedis.exceptions.JedisConnectionException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    // handle stripe webhook exception
+    @ExceptionHandler(SignatureVerificationException.class)
+    public ResponseEntity<ApiError> handleSignatureVerificationException(SignatureVerificationException e) {
+        ApiError error = new ApiError(
+            HttpStatus.BAD_REQUEST.value(), 
+            "Invalid Webhook Signature Error", 
+            e.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(error);
+    }
 
     // handle custom auth exception
     @ExceptionHandler(UserAuthenticationException.class)
@@ -85,11 +98,11 @@ public class GlobalExceptionHandler {
     }
 
     // handle custom stripe exception
-    @ExceptionHandler(StripeParamException.class)
-    public ResponseEntity<ApiError> handleStripeParamException(StripeParamException e) {
+    @ExceptionHandler(StripePaymentException.class)
+    public ResponseEntity<ApiError> handleStripePaymentException(StripePaymentException e) {
         ApiError error = new ApiError(
             HttpStatus.BAD_REQUEST.value(), 
-            "Stripe Parameter Error", 
+            "Stripe Payment Error", 
             e.getMessage()
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)

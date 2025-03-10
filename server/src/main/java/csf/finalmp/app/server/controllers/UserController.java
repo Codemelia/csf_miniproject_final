@@ -20,8 +20,9 @@ import csf.finalmp.app.server.services.UserService;
 
 import csf.finalmp.app.server.exceptions.custom.UserAuthenticationException;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*",
-    methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
+@CrossOrigin(originPatterns = "http://localhost:4200", allowedHeaders = "*",
+    methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE},
+    allowCredentials = "true")
 @RestController
 @RequestMapping(path = "/api/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {

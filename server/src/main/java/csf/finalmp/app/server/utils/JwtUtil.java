@@ -56,8 +56,8 @@ public class JwtUtil {
 
     }
 
-    // get username by token
-    public String getUsernameByToken(String token) {
+    // get user ID by token
+    public String getUserId(String token) {
         return jwtParser.parseSignedClaims(token).getPayload().getSubject();
     }
 

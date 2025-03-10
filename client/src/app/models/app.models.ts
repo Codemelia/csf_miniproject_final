@@ -2,7 +2,11 @@ export interface TipRequest {
     tipperId: number
     musicianId: number
     amount: number
-    stripeToken: string
+}
+
+export interface TipResponse {
+    clientSecret: string
+    tip: TipResponse
 }
 
 export interface Tip {
@@ -10,8 +14,8 @@ export interface Tip {
     tipperId: number
     musicianId: number
     amount: number
-    stripeChargeId: string
-    transactionStatus: string
+    paymentIntentId: string
+    paymentStatus: string
     createdAt: Date
     updatedAt:Date
 }
@@ -34,6 +38,18 @@ export interface UserRegistration {
 export interface UserLogin {
     email: string
     password: string
+}
+
+export interface AuthState {
+    loggedIn: boolean;
+    role: string | null;
+    uid: number | null;
+}
+
+export interface DecodedToken {
+    role: string
+    sub: string
+    [key: string]: any
 }
 
 export interface ApiError {

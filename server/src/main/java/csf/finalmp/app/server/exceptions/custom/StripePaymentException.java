@@ -3,9 +3,9 @@ package csf.finalmp.app.server.exceptions.custom;
 // PURPOSE OF THIS EXCEPTION CLASS
 // CUSTOM INCORRECT STRIPE PARAMS EXCEPTION
 
-public class StripeParamException extends RuntimeException {
+public class StripePaymentException extends RuntimeException {
     
-    public StripeParamException(String message) {
+    public StripePaymentException(String message) {
         super(message);
     }
 

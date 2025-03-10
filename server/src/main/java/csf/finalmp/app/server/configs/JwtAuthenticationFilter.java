@@ -34,27 +34,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter { // single ex
 
         // get auth header from request
         String authHeader = request.getHeader("Authorization");
+        System.out.println("Auth header: " + authHeader);
 
         // if auth header is valid
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
 
             // get string token from header
             String token = authHeader.substring(7);
+            System.out.println("Token: " + token);
 
             // validate token
             if (jwtUtil.validateToken(token)) {
 
+                System.out.println("Token is valid");
+
                 // get username and role
-                String username = jwtUtil.getUsernameByToken(token);
+                String userId = jwtUtil.getUserId(token);
                 String role = jwtUtil.getRoleByToken(token);
 
-                // set username and role to spring security user obj
-                User userDetails = new User(username, "", Collections.singletonList(() -> role));
+                // set user id and role to spring security user obj
+                User springUser = new User(userId, "", Collections.singletonList(() -> role));
 
                 // retrieve spring security auth token
                 UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
+                        springUser, null, springUser.getAuthorities());
 
                 // set request as details for auth token
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -65,6 +69,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter { // single ex
             }
 
         }
+
 
         // passes request and response along the filter chain
         filterChain.doFilter(request, response);

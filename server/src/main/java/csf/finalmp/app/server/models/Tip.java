@@ -12,21 +12,21 @@ public class Tip {
     private Long tipperId;
     private Long musicianId;
     private Double amount;
-    private String stripeChargeId;
-    private String transactionStatus;
+    private String paymentIntentId;
+    private String paymentStatus;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     // constructors
     public Tip() {}
-    public Tip(Long id, Long tipperId, Long musicianId, Double amount, String stripeChargeId, 
-        String transactionStatus, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Tip(Long id, Long tipperId, Long musicianId, Double amount, String paymentIntentId, 
+        String paymentStatus, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.tipperId = tipperId;
         this.musicianId = musicianId;
         this.amount = amount;
-        this.stripeChargeId = stripeChargeId;
-        this.transactionStatus = transactionStatus;
+        this.paymentIntentId = paymentIntentId;
+        this.paymentStatus = paymentStatus;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -41,10 +41,10 @@ public class Tip {
     public void setMusicianId(Long musicianId) { this.musicianId = musicianId; }
     public Double getAmount() { return amount; }
     public void setAmount(Double amount) { this.amount = amount; }
-    public String getStripeChargeId() { return stripeChargeId; }
-    public void setStripeChargeId(String stripeChargeId) { this.stripeChargeId = stripeChargeId; }
-    public String getTransactionStatus() { return transactionStatus; }
-    public void setTransactionStatus(String transactionStatus) { this.transactionStatus = transactionStatus; }
+    public String getPaymentIntentId() { return paymentIntentId; }
+    public void setPaymentIntentId(String paymentIntentId) { this.paymentIntentId = paymentIntentId; }
+    public String getPaymentStatus() { return paymentStatus; }
+    public void setPaymentStatus(String paymentStatus) { this.paymentStatus = paymentStatus; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
@@ -54,7 +54,7 @@ public class Tip {
     @Override
     public String toString() {
         return "Tip [id=" + id + ", tipperId=" + tipperId + ", musicianId=" + musicianId + ", amount=" + amount
-                + ", stripeChargeId=" + stripeChargeId + ", transactionStatus=" + transactionStatus + ", createdAt="
+                + ", paymentIntentId=" + paymentIntentId + ", paymentStatus=" + paymentStatus + ", createdAt="
                 + createdAt + ", updatedAt=" + updatedAt + "]";
     }
 

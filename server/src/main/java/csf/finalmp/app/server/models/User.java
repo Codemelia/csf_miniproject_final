@@ -2,8 +2,6 @@ package csf.finalmp.app.server.models;
 
 import java.time.LocalDateTime;
 
-import csf.finalmp.app.server.models.authentication.AuthResponse;
-
 // PURPOSE OF THIS MODEL
 // CONV TO AUTH REQUEST TO SERVER SIDE USER OBJECT
 

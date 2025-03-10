@@ -12,7 +12,7 @@ export class RoleGuard implements CanActivate {
     canActivate(route: ActivatedRouteSnapshot): boolean {
         
         const expectedRole = route.data['expectedRole']
-        const userRole = this.authSvc.getUserRole()
+        const userRole = this.authSvc.extractUserRoleFromToken()
 
         if (this.authSvc.isLoggedIn() && userRole === expectedRole) {
             return true
