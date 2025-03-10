@@ -24,14 +24,14 @@ export class AuthService {
     protected error!: ApiError
 
     // register user
-    register(username: string, password: string, role: string): Observable<AuthResponse> {
-        this.userRegis = { username, password, role }
+    register(email: string, username: string, password: string, phoneNumber: string, role: string): Observable<AuthResponse> {
+        this.userRegis = { email, username, password, phoneNumber, role }
         return this.http.post<AuthResponse>('/api/auth/register', this.userRegis);
     }
 
     // login user
-    login(username: string, password: string): Observable<AuthResponse> {
-        this.userLogin = { username, password }
+    login(email: string, password: string): Observable<AuthResponse> {
+        this.userLogin = { email, password }
         return this.http.post<AuthResponse>('/api/auth/login', this.userLogin)
             .pipe(tap(response => localStorage.setItem(this.tokenKey, response.token)));
     }
@@ -50,6 +50,24 @@ export class AuthService {
                 const decoded: any = jwtDecode(token) // decode token
                 console.log('>>> Decoded token: ', decoded as string)
                 return decoded.role || null
+            } catch (error) {
+                console.error('>>> Error decoding token: ', error)
+                return null
+            }
+        }
+        return null
+
+    }
+
+    // extract user id from token
+    extractUIDFromToken(): number | null {
+
+        const token = this.getToken()
+        if (token) {
+            try {
+                const decoded: any = jwtDecode(token) // decode token
+                console.log('>>> Decoded token: ', decoded as string)
+                return Number(decoded.sub) || null
             } catch (error) {
                 console.error('>>> Error decoding token: ', error)
                 return null

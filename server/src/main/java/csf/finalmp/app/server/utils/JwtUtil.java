@@ -41,13 +41,13 @@ public class JwtUtil {
     }
 
     // generate token
-    public String generateToken(String username, String role) {
+    public String generateToken(Long userId, String role) {
 
         // set username and role with curr date as issue date
         // set expiration 24 hours from curr date
         // sign with jwt key
         return Jwts.builder()
-            .subject(username)
+            .subject(String.valueOf(userId))
             .claim("role", role)
             .issuedAt(new Date())
             .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))

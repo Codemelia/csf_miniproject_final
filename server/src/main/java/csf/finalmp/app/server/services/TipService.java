@@ -112,6 +112,7 @@ public class TipService {
             tip.setMusicianId(musicianId);
             tip.setAmount(amount);
             tip.setStripeChargeId(charge.getId());
+            tip.setTransactionStatus(charge.getStatus());
 
             // insert tip to db
             Long id = tipRepo.saveTip(tip);

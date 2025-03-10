@@ -11,7 +11,6 @@ import csf.finalmp.app.server.exceptions.custom.InvalidCredentialsException;
 import csf.finalmp.app.server.exceptions.custom.UserAlreadyExistsException;
 import csf.finalmp.app.server.exceptions.custom.UserNotFoundException;
 import csf.finalmp.app.server.models.User;
-import csf.finalmp.app.server.models.authentication.AuthRequest;
 import csf.finalmp.app.server.repositories.UserRepository;
 import csf.finalmp.app.server.utils.JwtUtil;
 
@@ -52,26 +51,19 @@ public class UserService {
     }
     
     // insert user into table and retrieve id from db
-    public Long registerUser(AuthRequest request) {
-
-        // get auth request details
-        String username = request.getUsername();
-        String password = request.getPassword();
-        String role = request.getRole();
+    public Long registerUser(User user) {
 
         // check if username exists in db
-        // returns true if > 0 rows found with username | false if none found
-        boolean userExists = userRepo.userExists(request.getUsername()) > 0;
+        // returns true if > 0 rows found with email | false if none found
+        boolean emailExists = userRepo.emailExists(user.getEmail()) > 0;
 
         // if user already exists in db, throw custom exception
-        if(userExists) {
-            throw new UserAlreadyExistsException("User already exists. Please use another username.");
+        if(emailExists) {
+            throw new UserAlreadyExistsException("User already exists. Please use another email.");
         }
 
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(encoder.encode(password)); // encode password before storage
-        user.setRole(role);
+        user.setPassword(encoder.encode(user.getPassword())); // encode password before storage
+        user.setId(null); // set id to null to ensure it is treated asa a registration
         Long id = userRepo.saveUser(user);
         logger.info(
             ">>> AUTH: New user inserted with ID: %d".formatted(id));
@@ -79,36 +71,35 @@ public class UserService {
 
     }
 
-    // login user and return generated token
-    public String loginUser(AuthRequest request) {
+    // login user and return generated token and id
+    public String loginUser(User user) {
 
         // get auth request details
-        String username = request.getUsername();
-        String password = request.getPassword();
+        String email = user.getEmail();
+        String password = user.getPassword();
 
         // check if username exists in db
-        // returns true if > 0 rows found with username | false if none found
-        boolean userExists = userRepo.userExists(username) > 0;
+        // returns true if > 0 rows found with email | false if none found
+        boolean emailExists = userRepo.emailExists(email) > 0;
 
         // if user doesn't exist in db
         // throw custom user not found exception
-        if (!userExists) {
+        if (!emailExists) {
             throw new UserNotFoundException("User not found. Please try again.");
         } 
 
-        User user = userRepo.getUserByUsername(username); // get user from db
+        User fullUser = userRepo.getUserByEmail(email); // get user from db
         System.out.println(user.toString());
 
         // if user not null and received password matches stored password
-        if (user != null && encoder.matches(password, user.getPassword())) {
-            String token = jwtUtil.generateToken(username, user.getRole());
+        if (fullUser != null && encoder.matches(password, fullUser.getPassword())) {
+            String token = jwtUtil.generateToken(fullUser.getId(), fullUser.getRole());
             logger.info(
-                ">>> AUTH: User with ID %d login TOKEN: %s".formatted(user.getId(), token)
-            );
+                ">>> AUTH: User logged in: %s".formatted(token));
             return token;
         } else {
             logger.info(
-                ">>> AUTH: User with ID %d login failed".formatted(user.getId())
+                ">>> AUTH: User with ID %d login failed".formatted(fullUser.getId())
             );
             throw new InvalidCredentialsException(
                 "Invalid credentials provided. Please try again.");
@@ -117,24 +108,18 @@ public class UserService {
     }
 
     // update user details
-    public Long updateUser(AuthRequest request, Long userId) {
-
-        // get auth request details
-        String password = request.getPassword();
-        String role = request.getRole();
+    public Long updateUser(User user, Long userId) {
 
         // check if username exists in db
         // returns true if > 0 rows found with username | false if none found
-        boolean userExists = userRepo.userExists(request.getUsername()) > 0;
+        boolean userExists = userRepo.userExists(user.getUsername()) > 0;
 
         // if user does not exist in db, throw custom exception
         if(!userExists) {
             throw new UserNotFoundException("User not found.");
         }
 
-        User user = new User();
-        user.setPassword(encoder.encode(password)); // encode password before storage
-        user.setRole(role);
+        user.setPassword(encoder.encode(user.getPassword())); // encode password before storage
         user.setId(userId); // set id for validation before update
         userRepo.saveUser(user);
         logger.info(

@@ -1,8 +1,8 @@
-package csf.finalmp.app.server.models.authentication;
+package csf.finalmp.app.server.models.unused;
 
 // PURPOSE OF THIS MODEL
 // SEPARATE CONCERNS FROM SERVER WHEN RECEIVING USER DETAILS FROM CLIENT
-
+/*
 public class AuthRequest {
     
     // variables
@@ -33,3 +33,4 @@ public class AuthRequest {
     }
 
 }
+*/

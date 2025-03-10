@@ -36,14 +36,20 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.createForm() // create form on init
   }
 
+
   createForm() {
     this.form = this.fb.group({
+      email: this.fb.control('',
+        [ Validators.required, Validators.email, Validators.maxLength(254) ]),
       username: this.fb.control('', 
-        [ Validators.required, Validators.minLength(8) ]),
+        [ Validators.required, Validators.minLength(8), Validators.maxLength(30) ]),
       password: this.fb.control('', 
         [ Validators.required, Validators.minLength(12), Validators.maxLength(42),
           // password must contain at least 1 uppercase letter, 1 lowercase letter, 1 digit, 1 special char 12-42 length
-          Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};:'",.<>/?])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};:'",.<>/?]{12,42}$/)]),
+          Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};:'",.<>/?])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};:'",.<>/?]{12,42}$/) ]),
+      phoneNumber: this.fb.control('', 
+        [ Validators.required,
+          Validators.pattern(/^(?:\+65\s?)?[689]\d{3}\s?\d{4}$/) ]),
       role: this.fb.control('',
         [ Validators.required ])
     })
@@ -52,12 +58,12 @@ export class RegisterComponent implements OnInit, OnDestroy {
   // register on submit
   register() {
     if (this.form.valid) {
-      const { username, password, role } = this.form.value
-      this.regisSub = this.authSvc.register(username, password, role).subscribe({
+      const { email, username, password, phoneNumber, role } = this.form.value
+      this.regisSub = this.authSvc.register(email, username, password, phoneNumber, role).subscribe({
         next: (response) => {
           this.successMsg = 'Registration successful! Please log in.'
           console.log('>>> Registration successful', response)
-          setTimeout(() => this.router.navigate(['/login']), 3000) // redirect to login page aft 3 secs
+          setTimeout(() => this.router.navigate(['/']), 3000) // redirect to login page aft 3 secs
         },
         error: (err) => {
           this.error = err.error

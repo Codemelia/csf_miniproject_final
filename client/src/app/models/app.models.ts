@@ -6,12 +6,14 @@ export interface TipRequest {
 }
 
 export interface Tip {
-    id: number,
+    id: number
     tipperId: number
-    musicianId: number,
-    amount: number,
+    musicianId: number
+    amount: number
     stripeChargeId: string
+    transactionStatus: string
     createdAt: Date
+    updatedAt:Date
 }
 
 export interface AuthResponse {
@@ -21,13 +23,16 @@ export interface AuthResponse {
 }
 
 export interface UserRegistration {
+    email: string
     username: string
     password: string
-    role: string | null
+    phoneNumber: string
+    role: string 
+
 }
 
 export interface UserLogin {
-    username: string
+    email: string
     password: string
 }
 

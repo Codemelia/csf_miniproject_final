@@ -11,36 +11,44 @@ public class UserSql {
     """;
     
     // create table
+    // unique keys: id for db functions | email for security | username for client display (profiles)
     public static final String CREATE_USERS_TABLE = """
         CREATE TABLE IF NOT EXISTS users (
             id BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL, 
-            username VARCHAR(255) UNIQUE NOT NULL, 
-            password VARCHAR(255) NOT NULL, 
+            email VARCHAR(255) NOT NULL UNIQUE,
+            username VARCHAR(30) NOT NULL UNIQUE, 
+            password VARCHAR(60) NOT NULL, 
+            phone_number VARCHAR(50),
             role VARCHAR(50) NOT NULL, 
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL);
     """;
 
     // insert user
     public static final String INSERT_USER = """
-        INSERT INTO users (username, password, role) 
-            VALUES (?, ?, ?);  
+        INSERT INTO users (email, username, password, phone_number, role) 
+            VALUES (?, ?, ?, ?, ?);  
     """;
 
-    // select user by username
-    public static final String SELECT_USER_BY_USERNAME = """
+    // select user by displayname
+    public static final String SELECT_USER_BY_EMAIL = """
         SELECT * FROM users
-            WHERE username = ?;
+            WHERE email = ?;
     """;
 
-    // check if username exists in db
+    // check if display name exists in db
     public static final String CHECK_USERNAME = """
         SELECT EXISTS(SELECT 1 FROM users WHERE username = ?)         
     """;
 
+    // check if email exists in db
+    public static final String CHECK_EMAIL = """
+        SELECT EXISTS(SELECT 1 FROM users WHERE email = ?)         
+    """;
+
     // update user details
     public static final String UPDATE_USER = """
-        UPDATE users SET password = ?, role = ?
+        UPDATE users SET email = ?, username = ?, password = ?, phone_number = ?, role = ?
             WHERE id = ?;        
     """;
 

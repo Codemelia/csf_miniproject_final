@@ -9,47 +9,53 @@ import java.util.Arrays;
 public class MusicianProfile {
     
     // variables
-    private Long id;
-    private Long userId;
-    private String displayName;
+    private Long userId; // same as user id
+    private String stageName;
     private String bio;
     private byte[] photo;
+    private String qrCodeUrl;
+    private String stripeAccountId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     // constructors
     public MusicianProfile() {}
-    public MusicianProfile(Long id, Long userId, String displayName, 
-        String bio, byte[] photo, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
+    public MusicianProfile(Long userId, String stageName, String bio, byte[] photo, String qrCodeUrl,
+            String stripeAccountId, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.userId = userId;
-        this.displayName = displayName;
+        this.stageName = stageName;
         this.bio = bio;
         this.photo = photo;
+        this.qrCodeUrl = qrCodeUrl;
+        this.stripeAccountId = stripeAccountId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
+
     // getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
     public Long getUserId() { return userId; }
     public void setUserId(Long userId) { this.userId = userId; }
-    public String getDisplayName() { return displayName; }
-    public void setDisplayName(String displayName) { this.displayName = displayName; }
+    public String getStageName() { return stageName; }
+    public void setStageName(String stageName) { this.stageName = stageName; }
     public String getBio() { return bio; }
     public void setBio(String bio) { this.bio = bio; }
     public byte[] getPhoto() { return photo; }
     public void setPhoto(byte[] photo) { this.photo = photo; }
+    public String getQrCodeUrl() { return qrCodeUrl; }
+    public void setQrCodeUrl(String qrCodeUrl) { this.qrCodeUrl = qrCodeUrl; }
+    public String getStripeAccountId() { return stripeAccountId; }
+    public void setStripeAccountId(String stripeAccountId) { this.stripeAccountId = stripeAccountId; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 
-    @Override
+    // to string
     public String toString() {
-        return "MusicianProfile [id=" + id + ", userId=" + userId + ", displayName=" + displayName + ", bio=" + bio
-                + ", photo=" + Arrays.toString(photo) + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
+        return "MusicianProfile [userId=" + userId + ", stageName=" + stageName + ", bio=" + bio + ", photo="
+                + Arrays.toString(photo) + ", qrCodeUrl=" + qrCodeUrl + ", stripeAccountId=" + stripeAccountId
+                + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
     }    
 
 }

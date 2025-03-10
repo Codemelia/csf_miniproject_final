@@ -13,17 +13,22 @@ public class Tip {
     private Long musicianId;
     private Double amount;
     private String stripeChargeId;
+    private String transactionStatus;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     // constructors
     public Tip() {}
-    public Tip(Long id, Long tipperId, Long musicianId, Double amount, String stripeChargeId, LocalDateTime createdAt) {
+    public Tip(Long id, Long tipperId, Long musicianId, Double amount, String stripeChargeId, 
+        String transactionStatus, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.tipperId = tipperId;
         this.musicianId = musicianId;
         this.amount = amount;
         this.stripeChargeId = stripeChargeId;
+        this.transactionStatus = transactionStatus;
         this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
 
@@ -38,14 +43,19 @@ public class Tip {
     public void setAmount(Double amount) { this.amount = amount; }
     public String getStripeChargeId() { return stripeChargeId; }
     public void setStripeChargeId(String stripeChargeId) { this.stripeChargeId = stripeChargeId; }
+    public String getTransactionStatus() { return transactionStatus; }
+    public void setTransactionStatus(String transactionStatus) { this.transactionStatus = transactionStatus; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 
     // to string
     @Override
     public String toString() {
         return "Tip [id=" + id + ", tipperId=" + tipperId + ", musicianId=" + musicianId + ", amount=" + amount
-                + ", stripeChargeId=" + stripeChargeId + ", createdAt=" + createdAt + "]";
+                + ", stripeChargeId=" + stripeChargeId + ", transactionStatus=" + transactionStatus + ", createdAt="
+                + createdAt + ", updatedAt=" + updatedAt + "]";
     }
 
 }

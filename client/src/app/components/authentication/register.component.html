@@ -5,10 +5,20 @@
     <mat-card-content>
         <form [formGroup]="form" (submit)="register()">
             <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="email" placeholder="Enter email">
+                <mat-error *ngIf="form.get('email')?.hasError('required') || 
+                    form.get('email')?.hasError('email') ||
+                    form.get('email')?.hasError('maxLength')">Email must be a valid email address
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="full-width">
                 <mat-label>Username</mat-label>
-                <input matInput formControlName="username" placeholder="Enter username">
+                <input matInput formControlName="username" placeholder="Enter email">
                 <mat-error *ngIf="form.get('username')?.hasError('required') || 
-                    form.get('username')?.hasError('minlength')">Username must be at least 8 characters
+                    form.get('username')?.hasError('minLength') ||
+                    form.get('username')?.hasError('maxLength')">Username must be between 8 and 30 characters
                 </mat-error>
             </mat-form-field>
 
@@ -25,6 +35,14 @@
                         1 uppercase, 1 lowercase, 1 digit, and 1 special characters
                     </mat-error>
                 </ng-template>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Phone Number</mat-label>
+                <input matInput formControlName="phoneNumber" placeholder="Enter phone number">
+                <mat-error *ngIf="form.get('phoneNumber')?.hasError('required') || 
+                    form.get('phoneNumber')?.hasError('pattern')">Phone number must be a valid Singapore number
+                </mat-error>
             </mat-form-field>
 
             <mat-form-field appearance="fill" class="full-width">

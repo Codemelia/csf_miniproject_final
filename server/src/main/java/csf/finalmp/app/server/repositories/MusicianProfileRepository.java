@@ -2,14 +2,12 @@ package csf.finalmp.app.server.repositories;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 
 import static csf.finalmp.app.server.utils.MusicianProfileSql.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -44,13 +42,10 @@ public class MusicianProfileRepository {
     public Long saveMusician(MusicianProfile musician) {
 
         // boolean based on id
-        Boolean isInsert = musician.getId() == null;
+        Boolean isInsert = musician.getUserId() == null;
 
         // new key holder to hold key of latest inserted musician
         KeyHolder keyHolder = new GeneratedKeyHolder();
-
-        // dtf to format dates before storing
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         // insert musican profile into db if id does not exist
         // update musician profile if id exists
@@ -61,15 +56,17 @@ public class MusicianProfileRepository {
                 ps = connection.prepareStatement(INSERT_MUSICIAN, 
                     Statement.RETURN_GENERATED_KEYS);
                 ps.setLong(1, musician.getUserId());
-                ps.setString(2, musician.getDisplayName());
+                ps.setString(2, musician.getStageName());
                 ps.setString(3, musician.getBio());
                 ps.setBytes(4, musician.getPhoto());
+                ps.setString(5, musician.getQrCodeUrl());
+                ps.setString(6, musician.getStripeAccountId());
             } else {
                 ps = connection.prepareStatement(UPDATE_MUSICIAN);
-                ps.setString(1, musician.getDisplayName());
+                ps.setString(1, musician.getStageName());
                 ps.setString(2, musician.getBio());
                 ps.setBytes(3, musician.getPhoto());
-                ps.setLong(4, musician.getId());
+                ps.setLong(4, musician.getUserId());
             }
     
             return ps;
@@ -77,7 +74,7 @@ public class MusicianProfileRepository {
     
         // return new id if is insert, existing id otherwise
         return isInsert ? Objects.requireNonNull(keyHolder.getKey())
-            .longValue() : musician.getId();
+            .longValue() : musician.getUserId();
 
     }
 
@@ -88,7 +85,15 @@ public class MusicianProfileRepository {
         try {
             return template.queryForObject(
                 SELECT_MUSICIAN_BY_ID, 
-                new BeanPropertyRowMapper<>(MusicianProfile.class),
+                (rs, rowNum) -> new MusicianProfile(
+                    rs.getLong("user_id"), 
+                    rs.getString("stage_name"), 
+                    rs.getString("bio"), 
+                    rs.getBytes("photo"), 
+                    rs.getString("qr_code_url"),
+                    rs.getString("stripe_account_id"), 
+                    rs.getTimestamp("created_at").toLocalDateTime(), 
+                    rs.getTimestamp("updated_at").toLocalDateTime()),
                 id);
         } catch (Exception e) {
             throw new MusicianNotFoundException(
@@ -102,7 +107,15 @@ public class MusicianProfileRepository {
 
         return template.query(
             SELECT_ALL_MUSICIANS, 
-            new BeanPropertyRowMapper<>(MusicianProfile.class));
+            (rs, rowNum) -> new MusicianProfile(
+                rs.getLong("user_id"), 
+                rs.getString("stage_name"), 
+                rs.getString("bio"), 
+                rs.getBytes("photo"), 
+                rs.getString("qr_code_url"),
+                rs.getString("stripe_account_id"), 
+                rs.getTimestamp("created_at").toLocalDateTime(), 
+                rs.getTimestamp("updated_at").toLocalDateTime()));
 
     }
 
@@ -121,7 +134,7 @@ public class MusicianProfileRepository {
 
         return template.update(
             UPDATE_MUSICIAN, 
-            musician.getDisplayName(), musician.getBio(), musician.getPhoto(),
+            musician.getStageName(), musician.getBio(), musician.getPhoto(),
             id);
 
     }

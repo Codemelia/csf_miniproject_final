@@ -29,23 +29,16 @@ public class ServerApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		// check if musicians table exists, if not create table
-		boolean musiciansExists = musicSvc.tableExists();
-		if (!musiciansExists) {
-			musicSvc.createTable();
-		}
-
-		// check if tips table exists, if not create table
-		boolean tipsExists = tipSvc.tableExists();
-		if(!tipsExists) {
-			tipSvc.createTable();
-		}
-
-		// check if users table exists, if not create table
+		// check if tables exists, if not create tables
+		// order: users > musicians > tips
 		boolean usersExists = userSvc.tableExists();
-		if(!usersExists) {
-			userSvc.createTable();
-		}
+		if(!usersExists) { userSvc.createTable(); }
+
+		boolean musiciansExists = musicSvc.tableExists();
+		if (!musiciansExists) { musicSvc.createTable();	}
+
+		boolean tipsExists = tipSvc.tableExists();
+		if(!tipsExists) { tipSvc.createTable(); }
 
 	}
 

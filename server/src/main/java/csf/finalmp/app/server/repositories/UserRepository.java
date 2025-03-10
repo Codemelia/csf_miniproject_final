@@ -51,14 +51,19 @@ public class UserRepository {
             if (isInsert) {
                 ps = connection.prepareStatement(
                     INSERT_USER, Statement.RETURN_GENERATED_KEYS);
-                ps.setString(1, user.getUsername());
-                ps.setString(2, user.getPassword());
-                ps.setString(3, user.getRole());
+                ps.setString(1, user.getEmail());
+                ps.setString(2, user.getUsername());
+                ps.setString(3, user.getPassword());
+                ps.setString(4, user.getPhoneNumber());
+                ps.setString(5, user.getRole());
             } else {
                 ps = connection.prepareStatement(UPDATE_USER);
-                ps.setString(1, user.getPassword());
-                ps.setString(2, user.getRole());
-                ps.setLong(3, user.getId());
+                ps.setString(1, user.getEmail());
+                ps.setString(2, user.getUsername());
+                ps.setString(3, user.getPassword());
+                ps.setString(4, user.getPhoneNumber());
+                ps.setString(5, user.getRole());
+                ps.setLong(6, user.getId());
             }
 
              
@@ -72,19 +77,21 @@ public class UserRepository {
     }
 
     // select user by username
-    public User getUserByUsername(String username) {
+    public User getUserByEmail(String email) {
 
         try {
             return template.queryForObject(
-            SELECT_USER_BY_USERNAME, 
+            SELECT_USER_BY_EMAIL, 
             (rs, rowNum) -> new User(
                 rs.getLong("id"), 
+                rs.getString("email"),
                 rs.getString("username"), 
                 rs.getString("password"), 
+                rs.getString("phone_number"),
                 rs.getString("role"),
                 rs.getTimestamp("created_at").toLocalDateTime(),
                 rs.getTimestamp("updated_at").toLocalDateTime()),
-            username);
+            email);
         } catch (EmptyResultDataAccessException e) {
             return null; // return null to handle on service layer
         }
@@ -102,5 +109,14 @@ public class UserRepository {
 
     }
 
+    // check if email exists in mysql
+    public Integer emailExists(String email) {
+        
+        return template.queryForObject(
+            CHECK_EMAIL, 
+            Integer.class,
+            email);
+    
+    }
 
 }

@@ -48,9 +48,9 @@ public class MusicianProfileService {
     public MusicianProfile saveMusician(MusicianProfile musician) {
 
         Long id = musicRepo.saveMusician(musician);
-        musician.setId(id); // set mysql id to musician obj
+        musician.setUserId(id); // set mysql id to musician obj
         logger.info(
-            ">>> MySQL: New musician inserted with ID: %d".formatted(musician.getId()));
+            ">>> MySQL: New musician inserted with ID: %d".formatted(musician.getUserId()));
         return musician;
 
     }
@@ -58,21 +58,21 @@ public class MusicianProfileService {
     // get musician by id
     public MusicianProfile getMusicianById(Long id) {
 
-        MusicianProfile retrMusician = musicRepo.getMusicianById(id);
+        MusicianProfile musician = musicRepo.getMusicianById(id);
         logger.info(
-            ">>> MySQL: Retrieved musician with ID: %d".formatted(retrMusician.getId()));
-        return retrMusician;
+            ">>> MySQL: Retrieved musician with ID: %d".formatted(musician.getUserId()));
+        return musician;
 
     }
 
     // get all musicians
     public List<MusicianProfile> getAllMusicians() {
 
-        List<MusicianProfile> retrMusicians = musicRepo.getAllMusicians();
+        List<MusicianProfile> musicians = musicRepo.getAllMusicians();
             logger.info(
-                ">>> MySQL: Retrieved all musicians of SIZE %d".formatted(retrMusicians.size()));
+                ">>> MySQL: Retrieved all musicians of SIZE %d".formatted(musicians.size()));
                 
-        return retrMusicians;
+        return musicians;
 
     }
     

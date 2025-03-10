@@ -13,26 +13,27 @@ public class MusicianProfileSql {
     // create table
     public static final String CREATE_MUSICIANS_TABLE = """
         CREATE TABLE IF NOT EXISTS musician_profiles (
-            id BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-            user_id BIGINT NOT NULL, 
-            display_name VARCHAR(255), 
+            user_id BIGINT PRIMARY KEY NOT NULL, 
+            stage_name VARCHAR(50) NOT NULL, 
             bio TEXT, 
             photo BLOB,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id));
+            qr_code_url VARCHAR(255) NOT NULL UNIQUE,
+            stripe_account_id VARCHAR(255) NOT NULL UNIQUE,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE);
     """;
 
     // insert musician into table
     public static final String INSERT_MUSICIAN = """
-        INSERT INTO musician_profiles (user_id, display_name, bio, photo)
-            VALUES (?, ?, ?, ?);
+        INSERT INTO musician_profiles (user_id, stage_name, bio, photo, qr_code_url, stripe_account_id)
+            VALUES (?, ?, ?, ?, ?, ?);
     """;
 
     // select musician by ID
     public static final String SELECT_MUSICIAN_BY_ID = """
         SELECT * FROM musician_profiles
-            WHERE id = ?;        
+            WHERE user_id = ?;        
     """;
 
     // select all musicians
@@ -42,19 +43,19 @@ public class MusicianProfileSql {
 
     // check if row for id exists in db
     public static final String CHECK_MUSICIAN_ID = """
-        SELECT EXISTS(SELECT 1 FROM musician_profiles WHERE id = ?);
+        SELECT EXISTS(SELECT 1 FROM musician_profiles WHERE user_id = ?);
     """;
 
     // update musician info
     public static final String UPDATE_MUSICIAN = """
-        UPDATE musician_profiles SET display_name = ?, bio = ?, photo = ?
-            WHERE id = ?;        
+        UPDATE musician_profiles SET stage_name = ?, bio = ?, photo = ?
+            WHERE user_id = ?;        
     """;
 
     // delete musician from db
     public static final String DELETE_MUSICIAN = """
         DELETE FROM musician_profiles
-            WHERE id = ?;        
+            WHERE user_id = ?;        
     """;
 
 }

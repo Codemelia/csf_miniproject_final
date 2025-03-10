@@ -4,6 +4,9 @@ import { loadStripe, Stripe, StripeCardElement, StripeCardElementChangeEvent } f
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TipRequest } from '../models/app.models';
 import { catchError, map, of, Subscription } from 'rxjs';
+import { InvalidTokenError, jwtDecode } from 'jwt-decode';
+import { Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 
 // stripe PUBLIC key
 const environment = {
@@ -24,10 +27,12 @@ export class TipCouponComponent implements OnInit, OnDestroy {
 
   // tip svc injection
   private tipSvc = inject(TipService)
+  private authSvc = inject(AuthService)
+  private router = inject(Router)
 
   // receiving tip state
   amount: number = 0
-  musicianId: string = ''
+  musicianId: number | null = null
 
   // for stripe token generation
   stripe: Stripe | null = null
@@ -41,6 +46,11 @@ export class TipCouponComponent implements OnInit, OnDestroy {
   // for sending tip request to server
   protected request!: TipRequest
   protected tipSub!: Subscription
+
+  // token key and extracted userId
+  tokenKey: string = 'auth_token'
+  protected token: string = ''
+  protected tipperId: number | null = null
 
   async ngOnInit() {
 
@@ -87,26 +97,37 @@ export class TipCouponComponent implements OnInit, OnDestroy {
   // tip musician method
   async tipMusician() {
 
+    // get token from local storage
+    // extract user id as tipper id
+    this.tipperId = this.authSvc.extractUIDFromToken()
+
     // take in form values
-    this.musicianId = this.form.value.musicianId
+    this.musicianId = Number(this.form.value.musicianId)
     this.amount = this.form.value.amount
+
+    // if tipper id invalid, request user to login again and navigate to login page
+    if (this.tipperId == null) {
+      this.errorMsg = 'Invalid JWT token. Please log in again.'
+      setTimeout(() => this.router.navigate(['/']), 3000)
+      return
+    }
 
     // if either field does not exist, return error message for display
     if (this.musicianId == null || this.amount == 0) {
-      this.errorMsg = 'Please ensure all fields are filled.';
-      return;
+      this.errorMsg = 'Please ensure all fields are filled.'
+      return
     } else
 
     // validate card and stripe
     if (!this.card || !this.stripe) {
-      this.errorMsg = 'Payment system not initialized. Please refresh the page.';
-      return;
+      this.errorMsg = 'Payment system not initialized. Please refresh the page.'
+      return
     } else
 
     // validate card completion - setting this custom since card validation is not on form
     if (!this.cardComplete) {
-      this.errorMsg = 'Please complete your card details.';
-      return;
+      this.errorMsg = 'Please complete your card details.'
+      return
     }
 
     // generate stripe token
@@ -122,7 +143,8 @@ export class TipCouponComponent implements OnInit, OnDestroy {
     if (result.token) {
 
       this.request = {
-        musicianId: Number(this.musicianId),
+        tipperId: this.tipperId,
+        musicianId: this.musicianId,
         amount: this.amount,
         stripeToken: result.token.id // gets token id from stripe result
       }

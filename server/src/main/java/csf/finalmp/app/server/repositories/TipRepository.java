@@ -11,7 +11,6 @@ import static csf.finalmp.app.server.utils.TipSql.*;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Repository
@@ -43,9 +42,6 @@ public class TipRepository {
         // keyholder to hold new id
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 
-        // dtf to format dates before storing
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
         // insert tip
         template.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
@@ -55,6 +51,7 @@ public class TipRepository {
             ps.setLong(2, tip.getMusicianId());
             ps.setDouble(3, tip.getAmount());
             ps.setString(4, tip.getStripeChargeId());
+            ps.setString(5, tip.getTransactionStatus());
             return ps;},
             keyHolder);
 
@@ -73,7 +70,9 @@ public class TipRepository {
                 rs.getLong("musician_id"),
                 rs.getDouble("amount"), 
                 rs.getString("stripe_charge_id"), 
-                rs.getTimestamp("created_at").toLocalDateTime()),
+                rs.getString("transaction_status"),
+                rs.getTimestamp("created_at").toLocalDateTime(),
+                rs.getTimestamp("updated_at").toLocalDateTime()),
             musicianId);
 
     }

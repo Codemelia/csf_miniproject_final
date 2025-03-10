@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   // create form
   createForm() {
     this.form = this.fb.group({
-      username: this.fb.control('', 
+      email: this.fb.control('', 
         [ Validators.required ]),
       password: this.fb.control('', 
         [ Validators.required ])
@@ -50,8 +50,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   // submit button
   login() {
     if (this.form.valid) {
-      const { username, password } = this.form.value
-      this.loginSub = this.authSvc.login(username, password).subscribe({
+      const { email, password } = this.form.value
+      this.loginSub = this.authSvc.login(email, password).subscribe({
         next: () => {
           this.successMsg = 'Registration successful! Please log in.'
           console.log('>>> User login successful')
