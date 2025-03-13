@@ -13,28 +13,28 @@ public class TipSql {
     // create table
     public static final String CREATE_TIPS_TABLE = """
         CREATE TABLE IF NOT EXISTS tips (
-            id BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL, 
-            tipper_id BIGINT NOT NULL, 
-            musician_id BIGINT NOT NULL, 
+            tip_id BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL, 
+            tipper_id CHAR(8) NOT NULL, 
+            artiste_id CHAR(8) NOT NULL, 
             amount DECIMAL(10, 2) DEFAULT 0.00 NOT NULL, 
             payment_intent_id VARCHAR(255) NOT NULL UNIQUE, 
             payment_status VARCHAR(30) DEFAULT 'pending' NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
-            FOREIGN KEY (tipper_id) REFERENCES users(id),
-            FOREIGN KEY(musician_id) REFERENCES musician_profiles(user_id) ON DELETE CASCADE);
+            FOREIGN KEY (tipper_id) REFERENCES users(user_id),
+            FOREIGN KEY(artiste_id) REFERENCES artistes(artiste_id) ON DELETE CASCADE);
     """;
 
     // insert tip into table
     public static final String INSERT_TIP = """
-        INSERT INTO tips (tipper_id, musician_id, amount, payment_intent_id, payment_status)
+        INSERT INTO tips (tipper_id, artiste_id, amount, payment_intent_id, payment_status)
             VALUES (?, ?, ?, ?, ?);
     """;
 
-    // select tips by musician ID
+    // select tips by artiste ID
     public static final String SELECT_TIPS_BY_MID = """
         SELECT * FROM tips
-            WHERE musician_id = ?;    
+            WHERE artiste_id = ?;    
     """;
 
     // select tip by tip ID

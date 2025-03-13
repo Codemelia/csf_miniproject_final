@@ -34,9 +34,11 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/api/auth/**").permitAll() // allow registration and login
-                .requestMatchers("/api/musicians/**").authenticated() // protect musicians endpoints
-                .requestMatchers("/api/musician/**").authenticated() // protect musician endpoints
+                .requestMatchers("/api/qr/**").permitAll() // permit all access to qr codes
+                .requestMatchers("/api/artistes/**").authenticated() // protect artistes endpoints
+                .requestMatchers("/api/artiste/**").authenticated() // protect artiste endpoints
                 .requestMatchers("/api/tips/**").authenticated() // protect tips endpoints
+                .requestMatchers("/api/stripe/**").permitAll() // permit all for stripe oauth callback
                 .anyRequest().authenticated())
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 

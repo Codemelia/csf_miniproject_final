@@ -1,0 +1,19 @@
+<!-- Tab Switcher -->
+<mat-tab-group [(selectedIndex)]="selectedTab">
+    <mat-tab label="Featured Artistes"></mat-tab>
+    <mat-tab label="Our Partners"></mat-tab>
+</mat-tab-group>
+
+<!--
+<mat-card class="shuffle-card">
+    <mat-card-header>
+        <mat-card-title *ngIf="selectedTab === 0">{{ currentArtiste.name }}</mat-card-title>
+        <mat-card-title *ngIf="selectedTab === 1">{{ currentPartner.name }}</mat-card-title>
+    </mat-card-header>
+    <img mat-card-image *ngIf="selectedTab === 0" [src]="currentArtiste.image" alt="{{ currentArtiste.name }}">
+    <img mat-card-image *ngIf="selectedTab === 1" [src]="currentPartner.logo" alt="{{ currentPartner.name }}">
+    <mat-card-content>
+        <p *ngIf="selectedTab === 0">{{ currentArtiste.bio }}</p>
+        <p *ngIf="selectedTab === 1">{{ currentPartner.description }}</p>
+    </mat-card-content>
+</mat-card> -->

@@ -1,4 +1,4 @@
-package csf.finalmp.app.server.models;
+package csf.finalmp.app.server.models.unused;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -6,14 +6,14 @@ import java.time.LocalDateTime;
 public class Wallet {
     
     // variables
-    private Long userId;
+    private Long artisteId;
     private BigDecimal balance = BigDecimal.ZERO;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     
     // getters and setters
-    public Long getUserId() { return userId; }
-    public void setUserId(Long userId) { this.userId = userId; }
+    public Long getArtisteId() { return artisteId; }
+    public void setArtisteId(Long artisteId) { this.artisteId = artisteId; }
     public BigDecimal getBalance() { return balance; }
     public void setBalance(BigDecimal balance) { this.balance = balance; }
     public LocalDateTime getCreatedAt() { return createdAt; }
@@ -23,8 +23,8 @@ public class Wallet {
 
     // constructors
     public Wallet() {}
-    public Wallet(Long id, Long userId, BigDecimal balance, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.userId = userId;
+    public Wallet(Long id, Long artisteId, BigDecimal balance, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.artisteId = artisteId;
         this.balance = balance;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -32,7 +32,7 @@ public class Wallet {
 
     @Override
     public String toString() {
-        return "Wallet [userId=" + userId + ", balance=" + balance + ", createdAt=" + createdAt + ", updatedAt="
+        return "Wallet [artisteId=" + artisteId + ", balance=" + balance + ", createdAt=" + createdAt + ", updatedAt="
                 + updatedAt + "]";
     }    
 

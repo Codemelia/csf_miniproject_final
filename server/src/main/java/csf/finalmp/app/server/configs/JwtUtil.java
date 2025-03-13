@@ -1,4 +1,4 @@
-package csf.finalmp.app.server.utils;
+package csf.finalmp.app.server.configs;
 
 import java.util.Date;
 
@@ -41,13 +41,13 @@ public class JwtUtil {
     }
 
     // generate token
-    public String generateToken(Long userId, String role) {
+    public String generateToken(String userId, String role) {
 
         // set username and role with curr date as issue date
         // set expiration 24 hours from curr date
         // sign with jwt key
         return Jwts.builder()
-            .subject(String.valueOf(userId))
+            .subject(userId)
             .claim("role", role)
             .issuedAt(new Date())
             .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))

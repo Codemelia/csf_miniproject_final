@@ -14,7 +14,7 @@ public class UserSql {
     // unique keys: id for db functions | email for security | username for client display (profiles)
     public static final String CREATE_USERS_TABLE = """
         CREATE TABLE IF NOT EXISTS users (
-            id BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL, 
+            user_id CHAR(8) PRIMARY KEY NOT NULL, 
             email VARCHAR(255) NOT NULL UNIQUE,
             username VARCHAR(30) NOT NULL UNIQUE, 
             password VARCHAR(60) NOT NULL, 
@@ -26,8 +26,8 @@ public class UserSql {
 
     // insert user
     public static final String INSERT_USER = """
-        INSERT INTO users (email, username, password, phone_number, role) 
-            VALUES (?, ?, ?, ?, ?);  
+        INSERT INTO users (user_id, email, username, password, phone_number, role) 
+            VALUES (?, ?, ?, ?, ?, ?);  
     """;
 
     // select user by displayname
@@ -49,7 +49,19 @@ public class UserSql {
     // update user details
     public static final String UPDATE_USER = """
         UPDATE users SET email = ?, username = ?, password = ?, phone_number = ?, role = ?
-            WHERE id = ?;        
+            WHERE user_id = ?;        
+    """;
+
+    // get user's email
+    public static final String GET_USER_EMAIL_BY_ID = """
+        SELECT email FROM users
+            WHERE user_id = ?;        
+    """;
+
+    // get user's role
+    public static final String GET_USER_ROLE_BY_ID = """
+        SELECT role FROM users
+            WHERE user_id = ?;
     """;
 
 }

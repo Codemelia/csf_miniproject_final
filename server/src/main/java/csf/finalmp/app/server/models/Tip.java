@@ -8,9 +8,9 @@ import java.time.LocalDateTime;
 public class Tip {
     
     // variables
-    private Long id;
-    private Long tipperId;
-    private Long musicianId;
+    private Long tipId;
+    private String tipperId;
+    private String artisteId;
     private Double amount;
     private String paymentIntentId;
     private String paymentStatus;
@@ -19,11 +19,11 @@ public class Tip {
 
     // constructors
     public Tip() {}
-    public Tip(Long id, Long tipperId, Long musicianId, Double amount, String paymentIntentId, 
+    public Tip(Long tipId, String tipperId, String artisteId, Double amount, String paymentIntentId, 
         String paymentStatus, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
+        this.tipId = tipId;
         this.tipperId = tipperId;
-        this.musicianId = musicianId;
+        this.artisteId = artisteId;
         this.amount = amount;
         this.paymentIntentId = paymentIntentId;
         this.paymentStatus = paymentStatus;
@@ -33,12 +33,12 @@ public class Tip {
 
 
     // getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public Long getTipperId() { return tipperId; }
-    public void setTipperId(Long tipperId) { this.tipperId = tipperId; }
-    public Long getMusicianId() { return musicianId; }
-    public void setMusicianId(Long musicianId) { this.musicianId = musicianId; }
+    public Long getId() { return tipId; }
+    public void setId(Long tipId) { this.tipId = tipId; }
+    public String getTipperId() { return tipperId; }
+    public void setTipperId(String tipperId) { this.tipperId = tipperId; }
+    public String getArtisteId() { return artisteId; }
+    public void setArtisteId(String artisteId) { this.artisteId = artisteId; }
     public Double getAmount() { return amount; }
     public void setAmount(Double amount) { this.amount = amount; }
     public String getPaymentIntentId() { return paymentIntentId; }
@@ -53,7 +53,7 @@ public class Tip {
     // to string
     @Override
     public String toString() {
-        return "Tip [id=" + id + ", tipperId=" + tipperId + ", musicianId=" + musicianId + ", amount=" + amount
+        return "Tip [tipId=" + tipId + ", tipperId=" + tipperId + ", artisteId=" + artisteId + ", amount=" + amount
                 + ", paymentIntentId=" + paymentIntentId + ", paymentStatus=" + paymentStatus + ", createdAt="
                 + createdAt + ", updatedAt=" + updatedAt + "]";
     }

@@ -1,18 +1,70 @@
-// center toolbar content
+
 mat-toolbar {
     display: flex;
     justify-content: space-between;
     padding: 0 20px;
     background: linear-gradient(90deg, #6200ea, #d81b60);
+    height: 80px;
 }
 
+mat-toolbar span {
+    font-size: 150%;
+}
+
+.full-page {
+    min-height: 100vh;
+    background-image: url('/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+// Main content styling
 main {
     padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
+    max-width: 1200px; // Limiting the width for larger screens
+    margin: 0 auto; // Centering the main content
+    min-height: calc(100vh - 64px - 80px); // Ensure full height minus toolbar and footer height
 }
 
+// Toolbar title styling
 span {
     color: #ffffff;
     font-weight: bold;
+}
+
+// Footer styling
+.footer {
+    background: linear-gradient(90deg, #6200ea, #d81b60);
+    padding: 20px 0; // Increased padding for a thicker footer
+    text-align: center; // Centering footer text
+}
+
+// Footer text styling
+.footer p {
+    margin: 0; // Remove default margin
+    font-size: 16px; // Slightly larger font size for readability
+    color: white; // Ensuring text color contrasts well with the footer background
+}
+
+// Hover effect for footer links (if added in future)
+.footer a {
+    color: #d5006d; // Link color matching the magenta theme
+    text-decoration: none; // Remove underline
+    transition: color 0.3s ease; // Smooth transition for color change
+}
+
+.footer a:hover {
+    text-decoration: underline; // Underline on hover for better UX
+}
+
+// Responsive adjustments
+@media (max-width: 600px) {
+    main {
+        padding: 10px; // Less padding on smaller screens
+    }
+
+    .footer p {
+        font-size: 14px; // Adjust font size for smaller screens
+    }
 }

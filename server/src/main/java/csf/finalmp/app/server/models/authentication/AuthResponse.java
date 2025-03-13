@@ -6,29 +6,29 @@ package csf.finalmp.app.server.models.authentication;
 public class AuthResponse {
 
     // variables
-    private Long id; // for registration
+    private String userId; // for registration
     private String token; // for login
     private String message;
 
     // constructors
     public AuthResponse() {}
-    public AuthResponse(Long id, String token, String message) {
-        this.id = id;
+    public AuthResponse(String userId, String token, String message) {
+        this.userId = userId;
         this.token = token;
         this.message = message;
     }
 
     // customised constructors for cleaner code
-    public static AuthResponse forRegistration(Long id, String message) {
-        return new AuthResponse(id, null, message);
+    public static AuthResponse forRegistration(String userId, String message) {
+        return new AuthResponse(userId, null, message);
     }
     public static AuthResponse forLogin(String token, String message) {
         return new AuthResponse(null, token, message);
     }
 
     // getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public String getUserId() { return userId; }
+    public void getUserId(String userId) { this.userId = userId; }
     public String getToken() { return token; }
     public void setToken(String token) { this.token = token; }
     public String getMessage() { return message; }
@@ -37,7 +37,7 @@ public class AuthResponse {
     // to string
     @Override
     public String toString() {
-        return "AuthResponse [token=" + token + ", message=" + message + "]";
+        return "AuthResponse [userId=" + userId + ", token=" + token + ", message=" + message + "]";
     }
     
 }

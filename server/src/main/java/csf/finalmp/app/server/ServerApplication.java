@@ -6,14 +6,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import csf.finalmp.app.server.services.UserService;
-import csf.finalmp.app.server.services.MusicianProfileService;
+import csf.finalmp.app.server.services.ArtisteService;
 import csf.finalmp.app.server.services.TipService;
 
 @SpringBootApplication
 public class ServerApplication implements CommandLineRunner {
 
 	@Autowired
-	private MusicianProfileService musicSvc;
+	private ArtisteService artisteSvc;
 
 	@Autowired
 	private TipService tipSvc;
@@ -30,12 +30,12 @@ public class ServerApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 
 		// check if tables exists, if not create tables
-		// order: users > musicians > tips
+		// order: users > artistes > tips
 		boolean usersExists = userSvc.tableExists();
 		if(!usersExists) { userSvc.createTable(); }
 
-		boolean musiciansExists = musicSvc.tableExists();
-		if (!musiciansExists) { musicSvc.createTable();	}
+		boolean artisteExists = artisteSvc.tableExists();
+		if (!artisteExists) { artisteSvc.createTable();	}
 
 		boolean tipsExists = tipSvc.tableExists();
 		if(!tipsExists) { tipSvc.createTable(); }

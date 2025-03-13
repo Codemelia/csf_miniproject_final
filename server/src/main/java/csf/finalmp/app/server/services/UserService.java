@@ -7,12 +7,12 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import csf.finalmp.app.server.configs.JwtUtil;
 import csf.finalmp.app.server.exceptions.custom.InvalidCredentialsException;
 import csf.finalmp.app.server.exceptions.custom.UserAlreadyExistsException;
 import csf.finalmp.app.server.exceptions.custom.UserNotFoundException;
 import csf.finalmp.app.server.models.User;
 import csf.finalmp.app.server.repositories.UserRepository;
-import csf.finalmp.app.server.utils.JwtUtil;
 
 // FOR USER AUTH METHODS
 
@@ -51,7 +51,7 @@ public class UserService {
     }
     
     // insert user into table and retrieve id from db
-    public Long registerUser(User user) {
+    public String registerUser(User user) {
 
         // check if username exists in db
         // returns true if > 0 rows found with email | false if none found
@@ -63,11 +63,11 @@ public class UserService {
         }
 
         user.setPassword(encoder.encode(user.getPassword())); // encode password before storage
-        user.setId(null); // set id to null to ensure it is treated asa a registration
-        Long id = userRepo.saveUser(user);
+        user.setUserId(null); // set id to null to ensure it is treated asa a registration
+        String userId = userRepo.insertUser(user);
         logger.info(
-            ">>> AUTH: New user inserted with ID: %d".formatted(id));
-        return id;
+            ">>> AUTH: New user inserted with ID: %s".formatted(userId));
+        return userId;
 
     }
 
@@ -93,13 +93,13 @@ public class UserService {
 
         // if user not null and received password matches stored password
         if (fullUser != null && encoder.matches(password, fullUser.getPassword())) {
-            String token = jwtUtil.generateToken(fullUser.getId(), fullUser.getRole()); // gen jwt token every time user logs in
+            String token = jwtUtil.generateToken(fullUser.getUserId(), fullUser.getRole()); // gen jwt token every time user logs in
             logger.info(
                 ">>> AUTH: User logged in with TOKEN: %s".formatted(token));
             return token;
         } else {
             logger.info(
-                ">>> AUTH: User with ID %d login failed".formatted(fullUser.getId())
+                ">>> AUTH: User with ID %s login failed".formatted(fullUser.getUserId())
             );
             throw new InvalidCredentialsException(
                 "Invalid credentials provided. Please try again.");
@@ -107,8 +107,23 @@ public class UserService {
 
     }
 
+    // get user email by id
+    public String getUserEmailById(String userId) {
+        return userRepo.getUserEmailById(userId);
+    }
+
+    // get user role by id
+    public String getUserRoleById(String userId) {
+        return userRepo.getUserRoleById(userId);
+    }
+
+    public void updateUser(User user) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'updateUser'");
+    }
+
     // update user details
-    public Long updateUser(User user, Long userId) {
+    public String updateUser(User user, String userId) {
 
         // check if username exists in db
         // returns true if > 0 rows found with username | false if none found
@@ -120,10 +135,10 @@ public class UserService {
         }
 
         user.setPassword(encoder.encode(user.getPassword())); // encode password before storage
-        user.setId(userId); // set id for validation before update
-        userRepo.saveUser(user);
+        user.setUserId(userId); // set id for validation before update
+        userRepo.updateUser(user);
         logger.info(
-            ">>> AUTH: Updated user with ID: %d".formatted(userId));
+            ">>> AUTH: Updated user with ID: %s".formatted(userId));
         return userId;
 
     }

@@ -8,11 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.google.zxing.WriterException;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.exception.StripeException;
 
 import csf.finalmp.app.server.exceptions.custom.InvalidCredentialsException;
-import csf.finalmp.app.server.exceptions.custom.MusicianNotFoundException;
 import csf.finalmp.app.server.exceptions.custom.StripePaymentException;
 import csf.finalmp.app.server.exceptions.custom.UserAlreadyExistsException;
 import csf.finalmp.app.server.exceptions.custom.UserNotFoundException;
@@ -25,6 +25,18 @@ import redis.clients.jedis.exceptions.JedisConnectionException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    // handle writer exception
+    @ExceptionHandler(WriterException.class)
+    public ResponseEntity<ApiError> handleWriterException(WriterException e) {
+        ApiError error = new ApiError(
+            HttpStatus.BAD_REQUEST.value(), 
+            "QR Code Generation Error", 
+            e.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(error);
+    }
 
     // handle stripe webhook exception
     @ExceptionHandler(SignatureVerificationException.class)
@@ -119,18 +131,6 @@ public class GlobalExceptionHandler {
             e.getMessage()
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-            .body(error);
-    }
-
-    // handle custom exception
-    @ExceptionHandler(MusicianNotFoundException.class)
-    public ResponseEntity<ApiError> handleMusicianNotFound(MusicianNotFoundException e) {
-        ApiError error = new ApiError(
-            HttpStatus.NOT_FOUND.value(), 
-            "Musician Not Found Error", 
-            e.getMessage()
-        );
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
             .body(error);
     }
 

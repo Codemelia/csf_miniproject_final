@@ -2,7 +2,7 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { ApiError } from '../../models/app.models';
+import { ApiError, UserRegistration } from '../../models/app.models';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -63,7 +63,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
         next: (response) => {
           this.successMsg = 'Registration successful! Please log in.'
           console.log('>>> Registration successful', response)
-          setTimeout(() => this.router.navigate(['/']), 3000) // redirect to login page aft 3 secs
+          setTimeout(() => this.router.navigate(['/']), 2000) // redirect to login page aft 3 secs
         },
         error: (err) => {
           this.error = err.error

@@ -1,17 +1,13 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { TipService } from '../services/tip.service';
+import { TipService } from '../../services/tip.service';
 import { loadStripe, Stripe, StripeCardElement, StripeCardElementChangeEvent } from '@stripe/stripe-js';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { TipRequest, TipResponse } from '../models/app.models';
+import { TipRequest, TipResponse } from '../../models/app.models';
 import { catchError, map, of, Subscription, switchMap } from 'rxjs';
 import { InvalidTokenError, jwtDecode } from 'jwt-decode';
 import { Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
-
-// stripe PUBLIC key
-const environment = {
-  stripePublicKey: 'pk_test_51QzyksD0mkd7E2ujATCwVlmQrp1bQNxCyycEugk9gbgDW7qwMwrTok9F4ZqY6P7filFLV0Pv93YDehpUUo0KQD6800YZCLTVqX'
-}
+import { AuthService } from '../../services/auth.service';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-tip-coupon',
@@ -32,7 +28,7 @@ export class TipCouponComponent implements OnInit, OnDestroy {
 
   // receiving tip state
   amount: number = 0
-  musicianId: number | null = null
+  artisteStageName: string | null = null
   tipperName: string = 'Anonymous'
   tipperEmail: string = ''
 
@@ -52,7 +48,7 @@ export class TipCouponComponent implements OnInit, OnDestroy {
   // token key and extracted userId
   tokenKey: string = 'auth_token'
   protected token: string = ''
-  protected tipperId: number | null = null
+  protected tipperId: string | null = null
 
   async ngOnInit() {
 
@@ -93,20 +89,20 @@ export class TipCouponComponent implements OnInit, OnDestroy {
       tipperEmail: this.fb.control<string>(''), 
       amount: this.fb.control<number>(0,
         [ Validators.required, Validators.min(1) ]),
-      musicianId: this.fb.control<string>('', 
+      artisteStageName: this.fb.control<string>('', 
         [ Validators.required ])
     })
   }
 
-  // tip musician method
-  async tipMusician() {
+  // tip artiste method
+  async tipArtiste() {
 
     // get token from local storage
     // extract user id as tipper id
     this.tipperId = this.authSvc.extractUIDFromToken()
 
     // take in form values
-    this.musicianId = Number(this.form.value.musicianId)
+    this.artisteStageName = this.form.value.artisteStageName
     this.amount = this.form.value.amount
     if (this.form.value.tipperName) {
       this.tipperName = this.form.value.tipperName
@@ -117,13 +113,13 @@ export class TipCouponComponent implements OnInit, OnDestroy {
 
     // if tipper id invalid, request user to login again and navigate to login page
     if (this.tipperId == null) {
-      this.errorMsg = 'Invalid JWT token. Please log in again.'
-      setTimeout(() => this.router.navigate(['/']), 3000)
+      this.errorMsg = 'Invalid token. Please log in again.'
+      this.authSvc.logout()
       return
     } else
 
     // if either field does not exist, return error message for display
-    if (this.musicianId == null || this.amount == 0) {
+    if (!this.artisteStageName || this.amount == 0) {
       this.errorMsg = 'Please ensure all fields are filled.'
       return
     } else
@@ -143,7 +139,7 @@ export class TipCouponComponent implements OnInit, OnDestroy {
     // build tip request to server backend
     this.request = {
       tipperId: this.tipperId,
-      musicianId: this.musicianId,
+      artisteStageName: this.artisteStageName,
       amount: this.amount
     }
     console.log('>>> Tip request built: ', this.request)
@@ -177,7 +173,7 @@ export class TipCouponComponent implements OnInit, OnDestroy {
 
         // send update request to backend
         if (confirmResult.paymentIntent) {
-          this.tipSvc.confirmTip(confirmResult.paymentIntent.id, confirmResult.paymentIntent.status)
+          this.tipSvc.confirmTip(confirmResult.paymentIntent)
         }
 
       }),

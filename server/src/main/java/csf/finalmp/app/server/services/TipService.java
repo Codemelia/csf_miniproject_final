@@ -6,42 +6,29 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
-import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 
-import csf.finalmp.app.server.exceptions.custom.MusicianNotFoundException;
+import csf.finalmp.app.server.exceptions.custom.UserNotFoundException;
 import csf.finalmp.app.server.exceptions.custom.StripePaymentException;
 import csf.finalmp.app.server.models.Tip;
 import csf.finalmp.app.server.models.TipRequest;
 import csf.finalmp.app.server.repositories.TipRepository;
-import jakarta.annotation.PostConstruct;
 
 // FOR TIPPING FUNCTIONS
 
 @Service
 public class TipService {
 
-    // stripe secret key
-    @Value("${stripe.secret.key}")
-    private String stripeKey;
-
     @Autowired
     private TipRepository tipRepo;
 
     // for inter-table validation only
     @Autowired
-    private MusicianProfileService musicSvc;
-
-    // initialise stripe api key
-    @PostConstruct
-    public void init() {
-        Stripe.apiKey = stripeKey;
-    }
+    private ArtisteService artisteSvc;
 
     // logger to ensure proper tracking
     private Logger logger = Logger.getLogger(TipService.class.getName());
@@ -66,30 +53,20 @@ public class TipService {
         logger.info(">>> MySQL: Tips table created");
     }
 
-    // insert tip if musician exists, if not throw error
+    // insert tip if artiste exists, if not throw error
     public Map<String, Object> processTip(TipRequest request) throws StripeException {
 
         // get request details
-        Long tipperId = request.getTipperId();
-        Long musicianId = request.getMusicianId();
+        String tipperId = request.getTipperId();
+        String artisteId = request.getArtisteId();
         Double amount = request.getAmount();
 
-        // check if musician id exists in musicians table
-        boolean musicianExists = musicSvc.checkMusicianId(musicianId);
+        // check if artiste id exists in artistes table
+        boolean artisteExists = artisteSvc.checkArtisteId(artisteId);
 
-        // if musician exists, proceed with trans
+        // if artiste exists, proceed with trans
         // otherwise, throw error
-        if (musicianExists) {
-
-            // handle invalid stripe params
-            // avoid unnecessary api calls
-            /*
-                if (stripeToken == null || stripeToken.isEmpty()) {
-                    logger.severe(">>> Stripe param STRINGTOKEN is invalid");
-                    throw new StripeParamException(
-                        "Stripe transaction failed. Please ensure your card details are correct.");
-                }
-            */
+        if (artisteExists) {
 
             if (amount == null || amount <= 0) {
                 logger.severe(">>> Stripe param AMOUNT is invalid");
@@ -102,8 +79,8 @@ public class TipService {
             params.put("amount", amount * 100); // convert amt to cents
             params.put("currency", "sgd"); // standardise all to sgd
             params.put("payment_method_types", List.of("card")); // declare payment method
-            params.put("description", "Tip for Musician ID: %d".formatted(musicianId)); // musician id for id
-            params.put("metadata", Map.of("musicianId", request.getMusicianId(), "tipperId", request.getTipperId()));
+            params.put("description", "Tip for Artiste ID: %s".formatted(artisteId)); // artiste id for id
+            params.put("metadata", Map.of("artisteId", request.getArtisteId(), "tipperId", request.getTipperId()));
 
             // create payment intent with set params
             PaymentIntent paymentIntent = PaymentIntent.create(params);
@@ -111,7 +88,7 @@ public class TipService {
             // set current tip variables
             Tip tip = new Tip();
             tip.setTipperId(tipperId);
-            tip.setMusicianId(musicianId);
+            tip.setArtisteId(artisteId);
             tip.setAmount(amount);
             tip.setPaymentIntentId(paymentIntent.getId());
             tip.setPaymentStatus(paymentIntent.getStatus());
@@ -129,15 +106,15 @@ public class TipService {
 
         } else {
             logger.severe(
-                ">>> Failed to process tip as musician with ID %d could not be found".formatted(request.getMusicianId()));
-            throw new MusicianNotFoundException(
+                ">>> Failed to process tip as artisteId with ID %s could not be found".formatted(request.getArtisteId()));
+            throw new UserNotFoundException(
                 "Vibee does not exist. Please ensure you have the correct Vibee ID.");
         }
  
     }
 
-    // update tipe from stripe webhook
-    public void updateTip(String paymentIntentId, String paymentStatus) {
+    // update tip from stripe
+    public Tip updateTip(String paymentIntentId, String paymentStatus) {
 
         Tip tip = tipRepo.getTipByPid(paymentIntentId);
 
@@ -145,6 +122,7 @@ public class TipService {
         if (tip != null) {
             tip.setPaymentStatus(paymentStatus);
             tipRepo.saveTip(tip);
+            return tip;
         } else {
             logger.severe("Tip not found for PaymentIntent ID: " + paymentIntentId);
             throw new StripePaymentException(
@@ -153,9 +131,24 @@ public class TipService {
 
     }
 
-    // get tips for musician by fk musician id
-    public List<Tip> getTipsByMusicianId(Long musicianId) {
-        return tipRepo.getTipsByMusicianId(musicianId);
+    // add tip to artiste wallet after successful payent
+    public void addTipToWallet(String artisteId, Double amount) {
+
+        boolean artisteExists = artisteSvc.checkArtisteId(artisteId);
+        if (!artisteExists) {
+            throw new UserNotFoundException("Vibee not found. Please ensure you have the correct Vibee ID.");
+        }
+        Double balance = artisteSvc.getBalance(artisteId);
+        balance += amount; // update balance
+
+        // set update info to artiste and save in db
+        artisteSvc.updateArtisteWallet(artisteId, balance);
+
+    }
+
+    // get tips for artiste by fk artiste id
+    public List<Tip> getTipsByArtisteId(String artisteId) {
+        return tipRepo.getTipsByArtisteId(artisteId);
     }
 
 }

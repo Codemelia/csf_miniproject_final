@@ -13,8 +13,10 @@ export class DashboardService {
   private authSvc = inject(AuthService)
 
   // send jwt token and get tips from mysql
-  getTips(musicianId: string): Observable<Tip[]> {
-    return this.http.get<Tip[]>(`/api/tips/${musicianId}`, { headers: this.authSvc.getHeaders() })
+  getTips(artisteId: string): Observable<Tip[]> {
+    return this.http.get<Tip[]>(`/api/tips/${artisteId}`, { headers: this.authSvc.getJsonHeaders() })
   }
+
+  
 
 }

@@ -1,38 +1,111 @@
+/* base styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
+
+/* hero section styling */
+.hero {
+    background: linear-gradient(135deg, #6200ea, #d5006d);
+    opacity: 80%;
+    color: white;
+    text-align: center;
+    padding: 60px 20px;
+    border-radius: 15px;
+    margin: 30px 0;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    margin: 0;
+}
+
+.hero .tagline {
+    font-size: 1.2rem;
+    margin-top: 10px;
+}
+
+/* login card styling */
 .login-card {
     max-width: 400px;
-    margin: 20px auto;
+    margin: 30px auto;
     padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
 }
 
+/* card title styling */
 mat-card-title {
-    color: #6200ea;
-    margin-bottom: 20px;
+    font-size: 200%;
+    margin: 20px auto;
+    color: #000000;
     font-weight: bold;
     text-shadow: 
-    0.5px 0.5px 0px rgba(255, 255, 255, 0.8),  
-    -0.5px -0.5px 0px rgba(255, 255, 255, 0.8),
-    0.5px -0.5px 0px rgba(255, 255, 255, 0.8),
-    -0.5px 0.5px 0px rgba(255, 255, 255, 0.8);
+        0.8px 0.8px 0px rgba(98, 0, 234, 1),  
+        -0.8px -0.8px 0px rgba(255, 49, 210, 1),
+        0px 0px 8px rgba(255, 255, 255, 1); 
 }
 
+/* full-width form field */
 .full-width {
     width: 100%;
     margin-bottom: 15px;
 }
 
+/* feedback section styling */
 .feedback {
-    margin-bottom: 20px;
+    margin: 15px 0;
+    display: flex;
+    justify-content: center;
+
     mat-error {
         font-size: 14px;
     }
     .success-message {
-        color: #d81b60; // Purple
+        color: #d81b60;
         font-size: 14px;
     }
 }
 
+/* card actions styling */
 mat-card-actions {
     display: flex;
     justify-content: center;
     gap: 15px;
+}
+
+/* button styles */
+button {
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #2c0055;
+}
+
+/* unused */
+.carousel {
+    max-width: 100%;
+    margin: 30px auto;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+}
+
+/* responsive adjustments */
+@media (max-width: 600px) {
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    .hero .tagline {
+        font-size: 1rem;
+    }
+
+    .login-card {
+        padding: 15px;
+    }
 }

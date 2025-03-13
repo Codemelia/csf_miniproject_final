@@ -1,0 +1,42 @@
+<div class="home-container">
+
+    <h1>Welcome to VIBEY!</h1>
+    <div class="feedback">
+        <mat-error *ngIf="errorMsg">{{ errorMsg }}</mat-error>
+    </div>
+
+    <!-- hero Section -->
+    <section class="hero">
+        <h1>VIBEY: Where Vibes Meet Rewards</h1>
+        <p class="tagline">Support vibees who perform or entertain at events
+            to unlock playlists and enjoy special perks!</p>
+        <mat-card-actions>
+            <button mat-raised-button color="primary" [routerLink]="['/artistes']" >Explore Vibees</button>
+            <button mat-raised-button color="accent" [routerLink]="['/tip']">Tip a Vibee</button>
+        </mat-card-actions>
+    </section>
+
+    <!-- about Section -->
+    <section class="about">
+        <h2>About VIBEY</h2>
+        <div class="about-content">
+            <div class="text">
+                <p>VIBEY connects vibers (the public) with vibees (local artistes) in a street-to-digital ecosystem. Tip vibees via QR codes, and in return, you get exclusive access to artiste playlists and earn coupons from event sponsors!</p>
+                <p>Launched in Singapore, VIBEY empowers vibees with direct support, drives traffic to sponsors, and rewards vibers—all in one seamless platform. We aim to scale nation-wide and build vibrant communities, one tip at a time.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- User Section -->
+    <section class="user-section">
+        <mat-card class="welcome-card">
+            <mat-card-header>
+                <mat-card-title>Upcoming Events</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <p>Browse all of our upcoming events!</p>
+            </mat-card-content>
+        </mat-card>
+    </section>
+
+</div>

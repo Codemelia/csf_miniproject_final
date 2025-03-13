@@ -1,6 +1,7 @@
 package csf.finalmp.app.server.models;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 // PURPOSE OF THIS MODEL
 // CONV TO AUTH REQUEST TO SERVER SIDE USER OBJECT
@@ -8,7 +9,7 @@ import java.time.LocalDateTime;
 public class User {
 
     // variables
-    private Long id;
+    private String userId;
     private String email;
     private String username;
     private String password;
@@ -18,10 +19,12 @@ public class User {
     private LocalDateTime updatedAt;
 
     // constructors
-    public User() {}
-    public User(Long id, String email, String username, String password, String phoneNumber, String role,
+    public User() {
+        this.userId = UUID.randomUUID().toString().substring(0, 8);
+    }
+    public User(String userId, String email, String username, String password, String phoneNumber, String role,
             LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
+        this.userId = userId;
         this.email = email;
         this.username = username;
         this.password = password;
@@ -32,8 +35,8 @@ public class User {
     }
 
     // getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public String getUserId() { return userId; }
+    public void setUserId(String userId) { this.userId = userId; }
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
     public String getPassword() { return password; }
@@ -52,7 +55,7 @@ public class User {
     // to string
     @Override
     public String toString() {
-        return "User [id=" + id + ", email=" + email + ", username=" + username + ", password=" + password
+        return "User [userId=" + userId + ", email=" + email + ", username=" + username + ", password=" + password
                 + ", phoneNumber=" + phoneNumber + ", role=" + role + ", createdAt=" + createdAt + ", updatedAt="
                 + updatedAt + "]";
     }

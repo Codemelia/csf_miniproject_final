@@ -3,17 +3,12 @@ package csf.finalmp.app.server.repositories;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-
 import csf.finalmp.app.server.models.User;
 
 import static csf.finalmp.app.server.utils.UserSql.*;
 
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.util.Objects;
+import java.util.UUID;
 
 @Repository
 public class UserRepository {
@@ -35,44 +30,37 @@ public class UserRepository {
     }
 
     // insert user and return user id
-    // update user details if id exists
-    public Long saveUser(User user) {
+    public String insertUser(User user) {
 
-        // boolean based on id
-        boolean isInsert = user.getId() == null;
+        // gen user id for inserts
+        String userId = UUID.randomUUID().toString().substring(0, 8);
 
-        // new key holder to hold key of latest inserted musician
-        KeyHolder keyHolder = new GeneratedKeyHolder();
+        // insert to mysql
+        template.update(
+            INSERT_USER, 
+            userId,
+            user.getEmail(),
+            user.getUsername(),
+            user.getPassword(),
+            user.getPhoneNumber(),
+            user.getRole());
 
-        // insert musican into db
-        template.update(connection -> {
-            PreparedStatement ps;
+        // return user id
+        return userId;
 
-            if (isInsert) {
-                ps = connection.prepareStatement(
-                    INSERT_USER, Statement.RETURN_GENERATED_KEYS);
-                ps.setString(1, user.getEmail());
-                ps.setString(2, user.getUsername());
-                ps.setString(3, user.getPassword());
-                ps.setString(4, user.getPhoneNumber());
-                ps.setString(5, user.getRole());
-            } else {
-                ps = connection.prepareStatement(UPDATE_USER);
-                ps.setString(1, user.getEmail());
-                ps.setString(2, user.getUsername());
-                ps.setString(3, user.getPassword());
-                ps.setString(4, user.getPhoneNumber());
-                ps.setString(5, user.getRole());
-                ps.setLong(6, user.getId());
-            }
+    }
 
-             
-            return ps;}, 
-            keyHolder);
+    // update user
+    public void updateUser(User user) {
 
-        // return id based on whether it is a update/regis
-        return isInsert ? Objects.requireNonNull(keyHolder.getKey())
-            .longValue() : user.getId();
+        template.update(
+            UPDATE_USER, 
+            user.getEmail(),
+            user.getUsername(),
+            user.getPassword(),
+            user.getPhoneNumber(),
+            user.getRole(),
+            user.getUserId());
 
     }
 
@@ -83,7 +71,7 @@ public class UserRepository {
             return template.queryForObject(
             SELECT_USER_BY_EMAIL, 
             (rs, rowNum) -> new User(
-                rs.getLong("id"), 
+                rs.getString("user_id"), 
                 rs.getString("email"),
                 rs.getString("username"), 
                 rs.getString("password"), 
@@ -99,7 +87,7 @@ public class UserRepository {
 
     }
 
-    // check is user exists in mysql
+    // check if user exists in mysql
     public Integer userExists(String username) {
         
         return template.queryForObject(
@@ -117,6 +105,24 @@ public class UserRepository {
             Integer.class,
             email);
     
+    }
+
+    // get user's email via user id
+    public String getUserEmailById(String userId) {
+
+        return template.queryForObject(
+            GET_USER_EMAIL_BY_ID, 
+            String.class,
+            userId);
+
+    }
+
+    // get user role via id
+    public String getUserRoleById(String userId) {
+        return template.queryForObject(
+            GET_USER_ROLE_BY_ID, 
+            String.class,
+            userId);
     }
 
 }

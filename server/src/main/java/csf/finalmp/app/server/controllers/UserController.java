@@ -39,11 +39,11 @@ public class UserController {
     public ResponseEntity<AuthResponse> register(@RequestBody User user) {
         
         logger.info(">>> Registering USER: %s".formatted(user.getEmail()));
-        Long id = userSvc.registerUser(user); // convert auth request to user and save to db
-        if (id != null && id > 0) { // id starts from 1
+        String userId = userSvc.registerUser(user); // convert auth request to user and save to db
+        if (userId != null && !userId.isBlank()) {
             return ResponseEntity.status(HttpStatus.CREATED).body(
                 AuthResponse.forRegistration(
-                    id, "User registration was successful"));
+                    userId, "User registration was successful"));
         } else {
             throw new UserAuthenticationException("User registration failed");
         }
@@ -66,7 +66,7 @@ public class UserController {
     @PostMapping(path = "/update/{userId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AuthResponse> register(
         @RequestBody User user,
-        @PathVariable Long userId) {
+        @PathVariable("userId") String userId) {
         
         logger.info(">>> Registering USER: %s".formatted(user.getUsername()));
         try { 

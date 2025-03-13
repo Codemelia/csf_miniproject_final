@@ -48,27 +48,27 @@
             <mat-form-field appearance="fill" class="full-width">
                 <mat-label>Role</mat-label>
                 <mat-select formControlName="role">
-                    <mat-option value="MUSICIAN">Vibee</mat-option>
+                    <mat-option value="ARTISTE">Vibee</mat-option>
                     <mat-option value="TIPPER">Viber</mat-option>
                 </mat-select>
                 <mat-error *ngIf="form.get('role')?.hasError('required')">
                     Please select a role
                 </mat-error>
             </mat-form-field>
-
-            <div class="feedback">
-                <mat-error *ngIf="error">Error {{ error.status }}: {{ error.message }}</mat-error>
-                <span class="success-message" *ngIf="successMsg">{{ successMsg }}</span>
-            </div>
         
             <mat-card-actions>
                 <button mat-raised-button color="accent" type="submit" [disabled]="form.invalid">
                     Register
                 </button>
-                <button mat-button color="primary" [routerLink]="(['/'])">
+                <button mat-raised-button color="primary" [routerLink]="(['/'])">
                     Back to Login
                 </button>
             </mat-card-actions>
+
+            <div *ngIf="error || successMsg" class="feedback">
+                <mat-error *ngIf="error">Error {{ error.status }}: {{ error.message }}</mat-error>
+                <span class="success-message" *ngIf="successMsg">{{ successMsg }}</span>
+            </div>
 
         </form>
     </mat-card-content>

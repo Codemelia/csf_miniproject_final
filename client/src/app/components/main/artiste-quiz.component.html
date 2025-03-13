@@ -1,0 +1,57 @@
+<mat-card class="quiz-container">
+    <mat-card-title>Complete Your Vibee Profile</mat-card-title>
+    <mat-card-subtitle>Complete your Vibee profile to start earning tips!</mat-card-subtitle>
+    <mat-progress-bar mode="determinate" [value]="progress"></mat-progress-bar>
+    <div class="step" *ngIf="step === 1">
+        <mat-card-subtitle>🌟 STEP 1: The Spotlight is on You</mat-card-subtitle>
+        <mat-form-field>
+            <mat-label>Your Stage Name</mat-label>
+            <input matInput [(ngModel)]="stageName" #stageNameInput="ngModel" placeholder="Be unique, help Vibers identify you easily " required>
+            <mat-error *ngIf="stageNameInput.invalid && stageNameInput.touched">Enter your stage name so Vibers know who you are!</mat-error>
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="nextStep()" 
+            [disabled]="stageNameInput.invalid">Next</button>
+    </div>
+    <div class="step" *ngIf="step === 2">
+        <mat-card-subtitle>🎤 STEP 2: What's Your Story?</mat-card-subtitle>
+        <mat-form-field>
+            <mat-label>Your Bio</mat-label>
+            <textarea matInput [(ngModel)]="bio" placeholder="Tell us more about yourself"></textarea>
+        </mat-form-field>
+        <mat-card-actions>
+            <button mat-raised-button color="warn" (click)="previousStep()">Back</button>
+            <button mat-raised-button color="primary" (click)="nextStep()">Next</button>
+        </mat-card-actions>
+    </div>
+    <div class="step" *ngIf="step === 3">
+        <mat-card-subtitle>🎭 STEP 3: Your Stage, Your Image</mat-card-subtitle>
+        <div class="img-input">
+            <mat-label style="margin-bottom: 15px;">Your Profile Photo</mat-label>
+            <label class="custom-file-input" for="fileInput">Choose File</label>
+            <input type="file" id="fileInput" (change)="onFileChange($event)" accept="image/*">
+            <p *ngIf="!photoUrl">No file chosen</p>
+            <img *ngIf="photoUrl" [src]="photoUrl" alt="Preview" class="preview">
+        </div>
+        <mat-card-actions>
+            <button mat-raised-button color="warn" (click)="previousStep()">Back</button>
+            <button mat-raised-button color="primary" (click)="saveData()" 
+                [disabled]="!stageName">Save and Set Up Stripe</button>
+        </mat-card-actions>
+    </div>
+    <div class="step" *ngIf="step === 4">
+        <mat-card-subtitle>Step 4: Set Up Your Stripe Account</mat-card-subtitle>
+        <mat-label style="margin-bottom: 20px;">This step is crucial to help you get that 💰!</mat-label>
+        <mat-card-actions>
+            <button *ngIf="error" mat-raised-button color="accent" (click)="previousStep()">
+                Back</button>
+            <button mat-raised-button color="accent" (click)="genOAuthUrl()" 
+                [disabled]="isStripeLinked || !artisteExists">
+                {{ isStripeLinked ? 'Stripe Already Connected' : 'Connect Stripe Account' }}
+            </button>
+        </mat-card-actions>
+    </div>
+    <div *ngIf="error || successMsg" class="feedback">
+        <mat-error *ngIf="error">Error {{ error.status }}: {{ error.message }}</mat-error>
+        <span class="success-message" *ngIf="successMsg">{{ successMsg }}</span>
+    </div>
+</mat-card>

@@ -21,7 +21,10 @@ mat-card-title {
 }
 
 .feedback {
-    margin-bottom: 20px;
+    margin: 15px 0;
+    display: flex;
+    justify-content: center;
+
     mat-error {
         font-size: 14px;
     }
@@ -34,4 +37,14 @@ mat-card-title {
 mat-card-actions {
     display: flex;
     justify-content: space-between;
+}
+
+/* button styles */
+button {
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #2c0055;
 }

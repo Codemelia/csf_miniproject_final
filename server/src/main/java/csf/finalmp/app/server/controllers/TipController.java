@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.stripe.exception.StripeException;
+import com.stripe.model.PaymentIntent;
 
 import csf.finalmp.app.server.models.Tip;
 import csf.finalmp.app.server.models.TipRequest;
@@ -53,24 +54,32 @@ public class TipController {
     }
 
     // update payment status
+    // if payment status successful, add tip to wallet
     @PutMapping("/confirm/{paymentIntentId}")
     public ResponseEntity<String> updateTip(
         @PathVariable String paymentIntentId,
-        @RequestBody String paymentStatus) {
+        @RequestBody PaymentIntent paymentIntent) {
+
         logger.info(">>> Processing tip confirmation for Payment Intent: %s".formatted(paymentIntentId));
-        tipSvc.updateTip(paymentIntentId, paymentStatus);
-        return ResponseEntity.ok("Payment confirmed successfully"); 
+        String paymentStatus = paymentIntent.getStatus();
+
+        Tip tip = tipSvc.updateTip(paymentIntentId, paymentStatus);
+        if (paymentStatus.contains("succeeded")) {
+            tipSvc.addTipToWallet(tip.getArtisteId(), null);
+        }
+        return ResponseEntity.ok("Payment confirmed successfully");
+    
     }
 
-    // get tip by musician id
+    // get tip by artiste id
     // returns tip object
-    @GetMapping(path = "/{musicianId}")
-    public ResponseEntity<List<Tip>> getTipsByMusicianId(
-        @PathVariable Long musicianId
+    @GetMapping(path = "/{artisteId}")
+    public ResponseEntity<List<Tip>> getTipsByArtisteId(
+        @PathVariable String artisteId
     ) {
         
-        logger.info(">>> Fetching tips for musician with ID: %d".formatted(musicianId));
-        List<Tip> tips = tipSvc.getTipsByMusicianId(musicianId);
+        logger.info(">>> Fetching tips for artiste with ID: %s".formatted(artisteId));
+        List<Tip> tips = tipSvc.getTipsByArtisteId(artisteId);
         return ResponseEntity.ok().body(tips);
 
     }

@@ -47,8 +47,8 @@ export class AuthService {
 
     // log out user
     logout(): void {
-        localStorage.removeItem(this.tokenKey) // remove token key from local storage
-        this.tokenSub.next(null) // emits null value to all subscribers
+        localStorage.clear() // clears all key-value pairs in current local storage
+        this.tokenSub.next(null) // emits null value to token sub
         this.router.navigate(['/']) // redirect to login page
     }
 
@@ -66,29 +66,29 @@ export class AuthService {
 
     // get user role for role guard
     extractUserRoleFromToken(): string | null {
-        return this.decodeToken(this.getToken()).role
+        return this.decodeToken(this.getToken()).userRole
     }
 
     // extract user id from token
-    extractUIDFromToken(): number | null {
-        return this.decodeToken(this.getToken()).uid
+    extractUIDFromToken(): string | null {
+        return this.decodeToken(this.getToken()).userId
     }
 
     // helper funct to decode token
     private decodeToken(token: string | null): AuthState {
         // if no token, return false/null auth state
         if (!token) {
-            return { loggedIn: false, role: null, uid: null } }
+            return { loggedIn: false, userRole: null, userId: null } }
 
         try {
             // try decode token and return auth state
             const decoded: DecodedToken = jwtDecode(token)
             return {
-                loggedIn: true, role: decoded.role || null, 
-                uid: Number(decoded.sub) || null }
+                loggedIn: true, userRole: decoded.role || null, 
+                userId: decoded.sub || null }
         } catch (error) {
             console.error('>>> Error decoding token: ', error)
-            return { loggedIn: false, role: null, uid: null }
+            return { loggedIn: false, userRole: null, userId: null }
         }
     }
 
@@ -99,11 +99,18 @@ export class AuthService {
     }
     
     // set headers with token
-    getHeaders(): HttpHeaders {
+    getJsonHeaders(): HttpHeaders {
         const token = this.getToken()
         return new HttpHeaders({
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
+        })
+    }
+
+    getNoContentHeaders(): HttpHeaders {
+        const token = this.getToken()
+        return new HttpHeaders({
+            'Authorization': `Bearer ${token}`
         })
     }
 

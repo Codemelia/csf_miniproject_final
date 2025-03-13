@@ -1,4 +1,4 @@
-package csf.finalmp.app.server.utils;
+package csf.finalmp.app.server.utils.unused;
 
 // FOR WALLET FUNCTIONS
 

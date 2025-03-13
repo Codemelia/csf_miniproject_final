@@ -1,3 +1,8 @@
+<section class="hero">
+    <h1>VIBEY: Where Vibes Meet Rewards</h1>
+    <p class="tagline">Support vibees (local artistes), unlock special playlists, and enjoy sponsor perks!</p>
+</section>
+
 <mat-card class="login-card">
     <mat-card-header>
         <mat-card-title>Login to VIBEY</mat-card-title>
@@ -18,21 +23,25 @@
                 <mat-error *ngIf="form.get('password')?.hasError('required')">Please enter your password
                 </mat-error>
             </mat-form-field>
-
-            <div class="feedback">
-                <mat-error *ngIf="error">Error {{ error.status }}: {{ error.message }}</mat-error>
-                <span class="success-message" *ngIf="successMsg">{{ successMsg }}</span>
-            </div>
         
             <mat-card-actions>
                 <button mat-raised-button color="accent" type="submit" [disabled]="form.invalid">
                     Login
                 </button>
-                <button mat-raised-button color="accent" type="button" [routerLink]="(['/register'])">
+                <button mat-raised-button color="primary" type="button" [routerLink]="(['/register'])">
                     New User
                 </button>
             </mat-card-actions>
 
+            <div *ngIf="error || successMsg" class="feedback">
+                <mat-error *ngIf="error">Error {{ error.status }}: {{ error.message }}</mat-error>
+                <span class="success-message" *ngIf="successMsg">{{ successMsg }}</span>
+            </div>
+
         </form>
     </mat-card-content>
 </mat-card>
+
+<!-- <mat-card class="carousel">
+    <app-carousel></app-carousel>
+</mat-card> -->

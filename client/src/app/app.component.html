@@ -1,21 +1,31 @@
-<mat-toolbar color="primary">
-  <span>VIBEY</span>
-  <div>
+<div class="full-page">
 
-      <div *ngIf="authSvc.authState$ | async as auth">
+  <mat-toolbar color="primary">
+    <span>VIBEY</span>
+    <div>
+  
+        <div *ngIf="authSvc.authState$ | async as auth">
+  
+          <button mat-button routerLink="/home" *ngIf="auth.loggedIn">Home</button>
+          <button mat-button routerLink="/artistes" *ngIf="auth.loggedIn">Vibees</button>
+          <button mat-button routerLink="/tip" *ngIf="auth.loggedIn">Tip a Vibee</button>
+          <button mat-button routerLink="/dashboard" *ngIf="auth.loggedIn && auth.userRole === 'ARTISTE'">
+            Dashboard</button>
+          <button mat-button (click)="authSvc.logout()" *ngIf="auth.loggedIn">Logout</button>
+          <button mat-button routerLink="/login" *ngIf="!auth.loggedIn">Login</button>
+          <button mat-button routerLink="/register" *ngIf="!auth.loggedIn">Register</button>
+  
+        </div>
+        
+    </div>
+  </mat-toolbar>
+  <main>
+    <router-outlet></router-outlet>
+  </main>
+  
+  <!-- Footer -->
+  <footer class="footer">
+    <p>© 2025 VIBEY. All rights reserved.</p>
+  </footer>
 
-        <button mat-button routerLink="/home" *ngIf="auth.loggedIn">Home</button>
-        <button mat-button routerLink="/musicians" *ngIf="auth.loggedIn">Musicians</button>
-        <button mat-button routerLink="/tip" *ngIf="auth.loggedIn">Tip</button>
-        <button mat-button routerLink="/dashboard" *ngIf="auth.loggedIn && auth.role === 'MUSICIAN'">Dashboard</button>
-        <button mat-button (click)="authSvc.logout()" *ngIf="auth.loggedIn">Logout</button>
-        <button mat-button routerLink="/login" *ngIf="!auth.loggedIn">Login</button>
-        <button mat-button routerLink="/register" *ngIf="!auth.loggedIn">Register</button>
-
-      </div>
-      
-  </div>
-</mat-toolbar>
-<main>
-  <router-outlet></router-outlet>
-</main>
+</div>
