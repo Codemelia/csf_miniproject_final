@@ -5,14 +5,14 @@
 }
 
 mat-card-title {
-    color: #6200ea;
-    margin-bottom: 20px;
+    font-size: 200%;
+    margin: 20px auto;
+    color: #000000;
     font-weight: bold;
     text-shadow: 
-    0.5px 0.5px 0px rgba(255, 255, 255, 0.8),  
-    -0.5px -0.5px 0px rgba(255, 255, 255, 0.8),
-    0.5px -0.5px 0px rgba(255, 255, 255, 0.8),
-    -0.5px 0.5px 0px rgba(255, 255, 255, 0.8);
+        0.8px 0.8px 0px rgba(98, 0, 234, 1),  
+        -0.8px -0.8px 0px rgba(255, 49, 210, 1),
+        0px 0px 8px rgba(255, 255, 255, 1); 
 }
 
 .full-width {
@@ -21,7 +21,7 @@ mat-card-title {
 }
 
 .feedback {
-    margin: 15px 0;
+    margin-top: 15px;
     display: flex;
     justify-content: center;
 
@@ -29,7 +29,7 @@ mat-card-title {
         font-size: 14px;
     }
     .success-message {
-        color: #d81b60; // Purple
+        color: #91ffb6; // Purple
         font-size: 14px;
     }
 }

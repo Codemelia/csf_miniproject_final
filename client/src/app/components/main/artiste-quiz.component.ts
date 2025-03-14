@@ -53,8 +53,8 @@ export class ArtisteQuizComponent implements OnInit, OnDestroy {
     }
 
     if (this.artisteExists && !this.isStripeLinked) {
-      this.step = 4 // if artiste exists, set step to 4 directly
-      this.progress = 100 // set progress to full directly
+      this.step = 4 // if artiste exists but stripe oauth not complete, set step to 4 directly
+      this.progress = (this.step / this.totalSteps) * 100 // set progress to full directly
     }
     
   }
@@ -62,14 +62,14 @@ export class ArtisteQuizComponent implements OnInit, OnDestroy {
   nextStep() {
       if (this.step < this.totalSteps) {
           this.step++;
-          this.progress = (this.step / this.totalSteps) * 100;
+          this.progress = (this.step / this.totalSteps) * 100
       }
   }
 
   previousStep() {
       if (this.step > 1) {
           this.step--;
-          this.progress = (this.step / this.totalSteps) * 100;
+          this.progress = (this.step / this.totalSteps) * 100
       }
   }
 
@@ -88,19 +88,7 @@ export class ArtisteQuizComponent implements OnInit, OnDestroy {
       }
   }
 
-  /*
-  // converts base 64 to bytes
-  private base64ToBytes(base64: string): Uint8Array {
-    const binary = atob(base64);
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) {
-        bytes[i] = binary.charCodeAt(i);
-    }
-    return bytes;
-  }
-  */
-
-  // save artiste data before setting up stripe (will update visually in ui)
+  // save artiste data before setting up stripe
   saveData() {
 
     // validate stage name
@@ -117,43 +105,43 @@ export class ArtisteQuizComponent implements OnInit, OnDestroy {
     if (this.photo) {
       const reader = new FileReader();
       reader.onload = () => {
-        // Convert the base64 result back to a Blob
+        // convert the base64 result back to a Blob
         const photoBlob = this.dataURLtoBlob(reader.result as string)
-        console.log("Blob size (bytes):", photoBlob.size);
+        console.log("Blob size (bytes):", photoBlob.size)
         this.saveArtiste(photoBlob)
       };
-      reader.readAsDataURL(this.photo); // Convert photo to base64
+      reader.readAsDataURL(this.photo) // convert photo to base64 for preview image
     } else {
-      this.saveArtiste(null); // If no photo, pass null
+      this.saveArtiste(null); // if no photo, pass null
     }
 
   }
 
-  // conv data url to blob
+  // conv data url back to blob
   dataURLtoBlob(dataURL: string): Blob {
     if (!dataURL) {
-      throw new Error("Invalid data URL provided.");
+      throw new Error("Invalid data URL provided.")
     }
   
-    const arr = dataURL.split(',');
+    const arr = dataURL.split(',') // to remove img prefix
     if (arr.length !== 2) {
-      throw new Error("Data URL format is incorrect.");
+      throw new Error("Data URL format is incorrect.")
     }
   
     const mimeMatch = arr[0].match(/:(.*?);/);
     if (!mimeMatch || mimeMatch.length < 2) {
-      throw new Error("Could not extract MIME type from data URL.");
+      throw new Error("Could not extract MIME type from data URL.")
     }
     
-    const mime = mimeMatch[1];
-    const bstr = atob(arr[1]);
-    const n = bstr.length;
-    const u8arr = new Uint8Array(n);
+    const mime = mimeMatch[1] // get mime type
+    const bstr = atob(arr[1]) // decode base64 string
+    const n = bstr.length
+    const u8arr = new Uint8Array(n) // conv to uint array
     for (let i = 0; i < n; i++) {
-      u8arr[i] = bstr.charCodeAt(i);
+      u8arr[i] = bstr.charCodeAt(i) // replace array with bstr
     }
     
-    return new Blob([u8arr], { type: mime });
+    return new Blob([u8arr], { type: mime }) // change to blob and takes in mimetype
   }  
 
   // helper method for saving artiste after conversion of photo

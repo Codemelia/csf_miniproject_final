@@ -102,7 +102,7 @@ input[type="file"] {
 }
 
 .feedback {
-    margin: 15px 0;
+    margin-top: 15px;
     display: flex;
     justify-content: center;
 
@@ -110,7 +110,7 @@ input[type="file"] {
         font-size: 14px;
     }
     .success-message {
-        color: #d81b60;
+        color: #91ffb6;
         font-size: 14px;
     }
 }

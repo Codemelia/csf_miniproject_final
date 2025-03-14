@@ -17,10 +17,13 @@ public class Tip {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    // will not be saved in mysql
+    private String stageName;
+
     // constructors
     public Tip() {}
     public Tip(Long tipId, String tipperId, String artisteId, Double amount, String paymentIntentId, 
-        String paymentStatus, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        String paymentStatus, LocalDateTime createdAt, LocalDateTime updatedAt, String stageName) {
         this.tipId = tipId;
         this.tipperId = tipperId;
         this.artisteId = artisteId;
@@ -29,6 +32,7 @@ public class Tip {
         this.paymentStatus = paymentStatus;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.stageName = stageName;
     }
 
 
@@ -49,13 +53,17 @@ public class Tip {
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public Long getTipId() { return tipId; }
+    public void setTipId(Long tipId) { this.tipId = tipId; }
+    public String getStageName() { return stageName; }
+    public void setStageName(String stageName) { this.stageName = stageName; }
 
     // to string
     @Override
     public String toString() {
         return "Tip [tipId=" + tipId + ", tipperId=" + tipperId + ", artisteId=" + artisteId + ", amount=" + amount
                 + ", paymentIntentId=" + paymentIntentId + ", paymentStatus=" + paymentStatus + ", createdAt="
-                + createdAt + ", updatedAt=" + updatedAt + "]";
+                + createdAt + ", updatedAt=" + updatedAt + ", stageName=" + stageName + "]";
     }
 
 }

@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/main/home.component';
 import { ArtisteListComponent } from './components/main/artiste-list.component';
-import { TipCouponComponent } from './components/main/tip-coupon.component';
+import { TipComponent } from './components/main/tip.component';
 import { DashboardComponent } from './components/main/dashboard.component';
 import { LoginComponent } from './components/authentication/login.component';
 import { RegisterComponent } from './components/authentication/register.component';
@@ -39,7 +39,7 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'home', component: HomeComponent, canActivate: [ AuthGuard ] },
   { path: 'artistes', component: ArtisteListComponent, canActivate: [ AuthGuard ] },
-  { path: 'tip', component: TipCouponComponent, canActivate: [ AuthGuard ] },
+  { path: 'tip', component: TipComponent, canActivate: [ AuthGuard ] },
   { path: 'dashboard', component: DashboardComponent, canActivate: [ AuthGuard, RoleGuard ],
     data: { expectedRole: 'ARTISTE' } },
   { path: 'wallet/:artisteId', component: WalletComponent, canActivate: [ AuthGuard, RoleGuard ],
@@ -54,7 +54,7 @@ const routes: Routes = [
     AppComponent,
     HomeComponent,
     ArtisteListComponent,
-    TipCouponComponent,
+    TipComponent,
     DashboardComponent,
     LoginComponent,
     RegisterComponent,

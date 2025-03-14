@@ -8,9 +8,9 @@
     
                 <mat-form-field appearance="fill" class="full-width">
                     <mat-label>Vibee Name</mat-label>
-                    <input matInput type="text" [(ngModel)]="artisteStageName" name="artisteStageName" formControlName="artisteStageName" placeholder="Enter Vibee Stage Name">
+                    <input matInput type="text" [(ngModel)]="artisteStageName" name="artisteStageName" formControlName="artisteStageName" placeholder="Enter Vibee's Stage Name">
                     <mat-error *ngIf="form.get('artisteStageName')?.hasError('required')">
-                        A valid Vibee Name is required
+                        Who are you vibing with today?
                     </mat-error>
                 </mat-form-field>
     
@@ -28,7 +28,7 @@
                     <mat-label>Tip Amount (SGD)</mat-label>
                     <input matInput type="number" [(ngModel)]="amount" name="amount" formControlName="amount" placeholder="Enter amount">
                     <mat-error *ngIf="form.get('amount')?.hasError('required')">
-                        A valid amount is required
+                        Please enter a valid tip amount
                     </mat-error>
                     <mat-error *ngIf="form.get('amount')?.hasError('min')">
                         Minimum tip amount is 1.00 SGD

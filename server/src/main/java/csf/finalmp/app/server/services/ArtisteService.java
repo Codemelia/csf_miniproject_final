@@ -168,6 +168,16 @@ public class ArtisteService {
         return artisteRepo.getArtisteBalance(artisteId);
     }
 
+    // get artist stripe account id
+    public String getStripeAccountId(String artisteId) {
+        return artisteRepo.getStripeAccountId(artisteId); 
+    }
+
+    // get artiste id by artiste stage name
+    public String getArtisteIdByStageName(String artisteStageName) {
+        return artisteRepo.getArtisteIdByStageName(artisteStageName);
+    }
+
     // delete artiste from db
     // returns id if update successful; throws error otherwise
     public String deleteArtiste(String artisteId) {
@@ -186,14 +196,14 @@ public class ArtisteService {
 
     }
 
-    // get artist stripe account id
-    public String getStripeAccountId(String artisteId) {
-        return artisteRepo.getStripeAccountId(artisteId); 
-    }
-
     // check if artiste has valid access token
     public boolean checkArtisteStripeAccess(String artisteId) {
         return artisteRepo.checkArtisteStripeAccess(artisteId) > 0;
+    }
+
+    // check artiste stagename
+    public boolean checkArtisteStageName(String artisteStageName) {
+        return artisteRepo.checkArtisteStageName(artisteStageName) > 0;
     }
 
 }

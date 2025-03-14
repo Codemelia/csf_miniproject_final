@@ -11,11 +11,9 @@ import org.springframework.stereotype.Service;
 
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
-
 import csf.finalmp.app.server.exceptions.custom.UserNotFoundException;
 import csf.finalmp.app.server.exceptions.custom.StripePaymentException;
 import csf.finalmp.app.server.models.Tip;
-import csf.finalmp.app.server.models.TipRequest;
 import csf.finalmp.app.server.repositories.TipRepository;
 
 // FOR TIPPING FUNCTIONS
@@ -54,63 +52,64 @@ public class TipService {
     }
 
     // insert tip if artiste exists, if not throw error
-    public Map<String, Object> processTip(TipRequest request) throws StripeException {
+    public String getPaymentIntentClientSecret(Tip unconfirmedRequest) throws StripeException {
 
         // get request details
-        String tipperId = request.getTipperId();
-        String artisteId = request.getArtisteId();
-        Double amount = request.getAmount();
+        String tipperId = unconfirmedRequest.getTipperId();
+        String artisteStageName = unconfirmedRequest.getStageName();
+        Double amount = unconfirmedRequest.getAmount();
 
-        // check if artiste id exists in artistes table
-        boolean artisteExists = artisteSvc.checkArtisteId(artisteId);
+        // check if artiste stage name exists in artistes table
+        boolean stageNameExists = artisteSvc.checkArtisteStageName(artisteStageName);
 
         // if artiste exists, proceed with trans
         // otherwise, throw error
-        if (artisteExists) {
-
-            if (amount == null || amount <= 0) {
-                logger.severe(">>> Stripe param AMOUNT is invalid");
-                throw new StripePaymentException(
-                    "Stripe transaction failed. Please ensure your card details are correct.");
-            }
-
-            // set charge params
-            Map<String, Object> params = new HashMap<>();
-            params.put("amount", amount * 100); // convert amt to cents
-            params.put("currency", "sgd"); // standardise all to sgd
-            params.put("payment_method_types", List.of("card")); // declare payment method
-            params.put("description", "Tip for Artiste ID: %s".formatted(artisteId)); // artiste id for id
-            params.put("metadata", Map.of("artisteId", request.getArtisteId(), "tipperId", request.getTipperId()));
-
-            // create payment intent with set params
-            PaymentIntent paymentIntent = PaymentIntent.create(params);
-
-            // set current tip variables
-            Tip tip = new Tip();
-            tip.setTipperId(tipperId);
-            tip.setArtisteId(artisteId);
-            tip.setAmount(amount);
-            tip.setPaymentIntentId(paymentIntent.getId());
-            tip.setPaymentStatus(paymentIntent.getStatus());
-
-            // insert tip to db
-            Long id = tipRepo.saveTip(tip);
-            tip.setId(id); // set new id to tip object
-
-            // put client secret and tip in map and return
-            Map<String, Object> response = new HashMap<>();
-            response.put("clientSecret", paymentIntent.getClientSecret());
-            response.put("tip", tip);
-
-            return response;
-
-        } else {
+        if (!stageNameExists) {
             logger.severe(
-                ">>> Failed to process tip as artisteId with ID %s could not be found".formatted(request.getArtisteId()));
+                ">>> Failed to process tip as Artiste with STAGE NAME %s could not be found".formatted(artisteStageName));
             throw new UserNotFoundException(
-                "Vibee does not exist. Please ensure you have the correct Vibee ID.");
+                "Vibee does not exist. Please ensure you have the correct Vibee Stage Name.");
         }
+
+        // retrieve artiste id
+        String artisteId = artisteSvc.getArtisteIdByStageName(artisteStageName);
+
+        if (amount == null || amount <= 0) {
+            logger.severe(">>> Stripe param AMOUNT is invalid");
+            throw new StripePaymentException(
+                "Stripe transaction failed. Please ensure your card details are correct.");
+        }
+
+        // set charge params
+        Map<String, Object> params = new HashMap<>();
+        params.put("amount", Math.round(amount * 100)); // convert amt to cents
+        params.put("currency", "sgd"); // standardise all to sgd
+        params.put("payment_method_types", List.of("card")); // declare payment method
+        params.put("description", "Tip for Artiste ID: %s".formatted(artisteId)); // artiste id for id
+        params.put("metadata", Map.of("artisteId", artisteId, "tipperId", tipperId));
+
+        // create payment intent with params and return client secret for client side confirmation
+        PaymentIntent paymentIntent = PaymentIntent.create(params);
+        return paymentIntent.getClientSecret();
  
+    }
+
+    // save tip details after stripe payment is confirmed
+    public Long saveTip(Tip confirmedRequest) {
+
+        // retrieve artiste id
+        String artisteId = artisteSvc.getArtisteIdByStageName(confirmedRequest.getStageName());
+        
+        // set current tip variables
+        Tip tip = new Tip();
+        tip.setTipperId(confirmedRequest.getTipperId());
+        tip.setArtisteId(artisteId);
+        tip.setAmount(confirmedRequest.getAmount());
+        tip.setPaymentIntentId(confirmedRequest.getPaymentIntentId());
+        tip.setPaymentStatus(confirmedRequest.getPaymentStatus());
+
+        return tipRepo.saveTip(tip); // returns Long tip id
+
     }
 
     // update tip from stripe

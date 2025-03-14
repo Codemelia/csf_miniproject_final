@@ -27,8 +27,6 @@ import jakarta.servlet.http.HttpServletResponse;
 @RequestMapping(path = "/api/stripe", produces = MediaType.APPLICATION_JSON_VALUE)
 public class StripeController {
 
-    private final ArtisteController artisteController;
-
     @Value("${frontend.app.url}")
     private String frontendBaseUrl; // for redirect after oauth callback
 
@@ -39,10 +37,6 @@ public class StripeController {
     private ArtisteService artisteSvc;
 
     private Logger logger = Logger.getLogger(StripeController.class.getName());
-
-    StripeController(ArtisteController artisteController) {
-        this.artisteController = artisteController;
-    }
 
     @GetMapping(path = "/oauth-gen/{artisteId}")
     public ResponseEntity<String> genOAuthUrl(

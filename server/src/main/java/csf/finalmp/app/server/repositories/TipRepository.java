@@ -86,7 +86,8 @@ public class TipRepository {
                 rs.getString("payment_intent_id"), 
                 rs.getString("payment_status"),
                 rs.getTimestamp("created_at").toLocalDateTime(),
-                rs.getTimestamp("updated_at").toLocalDateTime()),
+                rs.getTimestamp("updated_at").toLocalDateTime(),
+                null),
             paymentIntentId);
     }
 
@@ -102,7 +103,8 @@ public class TipRepository {
                 rs.getString("payment_intent_id"), 
                 rs.getString("payment_status"),
                 rs.getTimestamp("created_at").toLocalDateTime(),
-                rs.getTimestamp("updated_at").toLocalDateTime()),
+                rs.getTimestamp("updated_at").toLocalDateTime(),
+                null),
             artisteId);
 
     }

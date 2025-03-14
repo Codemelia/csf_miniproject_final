@@ -7,7 +7,6 @@ import static csf.finalmp.app.server.utils.ArtisteSql.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
 import csf.finalmp.app.server.exceptions.custom.UserNotFoundException;
 import csf.finalmp.app.server.models.Artiste;
 
@@ -152,10 +151,26 @@ public class ArtisteRepository {
     public Double getArtisteBalance(String artisteId) {
 
         return template.queryForObject(
-            SELECT_ARTISTE_BALANCE, 
+            SELECT_ARTISTE_BALANCE_BY_ID, 
             Double.class,
             artisteId);
 
+    }
+    
+    // get stripe account id by artiste id
+    public String getStripeAccountId(String artisteId) {
+        return template.queryForObject(
+            SELECT_ARTISTE_STRIPE_ACCOUNT_ID_BY_ID, 
+            String.class,
+            artisteId);
+    }
+
+    // get artiste id by stage name
+    public String getArtisteIdByStageName(String artisteStageName) {
+        return template.queryForObject(
+            SELECT_ARTISTE_ID_BY_STAGE_NAME, 
+            String.class,
+            artisteStageName);
     }
 
     // delete artiste from db
@@ -166,14 +181,6 @@ public class ArtisteRepository {
             Integer.class,
             artisteId);
 
-    }
-
-    // get stripe account id by artiste id
-    public String getStripeAccountId(String artisteId) {
-        return template.queryForObject(
-            GET_ARTISTE_STRIPE_ACCOUNT_ID, 
-            String.class,
-            artisteId);
     }
 
     // check if artiste has stripe access token

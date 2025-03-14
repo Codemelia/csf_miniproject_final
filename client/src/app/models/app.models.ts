@@ -37,26 +37,16 @@ export interface DecodedToken {
     [key: string]: any
 }
 
-export interface TipRequest {
-    tipperId: string
-    artisteStageName: string
-    amount: number
-}
-
-export interface TipResponse {
-    clientSecret: string
-    tip: TipResponse
-}
-
 export interface Tip {
-    tipId: number
+    tipId: number | null
     tipperId: string
-    artisteId: string
-    amount: number
-    paymentIntentId: string
-    paymentStatus: string
-    createdAt: Date
-    updatedAt:Date
+    artisteId: string | null
+    amount: number 
+    paymentIntentId: string | null
+    paymentStatus: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    stageName: string | null
 }
 
 export interface Artiste {

@@ -64,9 +64,21 @@ public class ArtisteSql {
     """;
 
     // select artiste wallet balance
-    public static final String SELECT_ARTISTE_BALANCE = """
+    public static final String SELECT_ARTISTE_BALANCE_BY_ID = """
         SELECT wallet_balance FROM artistes
             WHERE artiste_id = ?;
+    """;
+
+    // get artiste stripe account id via id
+    public static final String SELECT_ARTISTE_STRIPE_ACCOUNT_ID_BY_ID = """
+        SELECT stripe_account_id FROM artistes
+            WHERE artiste_id = ?;
+    """;
+
+    // get artiste id via stage name
+    public static final String SELECT_ARTISTE_ID_BY_STAGE_NAME = """
+        SELECT artiste_id FROM artistes
+            WHERE stage_name = ?
     """;
 
     // check if row for id exists in db
@@ -83,12 +95,6 @@ public class ArtisteSql {
     public static final String DELETE_ARTISTE = """
         DELETE FROM artistes
             WHERE artiste_id = ?;        
-    """;
-
-    // get artiste stripe account id via id
-    public static final String GET_ARTISTE_STRIPE_ACCOUNT_ID = """
-        SELECT stripe_account_id FROM artistes
-            WHERE artiste_id = ?;
     """;
 
     // check if artiste id row has valid stripe access token
