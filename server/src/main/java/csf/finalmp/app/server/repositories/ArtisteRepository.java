@@ -64,6 +64,7 @@ public class ArtisteRepository {
             artiste.getStageName(),
             artiste.getBio(),
             artiste.getPhoto(),
+            artiste.getThankYouMessage(),
             artiste.getArtisteId());
 
     }
@@ -97,6 +98,7 @@ public class ArtisteRepository {
                     rs.getString("stripe_access_token"),
                     rs.getString("stripe_refresh_token"),
                     rs.getDouble("wallet_balance"),
+                    rs.getString("thank_you_message"),
                     rs.getTimestamp("created_at").toLocalDateTime(), 
                     rs.getTimestamp("updated_at").toLocalDateTime()),
                 artisteId);
@@ -123,6 +125,7 @@ public class ArtisteRepository {
                 rs.getString("stripe_access_token"),
                 rs.getString("stripe_refresh_token"),
                 rs.getDouble("wallet_balance"), 
+                rs.getString("thank_you_message"),
                 rs.getTimestamp("created_at").toLocalDateTime(), 
                 rs.getTimestamp("updated_at").toLocalDateTime()));
 
@@ -169,6 +172,14 @@ public class ArtisteRepository {
     public String getArtisteIdByStageName(String artisteStageName) {
         return template.queryForObject(
             SELECT_ARTISTE_ID_BY_STAGE_NAME, 
+            String.class,
+            artisteStageName);
+    }
+
+    // get artiste ty message by stage name
+    public String getArtisteThankYouMessage(String artisteStageName) {
+        return template.queryForObject(
+            SELECT_ARTISTE_THANK_YOU_MSG_BY_STAGE_NAME, 
             String.class,
             artisteStageName);
     }

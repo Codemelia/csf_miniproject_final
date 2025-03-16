@@ -1,7 +1,15 @@
 .register-card {
     max-width: 400px;
-    margin: 20px auto;
+    margin: 30px auto;
     padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+mat-card-header {
+    margin-bottom: 15px;
 }
 
 mat-card-title {
@@ -28,8 +36,9 @@ mat-card-title {
     mat-error {
         font-size: 14px;
     }
+
     .success-message {
-        color: #91ffb6; // Purple
+        color: #91ffb6;
         font-size: 14px;
     }
 }

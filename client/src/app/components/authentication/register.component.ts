@@ -17,10 +17,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder)
   protected form!: FormGroup
 
-  // router
+  // services
   private router = inject(Router)
-
-  // auth service
   private authSvc = inject(AuthService)
   
   // error obj
@@ -40,7 +38,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   createForm() {
     this.form = this.fb.group({
       email: this.fb.control('',
-        [ Validators.required, Validators.email, Validators.maxLength(254) ]),
+        [ Validators.required, Validators.email, Validators.maxLength(255) ]),
       username: this.fb.control('', 
         [ Validators.required, Validators.minLength(8), Validators.maxLength(30) ]),
       password: this.fb.control('', 
@@ -63,7 +61,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
         next: (response) => {
           this.successMsg = 'Registration successful! Please log in.'
           console.log('>>> Registration successful', response)
-          setTimeout(() => this.router.navigate(['/']), 2000) // redirect to login page aft 3 secs
+          setTimeout(() => this.router.navigate(['/']), 2000) // redirect to login page aft 2 secs
         },
         error: (err) => {
           this.error = err.error

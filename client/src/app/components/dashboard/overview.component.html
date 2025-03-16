@@ -1,0 +1,31 @@
+<p>overview works!</p>
+<!-- overview.component.html -->
+<div class="summary-cards">
+    <mat-card>
+      <mat-card-title>Total Tips Earned</mat-card-title>
+      <mat-card-content>{{ summaryData.totalTipsEarned | currency }}</mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-title>Tips This Month</mat-card-title>
+      <mat-card-content>{{ summaryData.tipsThisMonth | currency }} ({{ summaryData.tipsCountThisMonth }} Tips)</mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-title>Highest Single Tip</mat-card-title>
+      <mat-card-content>{{ summaryData.highestSingleTip | currency }}</mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-title>Average Tip Amount</mat-card-title>
+      <mat-card-content>{{ summaryData.averageTipAmount | currency }}</mat-card-content>
+    </mat-card>
+  </div>
+  
+  <div class="charts">
+    <mat-card>
+      <mat-card-title>Monthly Tips (Past 12 Months)</mat-card-title>
+      <canvas id="monthlyChart"></canvas>
+    </mat-card>
+    <mat-card>
+      <mat-card-title>Daily Trends (Past 30 Days)</mat-card-title>
+      <canvas id="dailyChart"></canvas>
+    </mat-card>
+</div>

@@ -1,0 +1,84 @@
+<div class="card-container">
+    <mat-card class="tip-card">
+        <mat-card-header>
+            <mat-card-title>Tip Vibees, Get Rewards!</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <form [formGroup]="form" (submit)="tipArtiste()">
+    
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label><mat-icon>perm_identity</mat-icon> Vibee Stage Name</mat-label>
+                    <input matInput type="text" [(ngModel)]="artisteStageName" name="artisteStageName" 
+                        formControlName="artisteStageName" placeholder="Who are you vibing with today?">
+                    <mat-error *ngIf="form.get('artisteStageName')?.hasError('required') &&
+                        form.get('artisteStageName')?.touched">Please enter a valid Vibee Stage Name
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label><mat-icon> attach_money</mat-icon> Tip Amount (SGD)</mat-label>
+                    <input matInput type="number" [(ngModel)]="amount" name="amount" 
+                        formControlName="amount" placeholder="How much are you tipping the Vibee?">
+                    <mat-error *ngIf="(form.get('amount')?.hasError('required') ||
+                        form.get('amount')?.hasError('min')) &&
+                        form.get('amount')?.touched">
+                        Please enter a minimum amount of 1.00 SGD
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-accordion>
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Add a personal touch! 🤩 (optional)
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+    
+                        <mat-form-field appearance="fill" class="full-width">
+                            <mat-label><mat-icon>perm_identity</mat-icon> Your Name</mat-label>
+                            <input matInput type="text" [(ngModel)]="tipperName" name="tipperName" 
+                                formControlName="tipperName" placeholder="Let the Vibee know who you are 👋">
+                            <mat-error *ngIf="form.get('tipperName')?.hasError('maxlength') &&
+                                form.get('tipperName')?.touched">Your name must not exceed 100 characters
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="fill" class="full-width">
+                            <mat-label><mat-icon> chat_bubble_outline</mat-icon> Your Message</mat-label>
+                            <input matInput type="text" [(ngModel)]="tipperMessage" name="tipperMessage" 
+                                formControlName="tipperMessage" placeholder="Leave a nice message for the Vibee 💖">
+                            <mat-error *ngIf="form.get('tipperMessage')?.hasError('maxlength') &&
+                                form.get('tipperMessage')?.touched">Your message must not exceed 255 characters
+                            </mat-error>
+                        </mat-form-field>
+            
+                        <mat-form-field appearance="fill" class="full-width">
+                            <mat-label><mat-icon> mail_outline</mat-icon> Your Email</mat-label>
+                            <input matInput type="email" [(ngModel)]="tipperEmail" name="tipperEmail" 
+                                formControlName="tipperEmail" placeholder="Enter your email to receive a receipt via email 🧾">
+                            <mat-error *ngIf="(form.get('tipperEmail')?.hasError('maxlength') ||
+                                form.get('tipperEmail')?.hasError('emailOrEmpty')) && 
+                                form.get('tipperEmail')?.touched">Your email address must be valid and below 255 characters
+                            </mat-error>
+                        </mat-form-field>
+
+                    </mat-expansion-panel>
+                </mat-accordion>
+    
+                <div class="stripe-container">
+                    <label>Card Details</label>
+                    <div id="card-element"></div>
+                </div>
+    
+                <mat-card-actions>
+                    <button mat-raised-button type="submit" color="accent" [disabled]="form.invalid">Tip Now</button>
+                </mat-card-actions>
+    
+                <div *ngIf="error" class="feedback">
+                    <mat-error>{{ error.message }}</mat-error>
+                </div>
+    
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>

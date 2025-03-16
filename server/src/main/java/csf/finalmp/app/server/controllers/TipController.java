@@ -1,6 +1,7 @@
 package csf.finalmp.app.server.controllers;
 
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import com.stripe.exception.StripeException;
 
 import csf.finalmp.app.server.exceptions.custom.StripePaymentException;
 import csf.finalmp.app.server.models.Tip;
+import csf.finalmp.app.server.services.ArtisteService;
 import csf.finalmp.app.server.services.TipService;
 
 // PURPOSE OF THIS CONTROLLER
@@ -36,35 +38,35 @@ public class TipController {
     @Autowired
     private TipService tipSvc;
 
+    @Autowired
+    private ArtisteService artisteSvc;
+
     // logger to ensure proper tracking
     private Logger logger = Logger.getLogger(TipController.class.getName());
 
     // create payment intent and return client secret
     @PostMapping(path="/process", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> getPaymentIntentClientSecret(
+    public ResponseEntity<Map<String, String>> getPaymentIntentClientSecret(
         @RequestBody Tip unconfirmedRequest) throws StripeException { // throw exception for global handler
 
         logger.info(">>> Processing tip request: %s".formatted(unconfirmedRequest.toString()));
-        String clientSecret = tipSvc.getPaymentIntentClientSecret(unconfirmedRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(clientSecret);
+        Map<String, String> response = tipSvc.getPaymentIntentClientSecret(unconfirmedRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
     }
 
     // update payment status
     // if payment status successful, add tip to wallet
-    @PostMapping("/save")
-    public ResponseEntity<Long> saveTip(
+    @PutMapping("/save")
+    public ResponseEntity<String> saveTip(
         @RequestBody Tip confirmedRequest) {
 
-        // payment intent id and status
-        String paymentIntentId = confirmedRequest.getPaymentIntentId();
-        String paymentStatus = confirmedRequest.getPaymentStatus();
-
-        logger.info(">>> Processing tip confirmation for Payment Intent: %s".formatted(paymentIntentId));
-        if (paymentStatus.contains("succeeded")) {
+        logger.info(">>> Processing tip confirmation for Tip Request: %s".formatted(confirmedRequest.toString()));
+        if (confirmedRequest.getPaymentStatus().contains("succeeded")) {
             Long tipId = tipSvc.saveTip(confirmedRequest);
             logger.info(">>> Tip saved with ID: %d".formatted(tipId));
-            return ResponseEntity.ok().body(tipId);
+            String thankYouMessage = artisteSvc.getArtisteThankYouMessage(confirmedRequest.getStageName()); // if tip successfully saved, get ty message from artistes table
+            return ResponseEntity.ok().body(thankYouMessage);
         } else {
             throw new StripePaymentException("Payment failed. Please try again."); // throw exception as I am only saving successful payments
         }

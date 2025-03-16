@@ -22,6 +22,7 @@ public class ArtisteSql {
             stripe_access_token VARCHAR(255),
             stripe_refresh_token VARCHAR(255),
             wallet_balance DECIMAL(10, 2) DEFAULT 0.00,
+            thank_you_message VARCHAR(255) DEFAULT 'Thank you for supporting our Vibees!',
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             FOREIGN KEY (artiste_id) REFERENCES users(user_id) ON DELETE CASCADE);
@@ -89,6 +90,12 @@ public class ArtisteSql {
     // check if row for stagename exists in db
     public static final String CHECK_ARTISTE_STAGE_NAME = """
         SELECT EXISTS(SELECT 1 FROM artistes WHERE stage_name = ?);    
+    """;
+
+    // get artiste thank you message
+    public static final String SELECT_ARTISTE_THANK_YOU_MSG_BY_STAGE_NAME = """
+        SELECT thank_you_message FROM artistes
+            WHERE stage_name = ?;        
     """;
 
     // delete artiste from db

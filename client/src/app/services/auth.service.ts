@@ -47,14 +47,13 @@ export class AuthService {
 
     // log out user
     logout(): void {
-        localStorage.clear() // clears all key-value pairs in current local storage
+        localStorage.removeItem(this.tokenKey) // clears all key-value pairs in current local storage
         this.tokenSub.next(null) // emits null value to token sub
         this.router.navigate(['/']) // redirect to login page
     }
 
     // get token for auth guard
     getToken(): string | null {
-        console.log('>>> Retrieving token: ', localStorage.getItem(this.tokenKey))
         return localStorage.getItem(this.tokenKey)
     }
 

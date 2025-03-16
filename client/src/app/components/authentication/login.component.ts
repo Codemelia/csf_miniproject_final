@@ -18,10 +18,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder)
   protected form!: FormGroup
 
-  // router
+  // services
   private router = inject(Router)
-
-  // auth service
   private authSvc = inject(AuthService)
   
   // error obj

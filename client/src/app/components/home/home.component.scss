@@ -46,7 +46,14 @@ mat-card-header {
 }
 
 mat-card-title {
+    font-size: 200%;
+    margin: 20px auto;
+    color: #000000;
     font-weight: bold;
+    text-shadow: 
+        0.8px 0.8px 0px rgba(98, 0, 234, 1),  
+        -0.8px -0.8px 0px rgba(255, 49, 210, 1),
+        0px 0px 8px rgba(255, 255, 255, 1); 
 }
 
 mat-card-actions {

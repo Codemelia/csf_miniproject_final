@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { ComponentStore } from '@ngrx/component-store';
-import { Tip } from '../models/app.models';
+import { Tip, TipResponse } from '../models/app.models';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from './auth.service';
@@ -22,16 +22,16 @@ export class TipService extends ComponentStore<TipState> {
 
   // send tip as tip request obj to server
   // retrieves client secret from server
-  getPaymentIntentClientSecret(unconfirmRequest: Tip): Observable<string> {
-    return this.http.post<string>('/api/tips/process', unconfirmRequest, { 
-      headers: this.authSvc.getJsonHeaders(),
-      responseType: 'text' as 'json' })
+  getPaymentIntentClientSecret(unconfirmRequest: Tip): Observable<TipResponse> {
+    return this.http.post<TipResponse>('/api/tips/process', unconfirmRequest, { 
+      headers: this.authSvc.getJsonHeaders() })
   }
 
   // save tip after confirmed payment
-  saveTip(confirmRequest: Tip): Observable<number> {
-    return this.http.post<number>('api/tips/save', confirmRequest, { 
-      headers: this.authSvc.getJsonHeaders() })
+  saveTip(confirmRequest: Tip): Observable<string> {
+    return this.http.put<string>('api/tips/save', confirmRequest, { 
+      headers: this.authSvc.getJsonHeaders(),
+      responseType: 'text' as 'json' })
   }
 
 }

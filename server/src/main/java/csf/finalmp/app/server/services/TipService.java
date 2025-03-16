@@ -3,6 +3,7 @@ package csf.finalmp.app.server.services;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,12 +53,14 @@ public class TipService {
     }
 
     // insert tip if artiste exists, if not throw error
-    public String getPaymentIntentClientSecret(Tip unconfirmedRequest) throws StripeException {
+    public Map<String, String> getPaymentIntentClientSecret(Tip unconfirmedRequest) throws StripeException {
 
-        // get request details
-        String tipperId = unconfirmedRequest.getTipperId();
         String artisteStageName = unconfirmedRequest.getStageName();
-        Double amount = unconfirmedRequest.getAmount();
+
+        // if stage name null, throw error
+        if (artisteStageName == null) {
+            throw new IllegalArgumentException("Artiste stage name cannot be null.");
+        }    
 
         // check if artiste stage name exists in artistes table
         boolean stageNameExists = artisteSvc.checkArtisteStageName(artisteStageName);
@@ -70,9 +73,26 @@ public class TipService {
             throw new UserNotFoundException(
                 "Vibee does not exist. Please ensure you have the correct Vibee Stage Name.");
         }
-
+ 
         // retrieve artiste id
         String artisteId = artisteSvc.getArtisteIdByStageName(artisteStageName);
+
+        // check if artiste has stripe access token (i.e. registered stripe connected acc)
+        boolean hasAccessToken = artisteSvc.checkArtisteStripeAccess(artisteId);
+
+        if (!hasAccessToken) {
+            throw new StripePaymentException("Vibee has not completed their payment profile. Please try again later.");
+        }
+
+        // get tipper id
+        String tipperId = unconfirmedRequest.getTipperId();
+
+        // if tipper id is null, assign a new guest id
+        if (tipperId == null || tipperId.isBlank()) {
+            tipperId = String.format("G%s", UUID.randomUUID().toString().substring(0, 7));
+        } 
+
+        Double amount = unconfirmedRequest.getAmount();
 
         if (amount == null || amount <= 0) {
             logger.severe(">>> Stripe param AMOUNT is invalid");
@@ -90,19 +110,42 @@ public class TipService {
 
         // create payment intent with params and return client secret for client side confirmation
         PaymentIntent paymentIntent = PaymentIntent.create(params);
-        return paymentIntent.getClientSecret();
+
+        // new map to return response to client
+        Map<String, String> response = new HashMap<>();
+        response.put("tipperId", tipperId); // sent to client bc it is needed if tipper is a guest to save on backend later
+        response.put("clientSecret", paymentIntent.getClientSecret());
+
+        return response;
  
     }
 
     // save tip details after stripe payment is confirmed
     public Long saveTip(Tip confirmedRequest) {
 
+        // if tipper id is null, throw exception
+        String tipperId = confirmedRequest.getTipperId();
+        if (tipperId == null) {
+            logger.severe(">>> Failed to save tip as Tipper ID is null".formatted(tipperId));
+            throw new StripePaymentException("Payment failed. Please try again.");
+        }
+
         // retrieve artiste id
         String artisteId = artisteSvc.getArtisteIdByStageName(confirmedRequest.getStageName());
-        
+
         // set current tip variables
         Tip tip = new Tip();
-        tip.setTipperId(confirmedRequest.getTipperId());
+
+        String tipperName = confirmedRequest.getTipperName();
+        if (tipperName != null && !tipperName.isBlank()) tip.setTipperName(tipperName);
+
+        String tipperMessage = confirmedRequest.getTipperMessage();
+        if (tipperMessage != null && !tipperMessage.isBlank()) tip.setTipperMessage(tipperMessage);
+
+        String tipperEmail = confirmedRequest.getTipperEmail();
+        if (tipperEmail != null && !tipperEmail.isBlank()) tip.setTipperEmail(tipperEmail);
+
+        tip.setTipperId(tipperId);
         tip.setArtisteId(artisteId);
         tip.setAmount(confirmedRequest.getAmount());
         tip.setPaymentIntentId(confirmedRequest.getPaymentIntentId());

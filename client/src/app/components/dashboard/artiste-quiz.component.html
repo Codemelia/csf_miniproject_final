@@ -51,7 +51,7 @@
         </mat-card-actions>
     </div>
     <div *ngIf="error || successMsg" class="feedback">
-        <mat-error *ngIf="error">Error {{ error.status }}: {{ error.message }}</mat-error>
+        <mat-error *ngIf="error">{{ error.message }}</mat-error>
         <span class="success-message" *ngIf="successMsg">{{ successMsg }}</span>
     </div>
 </mat-card>

@@ -7,8 +7,8 @@
         <div *ngIf="authSvc.authState$ | async as auth">
   
           <button mat-button routerLink="/home" *ngIf="auth.loggedIn">Home</button>
-          <button mat-button routerLink="/artistes" *ngIf="auth.loggedIn">Vibees</button>
-          <button mat-button routerLink="/tip" *ngIf="auth.loggedIn">Tip a Vibee</button>
+          <button mat-button routerLink="/vibees" *ngIf="auth.loggedIn">Vibees</button>
+          <button mat-button routerLink="/tip-form">Tip a Vibee</button>
           <button mat-button routerLink="/dashboard" *ngIf="auth.loggedIn && auth.userRole === 'ARTISTE'">
             Dashboard</button>
           <button mat-button (click)="authSvc.logout()" *ngIf="auth.loggedIn">Logout</button>

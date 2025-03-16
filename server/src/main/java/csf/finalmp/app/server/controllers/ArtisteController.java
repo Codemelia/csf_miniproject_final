@@ -96,10 +96,11 @@ public class ArtisteController {
         @PathVariable String artisteId,
         @RequestPart("stageName") String name,
         @RequestPart("bio") String bio,
-        @RequestPart("photo") MultipartFile photo) throws IOException {
+        @RequestPart("photo") MultipartFile photo,
+        @RequestPart("thankYouMessage") String thankYouMessage) throws IOException {
 
         logger.info(">>> Updating artiste with ID: %s".formatted(artisteId));
-        artisteSvc.updateArtisteProfile(artisteId, name, bio, photo); // throws exception if fail
+        artisteSvc.updateArtisteProfile(artisteId, name, bio, photo, thankYouMessage); // throws exception if fail
         return ResponseEntity.ok().body("Vibee profile successfully updated!");
 
     }

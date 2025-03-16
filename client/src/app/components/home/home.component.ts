@@ -16,17 +16,22 @@ export class HomeComponent implements OnInit {
   errorMsg: string | null = null
   userId: string | null = null
   userRole: string | null = null
+
+  isVibee: boolean = false
   
   ngOnInit(): void {
       
-    // retrieve user id and role from token
-    if (this.authSvc.isLoggedIn()) {
-      this.userId = this.authSvc.extractUIDFromToken()
-      this.userRole = this.authSvc.extractUserRoleFromToken()
-    } else {
+    if (!this.authSvc.isLoggedIn()) {
       this.errorMsg = 'Unauthorized user. Please log in.'
       this.authSvc.logout()
     }
+
+    // retrieve user id and role from token
+    this.userId = this.authSvc.extractUIDFromToken()
+    this.userRole = this.authSvc.extractUserRoleFromToken()
+
+    // if user role is vibee, set to true
+    if (this.userRole === 'ARTISTE') this.isVibee = true
 
   }
 

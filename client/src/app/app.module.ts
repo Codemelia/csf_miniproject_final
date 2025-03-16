@@ -2,14 +2,14 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
-import { HomeComponent } from './components/main/home.component';
-import { ArtisteListComponent } from './components/main/artiste-list.component';
-import { TipComponent } from './components/main/tip.component';
-import { DashboardComponent } from './components/main/dashboard.component';
+import { HomeComponent } from './components/home/home.component';
+import { ArtisteListComponent } from './components/home/artiste-list.component';
+import { TipFormComponent } from './components/tip-a-vibee/tip-form.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { LoginComponent } from './components/authentication/login.component';
 import { RegisterComponent } from './components/authentication/register.component';
 
-import { RouteReuseStrategy, RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -26,26 +26,40 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinner } from '@angular/material/progress-spinner'
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatListModule } from '@angular/material/list';
 
 import { RoleGuard } from './guards/role.guard';
 import { AuthGuard } from './guards/auth.guard';
-import { WalletComponent } from './components/main/wallet.component';
+import { WalletComponent } from './components/dashboard/wallet.component';
 import { CarouselComponent } from './components/unused/carousel.component';
-import { ProfileComponent } from './components/main/profile.component';
-import { ArtisteQuizComponent } from './components/main/artiste-quiz.component';
+import { ProfileComponent } from './components/dashboard/profile.component';
+import { ArtisteQuizComponent } from './components/dashboard/artiste-quiz.component';
+import { SuccessPopupComponent } from './components/tip-a-vibee/success-popup.component';
+import { OverviewComponent } from './components/dashboard/overview.component';
+import { TipsHistoryComponent } from './components/dashboard/tips-history.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'home', component: HomeComponent, canActivate: [ AuthGuard ] },
-  { path: 'artistes', component: ArtisteListComponent, canActivate: [ AuthGuard ] },
-  { path: 'tip', component: TipComponent, canActivate: [ AuthGuard ] },
-  { path: 'dashboard', component: DashboardComponent, canActivate: [ AuthGuard, RoleGuard ],
-    data: { expectedRole: 'ARTISTE' } },
-  { path: 'wallet/:artisteId', component: WalletComponent, canActivate: [ AuthGuard, RoleGuard ],
-    data: { expectedRole: 'ARTISTE' } },
-  { path: 'profile/:artisteId', component: ProfileComponent, canActivate: [ AuthGuard, RoleGuard ],
-    data: { expectedRole: 'ARTISTE' } },
+  { path: 'vibees', component: ArtisteListComponent, canActivate: [ AuthGuard ] },
+  { path: 'tip-form', component: TipFormComponent }, // permit all access
+  { path: 'tip-form/:artisteStageName', component: TipFormComponent }, // allow path variable to be passed in
+  { path: 'dashboard', component: DashboardComponent, 
+    canActivate: [ AuthGuard, RoleGuard ],
+    data: { expectedRole: 'ARTISTE' },
+    children: [
+      { path: 'overview', component: OverviewComponent },
+      { path: 'tips-history', component: TipsHistoryComponent },
+      { path: 'wallet', component: WalletComponent },
+      { path: 'profile', component: ProfileComponent },
+      { path: '', redirectTo: 'overview', pathMatch: 'full' } // Default route
+    ] },
   { path: '**', redirectTo: '/', pathMatch: 'full' }
 ]
 
@@ -54,14 +68,17 @@ const routes: Routes = [
     AppComponent,
     HomeComponent,
     ArtisteListComponent,
-    TipComponent,
+    TipFormComponent,
     DashboardComponent,
     LoginComponent,
     RegisterComponent,
     WalletComponent,
     CarouselComponent,
     ProfileComponent,
-    ArtisteQuizComponent
+    ArtisteQuizComponent,
+    SuccessPopupComponent,
+    OverviewComponent,
+    TipsHistoryComponent
   ],
   imports: [
     BrowserModule,
@@ -79,7 +96,13 @@ const routes: Routes = [
     MatTabsModule,
     MatProgressBarModule,
     FormsModule,
-    MatProgressSpinner
+    MatProgressSpinner,
+    MatExpansionModule,
+    MatIconModule,
+    MatDialogModule,
+    MatSidenavModule,
+    MatMenuModule,
+    MatListModule
   ],
   providers: [
     provideHttpClient(),

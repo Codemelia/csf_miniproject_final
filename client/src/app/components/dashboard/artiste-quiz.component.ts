@@ -154,6 +154,7 @@ export class ArtisteQuizComponent implements OnInit, OnDestroy {
           if (resp.includes('successful')) {
             this.nextStep() // go next step in progress bar
             this.successMsg = null
+            this.artisteExists = true
           } else {
             console.error('>>> Stripe error:', resp)
             this.error = {

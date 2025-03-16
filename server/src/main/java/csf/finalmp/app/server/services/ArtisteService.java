@@ -97,7 +97,7 @@ public class ArtisteService {
 
         // gen qr code url for tipping
         // http://localhost:4200/tip/{stagename}
-        String qrCodeUrl = String.format("%s/tip/%s", frontendBaseUrl, 
+        String qrCodeUrl = String.format("%s/tip-form/%s", frontendBaseUrl, 
             URLEncoder.encode(stageName, StandardCharsets.UTF_8));
         QRCodeWriter qrWriter = new QRCodeWriter();
         BitMatrix bitMatrix = qrWriter.encode(qrCodeUrl, BarcodeFormat.QR_CODE, 200, 200);
@@ -118,11 +118,12 @@ public class ArtisteService {
 
     // update artiste profile
     // returns true if rows updated > 0, false if rows updated <= 0
-    public boolean updateArtisteProfile(String artisteId, String stageName, String bio, MultipartFile photo) throws IOException {
+    public boolean updateArtisteProfile(String artisteId, String stageName, String bio, MultipartFile photo, String thankYouMessage) throws IOException {
         Artiste artiste = new Artiste();
         artiste.setArtisteId(artisteId);
         artiste.setStageName(stageName);
         artiste.setBio(bio);
+        artiste.setThankYouMessage(thankYouMessage);
         if (photo != null) { artiste.setPhoto(photo.getBytes()); } 
         else { artiste.setPhoto(null); }
         return artisteRepo.updateArtisteProfile(artiste) > 0;
@@ -176,6 +177,11 @@ public class ArtisteService {
     // get artiste id by artiste stage name
     public String getArtisteIdByStageName(String artisteStageName) {
         return artisteRepo.getArtisteIdByStageName(artisteStageName);
+    }
+
+    // get artiste ty message by stage name
+    public String getArtisteThankYouMessage(String artisteStageName) {
+        return artisteRepo.getArtisteThankYouMessage(artisteStageName);
     }
 
     // delete artiste from db

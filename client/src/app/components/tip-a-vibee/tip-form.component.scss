@@ -41,8 +41,7 @@ mat-card-title {
         display: block;
         font-size: 18px;
         color: #000000;
-        margin-bottom: 20px;
-        margin-left: 15px;
+        margin: 25px auto 20px 10px;
         font-weight: bold;
         text-shadow: 
             0.8px 0.8px 0px rgba(98, 0, 234, 1),  
@@ -65,6 +64,11 @@ mat-card-actions {
 
 }
 
+mat-panel-title {
+    color: #ffb0ee;
+    font-size: 90%;
+}
+
 /* button styles */
 button {
     background-color: #6200ea;
@@ -84,8 +88,19 @@ button:hover {
     mat-error {
         font-size: 14px;
     }
-    .success-message {
-        color: #91ffb6;
-        font-size: 14px;
+}
+
+@media (max-width: 768px) {
+    .tip-card {
+        width: 100%;
+        padding: 15px;
+    }
+
+    mat-card-title {
+        font-size: 1.8rem;
+    }
+
+    button {
+        font-size: 0.9rem;
     }
 }

@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/qr/**").permitAll() // permit all access to qr codes
                 .requestMatchers("/api/artistes/**").authenticated() // protect artistes endpoints
                 .requestMatchers("/api/artiste/**").authenticated() // protect artiste endpoints
-                .requestMatchers("/api/tips/**").authenticated() // protect tips endpoints
+                .requestMatchers("/api/tips/**").permitAll() // permit all to allow guest tipping
                 .requestMatchers("/api/stripe/**").permitAll() // permit all for stripe oauth callback
                 .anyRequest().authenticated())
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

@@ -18,6 +18,7 @@ public class Artiste {
     private String stripeAccessToken;
     private String stripeRefreshToken;
     private Double walletBalance;
+    private String thankYouMessage;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -25,7 +26,8 @@ public class Artiste {
     public Artiste() {}
     // for full mysql retrieval
     public Artiste(String artisteId, String stageName, String bio, byte[] photo, byte[] qrCode, String qrCodeUrl, 
-        String stripeAccountId, String stripeAccessToken, String stripeRefreshToken, Double walletBalance, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        String stripeAccountId, String stripeAccessToken, String stripeRefreshToken, Double walletBalance, 
+        String thankYouMessage, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.artisteId = artisteId;
         this.stageName = stageName;
         this.bio = bio;
@@ -36,6 +38,7 @@ public class Artiste {
         this.stripeAccessToken = stripeAccessToken;
         this.stripeRefreshToken = stripeRefreshToken;
         this.walletBalance = walletBalance;
+        this.thankYouMessage = thankYouMessage;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -49,6 +52,8 @@ public class Artiste {
     public void setBio(String bio) { this.bio = bio; }
     public byte[] getPhoto() { return photo; }
     public void setPhoto(byte[] photo) { this.photo = photo; }
+    public byte[] getQrCode() { return qrCode; }
+    public void setQrCode(byte[] qrCode) { this.qrCode = qrCode; }
     public String getQrCodeUrl() { return qrCodeUrl; }
     public void setQrCodeUrl(String qrCodeUrl) { this.qrCodeUrl = qrCodeUrl; }
     public String getStripeAccountId() { return stripeAccountId; }
@@ -58,13 +63,13 @@ public class Artiste {
     public String getStripeRefreshToken() { return stripeRefreshToken; }
     public void setStripeRefreshToken(String stripeRefreshToken) { this.stripeRefreshToken = stripeRefreshToken; }
     public Double getWalletBalance() { return walletBalance; }
-    public void setWalletBalance(Double walletBalance) { this.walletBalance = walletBalance; }    
+    public void setWalletBalance(Double walletBalance) { this.walletBalance = walletBalance; } 
+    public String getThankYouMessage() { return thankYouMessage; }
+    public void setThankYouMessage(String thankYouMessage) { this.thankYouMessage = thankYouMessage; }   
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
-    public byte[] getQrCode() { return qrCode; }
-    public void setQrCode(byte[] qrCode) { this.qrCode = qrCode; }   
 
     // to string
     @Override
@@ -72,8 +77,9 @@ public class Artiste {
         return "Artiste [artisteId=" + artisteId + ", stageName=" + stageName + ", bio=" + bio + ", photo="
                 + Arrays.toString(photo) + ", qrCode=" + Arrays.toString(qrCode) + ", qrCodeUrl=" + qrCodeUrl
                 + ", stripeAccountId=" + stripeAccountId + ", stripeAccessToken=" + stripeAccessToken
-                + ", stripeRefreshToken=" + stripeRefreshToken + ", walletBalance=" + walletBalance + ", createdAt="
-                + createdAt + ", updatedAt=" + updatedAt + "]";
+                + ", stripeRefreshToken=" + stripeRefreshToken + ", walletBalance=" + walletBalance
+                + ", thankYouMessage=" + thankYouMessage + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt
+                + "]";
     }
 
 }

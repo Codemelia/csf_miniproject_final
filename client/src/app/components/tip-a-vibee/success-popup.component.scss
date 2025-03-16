@@ -1,0 +1,107 @@
+.popup-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+
+    .popup-content {
+        background-color: #ffffff;
+        padding: 25px;
+        border-radius: 8px;
+        max-width: 500px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .success-icon {
+        font-size: 48px;
+        width: 48px;
+        height: auto;
+        color: green;
+        display: block;
+        margin: 0 auto;
+    }
+    
+    h2 {
+        margin: 10px 0;
+        color: #4caf50;
+    }
+    
+    p {
+        font-size: 16px;
+        margin: 10px 0;
+    }
+    
+    button {
+        margin-top: 20px;
+        background-color: #6200ea;
+        color: white;
+    }
+    
+    button:hover {
+        background-color: #3700b3;
+    }
+
+}
+
+@media (max-width: 600px) {
+    .popup-content {
+        max-width: 90%;
+        padding: 20px;
+    }
+  
+    .success-icon {
+        font-size: 40px;
+        width: 40px;
+        height: auto;
+    }
+  
+    h2 {
+      font-size: 1.25rem;
+    }
+  
+    p {
+      font-size: 0.9rem;
+    }
+  
+    button {
+      padding: 8px 16px;
+      font-size: 0.9rem;
+    }
+}
+  
+@media (max-width: 400px) {
+    .popup-content {
+        max-width: 85%;
+        padding: 17;
+    }
+
+    .success-icon {
+        font-size: 36px;
+        width: 36px;
+        height: auto;
+    }
+
+    h2 {
+        font-size: 1.125rem;
+    }
+
+    p {
+        font-size: 0.85rem;
+    }
+
+    button {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+}
+  

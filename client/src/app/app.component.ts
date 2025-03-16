@@ -1,6 +1,5 @@
 import { Component, inject } from '@angular/core';
 import { AuthService } from './services/auth.service';
-import { ArtisteService } from './services/artiste.service';
 
 @Component({
   selector: 'app-root',

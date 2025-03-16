@@ -1,0 +1,54 @@
+<mat-sidenav-container class="db-container">
+    <!-- Sidebar -->
+    <mat-sidenav 
+      [opened]="!isMenuCollapsed && !isLoading && isStripeLinked" 
+      mode="side" 
+      class="sidebar" 
+      *ngIf="!isLoading">
+      <mat-toolbar>Menu</mat-toolbar>
+      <mat-nav-list>
+        <a mat-list-item routerLink="/dashboard/overview" routerLinkActive="active">Overview</a>
+        <a mat-list-item routerLink="/dashboard/tips-history" routerLinkActive="active">Tips History</a>
+        <a mat-list-item routerLink="/dashboard/wallet" routerLinkActive="active">Wallet & Payouts</a>
+        <a mat-list-item routerLink="/dashboard/profile" routerLinkActive="active">Manage Profile</a>
+      </mat-nav-list>
+    </mat-sidenav>
+  
+    <!-- Main content area -->
+    <mat-sidenav-content>
+      <!-- Toolbar -->
+      <mat-toolbar *ngIf="!isLoading && isStripeLinked" class="header">
+        <button mat-icon-button (click)="toggleMenu()">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <span>Vibey Dashboard</span>
+        <span class="spacer"></span>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item>Edit Profile</button>
+          <button mat-menu-item>Logout</button>
+        </mat-menu>
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>account_circle</mat-icon>
+        </button>
+      </mat-toolbar>
+  
+      <!-- Content area -->
+      <div *ngIf="!isLoading && isStripeLinked" class="content">
+        <router-outlet></router-outlet>
+      </div>
+  
+      <!-- Spinner -->
+      <div *ngIf="isLoading" class="full-page">
+        <mat-spinner></mat-spinner>
+      </div>
+  
+      <!-- Quiz -->
+      <div *ngIf="!isLoading && !isStripeLinked" class="full-page">
+        <app-artiste-quiz 
+          [isStripeLinked]="isStripeLinked" 
+          [artisteExists]="artisteExists" 
+          [artisteId]="artisteId">
+        </app-artiste-quiz>
+      </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

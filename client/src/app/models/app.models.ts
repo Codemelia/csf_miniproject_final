@@ -39,7 +39,10 @@ export interface DecodedToken {
 
 export interface Tip {
     tipId: number | null
-    tipperId: string
+    tipperName: string | null
+    tipperMessage: string | null
+    tipperEmail: string | null
+    tipperId: string | null
     artisteId: string | null
     amount: number 
     paymentIntentId: string | null
@@ -47,6 +50,11 @@ export interface Tip {
     createdAt: Date | null
     updatedAt: Date | null
     stageName: string | null
+}
+
+export interface TipResponse {
+    tipperId: string
+    clientSecret: string
 }
 
 export interface Artiste {

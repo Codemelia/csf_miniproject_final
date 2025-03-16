@@ -54,11 +54,14 @@ public class TipRepository {
                 ps = connection.prepareStatement(
                     INSERT_TIP,
                     Statement.RETURN_GENERATED_KEYS);
-                ps.setString(1, tip.getTipperId());
-                ps.setString(2, tip.getArtisteId());
-                ps.setDouble(3, tip.getAmount());
-                ps.setString(4, tip.getPaymentIntentId());
-                ps.setString(5, tip.getPaymentStatus());
+                ps.setString(1, tip.getTipperName());
+                ps.setString(2, tip.getTipperMessage());
+                ps.setString(3, tip.getTipperEmail());
+                ps.setString(4, tip.getTipperId());
+                ps.setString(5, tip.getArtisteId());
+                ps.setDouble(6, tip.getAmount());
+                ps.setString(7, tip.getPaymentIntentId());
+                ps.setString(8, tip.getPaymentStatus());
             } else {
                 ps = connection.prepareStatement(UPDATE_PAYMENT_STATUS);
                 ps.setString(1, tip.getPaymentStatus());
@@ -80,6 +83,9 @@ public class TipRepository {
             SELECT_TIP_BY_PID, 
             (rs, rowNum) -> new Tip(
                 rs.getLong("tip_id"), 
+                rs.getString("tipper_name"),
+                rs.getString("tipper_message"),
+                rs.getString("tipper_email"),
                 rs.getString("tipper_id"),
                 rs.getString("artiste_id"),
                 rs.getDouble("amount"), 
@@ -97,6 +103,9 @@ public class TipRepository {
             SELECT_TIPS_BY_MID, 
             (rs, rowNum) -> new Tip(
                 rs.getLong("tip_id"), 
+                rs.getString("tipper_name"),
+                rs.getString("tipper_message"),
+                rs.getString("tipper_email"),
                 rs.getString("tipper_id"),
                 rs.getString("artiste_id"),
                 rs.getDouble("amount"), 
