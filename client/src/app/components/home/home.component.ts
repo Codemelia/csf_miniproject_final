@@ -1,6 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
+import { AuthStore } from '../../stores/auth.store';
 
 @Component({
   selector: 'app-home',
@@ -10,8 +9,7 @@ import { Router } from '@angular/router';
 })
 export class HomeComponent implements OnInit {
 
-  private authSvc = inject(AuthService)
-  private router = inject(Router)
+  private authStore = inject(AuthStore)
 
   errorMsg: string | null = null
   userId: string | null = null
@@ -20,15 +18,10 @@ export class HomeComponent implements OnInit {
   isVibee: boolean = false
   
   ngOnInit(): void {
-      
-    if (!this.authSvc.isLoggedIn()) {
-      this.errorMsg = 'Unauthorized user. Please log in.'
-      this.authSvc.logout()
-    }
 
     // retrieve user id and role from token
-    this.userId = this.authSvc.extractUIDFromToken()
-    this.userRole = this.authSvc.extractUserRoleFromToken()
+    this.userId = this.authStore.extractUIDFromToken()
+    this.userRole = this.authStore.extractUserRoleFromToken()
 
     // if user role is vibee, set to true
     if (this.userRole === 'ARTISTE') this.isVibee = true

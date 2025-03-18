@@ -26,15 +26,15 @@ export interface AuthResponse {
 }
 
 export interface AuthState {
+    token: string | null
     loggedIn: boolean;
     userRole: string | null;
     userId: string | null;
 }
 
 export interface DecodedToken {
-    role: string
-    sub: string
-    [key: string]: any
+    role: string | null
+    sub: string | null
 }
 
 export interface Tip {

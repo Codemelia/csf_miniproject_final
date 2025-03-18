@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable, OnInit } from '@angular/core';
 import { catchError, Observable, of } from 'rxjs';
-import { AuthService } from './auth.service';
+import { AuthStore } from '../stores/auth.store';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -10,8 +10,7 @@ import { Router } from '@angular/router';
 export class ArtisteService {
 
   private http = inject(HttpClient)
-  private authSvc = inject(AuthService)
-  private router = inject(Router)
+  private authStore = inject(AuthStore)
 
   // create artiste object
   // returns feedback string
@@ -23,7 +22,7 @@ export class ArtisteService {
       if (photoBlob) { formData.append('photo', photoBlob ) }
   
       return this.http.post<string>(`/api/artiste/create/${artisteId}`, formData, {
-        headers: this.authSvc.getNoContentHeaders(),
+        headers: this.authStore.getNoContentHeaders(),
         responseType: 'text' as 'json' })
     } else {
       return of('Could not retrieve Vibee ID for Vibee profile creation.');
@@ -35,20 +34,20 @@ export class ArtisteService {
   artisteExists(artisteId: string): Observable<boolean> {
     const params = new HttpParams().set('artisteId', artisteId)
     return this.http.get<boolean>('/api/artiste-check', { params,
-      headers: this.authSvc.getJsonHeaders()})
+      headers: this.authStore.getJsonHeaders()})
   }
 
   // gen oauth url
   genOAuthUrl(artisteId: string): Observable<string> {
     return this.http.get<string>(`/api/stripe/oauth-gen/${artisteId}`,
-      { headers: this.authSvc.getJsonHeaders(),
+      { headers: this.authStore.getJsonHeaders(),
         responseType: 'text' as 'json' })
   }
 
   // check if artiste stripe access token is in redis
   stripeAccessTokenExists(artisteId: string): Observable<boolean> {
     return this.http.get<boolean>(`api/stripe/check-access/${artisteId}`,
-      { headers: this.authSvc.getJsonHeaders() })
+      { headers: this.authStore.getJsonHeaders() })
       .pipe(
         catchError(() => {
           console.log('>>> Error checking Stripe access token.');

@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { AuthService } from './services/auth.service';
+import { AuthStore } from './stores/auth.store';
 
 @Component({
   selector: 'app-root',
@@ -12,6 +12,6 @@ export class AppComponent {
   title = 'client'
  
   // inject service
-  protected authSvc = inject(AuthService)
+  protected authStore = inject(AuthStore)
   
 }

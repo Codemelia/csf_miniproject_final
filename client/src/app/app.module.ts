@@ -42,6 +42,8 @@ import { ArtisteQuizComponent } from './components/dashboard/artiste-quiz.compon
 import { SuccessPopupComponent } from './components/tip-a-vibee/success-popup.component';
 import { OverviewComponent } from './components/dashboard/overview.component';
 import { TipsHistoryComponent } from './components/dashboard/tips-history.component';
+import { AuthStore } from './stores/auth.store';
+import { provideComponentStore } from '@ngrx/component-store';
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -106,7 +108,8 @@ const routes: Routes = [
   ],
   providers: [
     provideHttpClient(),
-    provideAnimationsAsync()
+    provideAnimationsAsync(),
+    provideComponentStore(AuthStore)
   ],
   bootstrap: [AppComponent]
 })

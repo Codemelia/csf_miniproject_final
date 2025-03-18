@@ -1,9 +1,8 @@
-import { ChangeDetectorRef, Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ArtisteService } from '../../services/artiste.service';
 import { ApiError } from '../../models/app.models';
 import { Subscription, tap } from 'rxjs';
-import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-artiste-quiz',

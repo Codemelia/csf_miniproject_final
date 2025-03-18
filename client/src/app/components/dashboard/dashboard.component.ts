@@ -1,8 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { DashboardService } from '../../services/dashboard.service';
-import { ApiError, Tip } from '../../models/app.models';
+import { ApiError } from '../../models/app.models';
 import { catchError, Subscription, tap } from 'rxjs';
-import { AuthService } from '../../services/auth.service';
+import { AuthStore } from '../../stores/auth.store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ArtisteService } from '../../services/artiste.service';
 
@@ -15,7 +14,7 @@ import { ArtisteService } from '../../services/artiste.service';
 export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // services
-  private authSvc = inject(AuthService)
+  private authStore = inject(AuthStore)
   protected artisteSvc = inject(ArtisteService)
   private route = inject(ActivatedRoute)
   private cdr = inject(ChangeDetectorRef)
@@ -40,7 +39,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.artisteId = this.authSvc.extractUIDFromToken()
+    this.artisteId = this.authStore.extractUIDFromToken()
+    console.log('>>> Artiste ID: ', this.artisteId)
     
     // check if artiste ID is available and linked with Stripe
     if (this.artisteId) {

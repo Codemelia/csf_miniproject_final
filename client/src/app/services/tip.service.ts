@@ -3,7 +3,7 @@ import { ComponentStore } from '@ngrx/component-store';
 import { Tip, TipResponse } from '../models/app.models';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { AuthService } from './auth.service';
+import { AuthStore } from '../stores/auth.store';
 
 // inserted here to avoid confusion; only used in service
 export interface TipState {
@@ -16,7 +16,7 @@ export class TipService extends ComponentStore<TipState> {
 
   // tip state variables
   private http = inject(HttpClient)
-  private authSvc = inject(AuthService)
+  private authStore = inject(AuthStore)
   amount: number = 0
   artisteId: string | null = null
 
@@ -24,13 +24,13 @@ export class TipService extends ComponentStore<TipState> {
   // retrieves client secret from server
   getPaymentIntentClientSecret(unconfirmRequest: Tip): Observable<TipResponse> {
     return this.http.post<TipResponse>('/api/tips/process', unconfirmRequest, { 
-      headers: this.authSvc.getJsonHeaders() })
+      headers: this.authStore.getJsonHeaders() })
   }
 
   // save tip after confirmed payment
   saveTip(confirmRequest: Tip): Observable<string> {
     return this.http.put<string>('api/tips/save', confirmRequest, { 
-      headers: this.authSvc.getJsonHeaders(),
+      headers: this.authStore.getJsonHeaders(),
       responseType: 'text' as 'json' })
   }
 

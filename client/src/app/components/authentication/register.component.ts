@@ -1,7 +1,7 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthStore } from '../../stores/auth.store';
 import { ApiError, UserRegistration } from '../../models/app.models';
 import { Subscription } from 'rxjs';
 
@@ -19,7 +19,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   // services
   private router = inject(Router)
-  private authSvc = inject(AuthService)
+  private authStore = inject(AuthStore)
   
   // error obj
   protected error!: ApiError
@@ -32,6 +32,17 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.createForm() // create form on init
+
+    // subscribe to regis result on init
+    this.regisSub = this.authStore.registrationResult$.subscribe(response => {
+      if ('userId' in response) {
+        this.successMsg = response.message // prompts user to login after successful registration
+        setTimeout(() => this.router.navigate(['/']), 2000);
+      } else {
+        this.error = response;
+        this.successMsg = null;
+      }
+    });
   }
 
 
@@ -53,11 +64,20 @@ export class RegisterComponent implements OnInit, OnDestroy {
     })
   }
 
+  // register method - sends user regis details to auth store for saving
+  register() {
+    if (this.form.valid) {
+      const user: UserRegistration = this.form.value;
+      this.authStore.register(user);
+    }
+  }
+
+  /*
   // register on submit
   register() {
     if (this.form.valid) {
       const { email, username, password, phoneNumber, role } = this.form.value
-      this.regisSub = this.authSvc.register(email, username, password, phoneNumber, role).subscribe({
+      this.regisSub = this.authStore.register(email, username, password, phoneNumber, role).subscribe({
         next: (response) => {
           this.successMsg = 'Registration successful! Please log in.'
           console.log('>>> Registration successful', response)
@@ -70,10 +90,11 @@ export class RegisterComponent implements OnInit, OnDestroy {
       })
     }
   }
+  */
 
   // unsub
   ngOnDestroy(): void {
-      this.regisSub?.unsubscribe()
+    this.regisSub?.unsubscribe()
   }
 
 }

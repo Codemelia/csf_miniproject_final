@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiError, Tip, TipResponse } from '../../models/app.models';
 import { catchError, map, of, Subscription, switchMap, tap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthStore } from '../../stores/auth.store';
 import { environment } from '../../environments/environment';
 import { emailOrEmptyValidator } from '../../validatorfns/email-or-empty.validator';
 import { MatDialog } from '@angular/material/dialog';
@@ -25,7 +25,7 @@ export class TipFormComponent implements OnInit, OnDestroy {
 
   // tip svc injection
   private tipSvc = inject(TipService)
-  private authSvc = inject(AuthService)
+  private authStore = inject(AuthStore)
   private route = inject(ActivatedRoute)
 
   // receiving tip state
@@ -143,7 +143,7 @@ export class TipFormComponent implements OnInit, OnDestroy {
     // get token from local storage
     // extract user id as tipper id
     // allow null tipper id for guests
-    this.tipperId = this.authSvc.extractUIDFromToken()
+    this.tipperId = this.authStore.extractUIDFromToken()
 
     // validate card and stripe
     if (!this.card || !this.stripe) {

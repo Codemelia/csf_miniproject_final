@@ -43,7 +43,7 @@ public class UserController {
         if (userId != null && !userId.isBlank()) {
             return ResponseEntity.status(HttpStatus.CREATED).body(
                 AuthResponse.forRegistration(
-                    userId, "User registration was successful"));
+                    userId, "Registration successful! Please log in."));
         } else {
             throw new UserAuthenticationException("User registration failed");
         }
@@ -57,7 +57,7 @@ public class UserController {
         String token = userSvc.loginUser(user); // converts request to user and validates
         if (token != null && !token.isBlank()) {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(
-                AuthResponse.forLogin(token, "User login was successful"));
+                AuthResponse.forLogin(token, "Login successful! Welcome back."));
         } else {
             throw new UserAuthenticationException("User login failed");
         }

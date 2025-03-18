@@ -3,8 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { Subscription } from 'rxjs';
-import { ApiError } from '../../models/app.models';
-import { AuthService } from '../../services/auth.service';
+import { ApiError, UserLogin } from '../../models/app.models';
+import { AuthStore } from '../../stores/auth.store';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   // services
   private router = inject(Router)
-  private authSvc = inject(AuthService)
+  private authStore = inject(AuthStore)
   
   // error obj
   protected error!: ApiError
@@ -33,6 +33,20 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.createForm() // create form on init
+
+    // subscribe to login result on init
+    this.loginSub = this.authStore.loginResult$.subscribe(
+      response => {
+        if ('token' in response) {
+          this.successMsg = 'Login successful! Welcome back.'
+          console.log('>>> User login successful')
+          this.router.navigate(['/home'])
+        } else {
+          this.error = response
+          console.error('>>> User login failed')
+        }
+      }
+    ) 
   }
 
   // create form
@@ -45,11 +59,20 @@ export class LoginComponent implements OnInit, OnDestroy {
     })
   }
 
+  // log in - sends user details to auth store for validation
+  login() {
+    if (this.form.valid) {
+      const user = this.form.value
+      this.authStore.login(user)
+    }
+  }
+
+  /*
   // submit button
   login() {
     if (this.form.valid) {
-      const { email, password } = this.form.value
-      this.loginSub = this.authSvc.login(email, password).subscribe({
+      const user: UserLogin = this.form.value
+      this.loginSub = this.authStore.login(user).subscribe({
         next: () => {
           this.successMsg = 'Registration successful! Please log in.'
           console.log('>>> User login successful')
@@ -62,6 +85,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       })
     }
   }
+  */
 
   // unsub
   ngOnDestroy(): void {
