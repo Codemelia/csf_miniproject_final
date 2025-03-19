@@ -36,7 +36,6 @@ import { MatListModule } from '@angular/material/list';
 import { RoleGuard } from './guards/role.guard';
 import { AuthGuard } from './guards/auth.guard';
 import { WalletComponent } from './components/dashboard/wallet.component';
-import { CarouselComponent } from './components/unused/carousel.component';
 import { ProfileComponent } from './components/dashboard/profile.component';
 import { ArtisteQuizComponent } from './components/dashboard/artiste-quiz.component';
 import { SuccessPopupComponent } from './components/tip-a-vibee/success-popup.component';
@@ -75,7 +74,6 @@ const routes: Routes = [
     LoginComponent,
     RegisterComponent,
     WalletComponent,
-    CarouselComponent,
     ProfileComponent,
     ArtisteQuizComponent,
     SuccessPopupComponent,
@@ -84,7 +82,7 @@ const routes: Routes = [
   ],
   imports: [
     BrowserModule,
-    RouterModule.forRoot(routes),
+    RouterModule.forRoot(routes, { useHash: true }),
     BrowserAnimationsModule,
     ReactiveFormsModule,
     MatFormFieldModule,

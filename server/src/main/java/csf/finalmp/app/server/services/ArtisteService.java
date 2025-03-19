@@ -131,11 +131,13 @@ public class ArtisteService {
 
     // update artiste wallet
     // returns true if > 0 rows updated
-    public boolean updateArtisteWallet(String artisteId, Double balance) {
-        Artiste artiste = new Artiste();
-        artiste.setArtisteId(artisteId);
-        artiste.setWalletBalance(balance);
-        return artisteRepo.updateArtisteWallet(artiste) > 0;
+    public boolean updateArtisteWallet(String artisteId, Double amount) {
+
+        // get curr balance, add amount, save in artiste wallet
+        Double balance = artisteRepo.getArtisteBalance(artisteId);
+        balance += amount;
+        return artisteRepo.updateArtisteWallet(artisteId, balance) > 0;
+        
     }
 
     // get artiste by id

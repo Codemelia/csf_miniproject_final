@@ -22,7 +22,7 @@ import csf.finalmp.app.server.repositories.ArtisteRepository;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 
-// HANDLES ANYTH STRIPE RELATED
+// HANDLES STRIPE OAUTH
 
 @Service
 public class StripeService {

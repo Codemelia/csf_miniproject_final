@@ -2,6 +2,8 @@ package csf.finalmp.app.server.models;
 
 import java.time.LocalDateTime;
 
+import com.stripe.model.PaymentMethod;
+
 // PURPOSE OF THIS MODEL
 // STORE AND RETRIEVE TIP DETAILS
 
@@ -22,11 +24,12 @@ public class Tip {
 
     // will not be saved in mysql
     private String stageName;
+    private String paymentMethodId;
 
     // constructors
     public Tip() {}
     public Tip(Long tipId, String tipperName, String tipperMessage, String tipperEmail, String tipperId, String artisteId, Double amount, String paymentIntentId, 
-        String paymentStatus, LocalDateTime createdAt, LocalDateTime updatedAt, String stageName) {
+        String paymentStatus, LocalDateTime createdAt, LocalDateTime updatedAt, String stageName, String paymentMethodId) {
         this.tipId = tipId;
         this.tipperName = tipperName;
         this.tipperMessage = tipperMessage;
@@ -39,6 +42,7 @@ public class Tip {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.stageName = stageName;
+        this.paymentMethodId = paymentMethodId;
     }
 
     // getters and setters
@@ -68,14 +72,17 @@ public class Tip {
     public void setTipId(Long tipId) { this.tipId = tipId; }
     public String getStageName() { return stageName; }
     public void setStageName(String stageName) { this.stageName = stageName; }
+    public String getPaymentMethodId() { return paymentMethodId; }
+    public void setPaymentMethodId(String paymentMethodId) { this.paymentMethodId = paymentMethodId; }
     
     // to string
     @Override
     public String toString() {
-        return "Tip [tipId=" + tipId + ", tipperName=" + tipperName + ", tipperMessage=" + tipperMessage +
-            ", tipperEmail=" + tipperEmail + ", tipperId=" + tipperId + ", artisteId=" + artisteId
-            + ", amount=" + amount + ", paymentIntentId=" + paymentIntentId + ", paymentStatus=" + paymentStatus
-            + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", stageName=" + stageName + "]";
+        return "Tip [tipId=" + tipId + ", tipperName=" + tipperName + ", tipperMessage=" + tipperMessage
+                + ", tipperEmail=" + tipperEmail + ", tipperId=" + tipperId + ", artisteId=" + artisteId + ", amount="
+                + amount + ", paymentIntentId=" + paymentIntentId + ", paymentStatus=" + paymentStatus + ", createdAt="
+                + createdAt + ", updatedAt=" + updatedAt + ", stageName=" + stageName + ", paymentMethodId="
+                + paymentMethodId + "]";
     }
 
 }

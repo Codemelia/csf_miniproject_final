@@ -29,7 +29,7 @@ export class TipService extends ComponentStore<TipState> {
 
   // save tip after confirmed payment
   saveTip(confirmRequest: Tip): Observable<string> {
-    return this.http.put<string>('api/tips/save', confirmRequest, { 
+    return this.http.post<string>('api/tips/save', confirmRequest, { 
       headers: this.authStore.getJsonHeaders(),
       responseType: 'text' as 'json' })
   }

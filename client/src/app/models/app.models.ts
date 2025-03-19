@@ -1,3 +1,5 @@
+import { PaymentMethod } from "@stripe/stripe-js"
+
 export interface ApiError {
     timestamp: Date
     status: number
@@ -50,6 +52,7 @@ export interface Tip {
     createdAt: Date | null
     updatedAt: Date | null
     stageName: string | null
+    paymentMethodId: string | null
 }
 
 export interface TipResponse {

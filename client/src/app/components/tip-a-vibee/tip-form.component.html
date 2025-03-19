@@ -36,7 +36,7 @@
     
                         <mat-form-field appearance="fill" class="full-width">
                             <mat-label><mat-icon>perm_identity</mat-icon> Your Name</mat-label>
-                            <input matInput type="text" [(ngModel)]="tipperName" name="tipperName" 
+                            <input matInput type="text" name="tipperName" 
                                 formControlName="tipperName" placeholder="Let the Vibee know who you are 👋">
                             <mat-error *ngIf="form.get('tipperName')?.hasError('maxlength') &&
                                 form.get('tipperName')?.touched">Your name must not exceed 100 characters
@@ -45,7 +45,7 @@
 
                         <mat-form-field appearance="fill" class="full-width">
                             <mat-label><mat-icon> chat_bubble_outline</mat-icon> Your Message</mat-label>
-                            <input matInput type="text" [(ngModel)]="tipperMessage" name="tipperMessage" 
+                            <input matInput type="text" name="tipperMessage" 
                                 formControlName="tipperMessage" placeholder="Leave a nice message for the Vibee 💖">
                             <mat-error *ngIf="form.get('tipperMessage')?.hasError('maxlength') &&
                                 form.get('tipperMessage')?.touched">Your message must not exceed 255 characters
@@ -54,7 +54,7 @@
             
                         <mat-form-field appearance="fill" class="full-width">
                             <mat-label><mat-icon> mail_outline</mat-icon> Your Email</mat-label>
-                            <input matInput type="email" [(ngModel)]="tipperEmail" name="tipperEmail" 
+                            <input matInput type="email" name="tipperEmail" 
                                 formControlName="tipperEmail" placeholder="Enter your email to receive a receipt via email 🧾">
                             <mat-error *ngIf="(form.get('tipperEmail')?.hasError('maxlength') ||
                                 form.get('tipperEmail')?.hasError('emailOrEmpty')) && 

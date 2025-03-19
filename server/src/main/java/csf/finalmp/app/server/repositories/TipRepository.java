@@ -38,42 +38,22 @@ public class TipRepository {
     }
 
     // insert tip into db and return mysql id
-    public Long saveTip(Tip tip) {
-
-        // set insert boolean to determine if save is an insert
-        boolean isInsert = tip.getId() == null;
-
-        // keyholder to hold new id
-        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+    public String saveTip(Tip tip) {
 
         // perform insert/update
-        template.update(connection -> {
-            PreparedStatement ps;
+        template.update(
+            INSERT_TIP,
+            tip.getTipperName(),
+            tip.getTipperMessage(),
+            tip.getTipperEmail(),
+            tip.getTipperId(),
+            tip.getArtisteId(),
+            tip.getAmount(),
+            tip.getPaymentIntentId(),
+            tip.getPaymentStatus()
+        );
 
-            if (isInsert) {
-                ps = connection.prepareStatement(
-                    INSERT_TIP,
-                    Statement.RETURN_GENERATED_KEYS);
-                ps.setString(1, tip.getTipperName());
-                ps.setString(2, tip.getTipperMessage());
-                ps.setString(3, tip.getTipperEmail());
-                ps.setString(4, tip.getTipperId());
-                ps.setString(5, tip.getArtisteId());
-                ps.setDouble(6, tip.getAmount());
-                ps.setString(7, tip.getPaymentIntentId());
-                ps.setString(8, tip.getPaymentStatus());
-            } else {
-                ps = connection.prepareStatement(UPDATE_PAYMENT_STATUS);
-                ps.setString(1, tip.getPaymentStatus());
-                ps.setString(2, tip.getPaymentIntentId());
-            }
-
-            return ps;}, 
-            keyHolder);
-
-        // return id based on whether it is a update/insert
-        return isInsert ? Objects.requireNonNull(keyHolder.getKey())
-            .longValue() : tip.getId();
+        return tip.getArtisteId();
         
     }
 
@@ -93,6 +73,7 @@ public class TipRepository {
                 rs.getString("payment_status"),
                 rs.getTimestamp("created_at").toLocalDateTime(),
                 rs.getTimestamp("updated_at").toLocalDateTime(),
+                null,
                 null),
             paymentIntentId);
     }
@@ -113,6 +94,7 @@ public class TipRepository {
                 rs.getString("payment_status"),
                 rs.getTimestamp("created_at").toLocalDateTime(),
                 rs.getTimestamp("updated_at").toLocalDateTime(),
+                null,
                 null),
             artisteId);
 

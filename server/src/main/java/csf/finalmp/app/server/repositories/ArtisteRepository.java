@@ -71,12 +71,12 @@ public class ArtisteRepository {
 
     // update artiste wallet
     // return int of rows affected
-    public int updateArtisteWallet(Artiste artiste) {
+    public int updateArtisteWallet(String artisteId, double balance) {
 
         return template.update(
             UPDATE_WALLET, 
-            artiste.getWalletBalance(), 
-            artiste.getArtisteId());
+            balance, 
+            artisteId);
 
     }
 

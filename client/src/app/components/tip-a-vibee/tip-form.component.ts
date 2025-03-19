@@ -1,6 +1,6 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { TipService } from '../../services/tip.service';
-import { loadStripe, Stripe, StripeCardElement, StripeCardElementChangeEvent } from '@stripe/stripe-js';
+import { loadStripe, PaymentMethod, Stripe, StripeCardElement, StripeCardElementChangeEvent } from '@stripe/stripe-js';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiError, Tip, TipResponse } from '../../models/app.models';
 import { catchError, map, of, Subscription, switchMap, tap } from 'rxjs';
@@ -102,7 +102,7 @@ export class TipFormComponent implements OnInit, OnDestroy {
         [ Validators.maxLength(255) ]
       ),
       tipperEmail: this.fb.control<string | null>(null,
-        [ emailOrEmptyValidator(), Validators.maxLength(254) ] // custom validator to allow empty input
+        [ emailOrEmptyValidator(), Validators.maxLength(255) ] // custom validator to allow empty input
       ), 
       amount: this.fb.control<number>(0,
         [ Validators.required, Validators.min(1) ]),
@@ -179,11 +179,30 @@ export class TipFormComponent implements OnInit, OnDestroy {
     if (this.form.value.tipperEmail) {
       this.tipperEmail = this.form.value.tipperEmail
     }
+    
+    // create payment method
+    const methodResponse = await this.stripe.createPaymentMethod({
+      type: 'card',
+      card: this.card
+    })
+
+    if (methodResponse.paymentMethod == undefined) {
+      this.error = {
+        timestamp: new Date(),
+        status: 400,
+        error: 'Invalid Card Error',
+        message: 'Card is invalid. Please try again.'
+      }
+      return
+    }
+
+    const paymentMethodId: string = methodResponse.paymentMethod.id
+    console.log('>>> Payment Method ID: ', paymentMethodId)
 
     // build tip request to server backend
     this.unconfirmRequest = this.buildUnconfirmRequest(
       this.tipperName, this.tipperMessage, this.tipperEmail,
-      this.tipperId, this.artisteStageName, this.amount)
+      this.tipperId, this.artisteStageName, this.amount, paymentMethodId)
 
     // send tip to server
     // subscribe to the svc and return response/error accordingly
@@ -227,9 +246,9 @@ export class TipFormComponent implements OnInit, OnDestroy {
             tap(thankYouMessage => { // method returns artiste's thank you message as response
               if (thankYouMessage != null && thankYouMessage.length > 0) { // validate ty response
                 console.log('>>> Payment successful')
+                if (this.stripe) this.mountCardElement(this.stripe) // remount card element
                 this.form.reset() // reset form when payment goes through
                 this.onPaymentSuccess(thankYouMessage) // send artiste ty message to dialog and open
-                if (this.stripe) this.mountCardElement(this.stripe) // remount card element
               } else {
                 this.error = {
                   timestamp: new Date(),
@@ -271,7 +290,8 @@ export class TipFormComponent implements OnInit, OnDestroy {
   // build unconfirmed request: sends info to server backend
   // for server to generate client secret and pass back to frontend
   buildUnconfirmRequest(tipperName: string | null, tipperMessage: string | null, tipperEmail: string | null, 
-    tipperId: string | null, artisteStageName: string | null, amount: number): Tip {
+    tipperId: string | null, artisteStageName: string | null, amount: number, 
+    paymentMethodId: string): Tip {
     const unconfirmRequest: Tip = {
       tipId: null,
       tipperName: tipperName,
@@ -284,7 +304,8 @@ export class TipFormComponent implements OnInit, OnDestroy {
       paymentStatus: null,
       createdAt: null,
       updatedAt: null,
-      stageName: artisteStageName
+      stageName: artisteStageName,
+      paymentMethodId: paymentMethodId
     }
 
     console.log('>>> Tip request for client secret built: ', unconfirmRequest)
@@ -308,7 +329,8 @@ export class TipFormComponent implements OnInit, OnDestroy {
       paymentStatus: paymentStatus,
       createdAt: null,
       updatedAt: null,
-      stageName: artisteStageName
+      stageName: artisteStageName,
+      paymentMethodId: null
     }
     console.log('>>> Tip request for saving built: ', confirmRequest)
     return confirmRequest

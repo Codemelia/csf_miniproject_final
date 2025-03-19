@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
             "QR Code Generation Error", 
             e.getMessage()
         );
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(error);
     }
 
