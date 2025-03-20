@@ -24,7 +24,7 @@ public class TipSql {
             payment_status VARCHAR(30) DEFAULT 'pending' NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
-            FOREIGN KEY(artiste_id) REFERENCES artistes(artiste_id) ON DELETE CASCADE);
+            FOREIGN KEY(artiste_id) REFERENCES artiste_transaction_details(artiste_id) ON DELETE CASCADE);
     """;
 
     // insert tip into table

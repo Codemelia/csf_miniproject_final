@@ -60,9 +60,11 @@ export interface TipResponse {
     clientSecret: string
 }
 
-export interface Artiste {
+export interface ArtisteProfile {
     artisteId: string
     stageName: string
+    categories: string[]
     bio: string | null
     photo: Blob | null
+    thankYouMessage: string | null
 }

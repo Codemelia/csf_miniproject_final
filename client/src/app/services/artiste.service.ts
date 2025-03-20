@@ -14,12 +14,16 @@ export class ArtisteService {
 
   // create artiste object
   // returns feedback string
-  createArtiste(artisteId: string, stageName: string, bio: string | null, photoBlob: Blob | null): Observable<string> {
+  createArtiste(artisteId: string, stageName: string, categories: string[], 
+      bio: string | null, photoBlob: Blob | null, thankYouMessage: string | null): Observable<string> {
     if (artisteId) {
       const formData = new FormData();
       formData.append('stageName', stageName)
+      if (categories && categories.length > 0) {
+        formData.append('categories', categories.join(',')) }
       if (bio) { formData.append('bio', bio) }
       if (photoBlob) { formData.append('photo', photoBlob ) }
+      if (thankYouMessage) { formData.append('thankYouMessage', thankYouMessage) }
   
       return this.http.post<string>(`/api/artiste/create/${artisteId}`, formData, {
         headers: this.authStore.getNoContentHeaders(),
@@ -33,18 +37,18 @@ export class ArtisteService {
   // returns true if exist
   artisteExists(artisteId: string): Observable<boolean> {
     const params = new HttpParams().set('artisteId', artisteId)
-    return this.http.get<boolean>('/api/artiste-check', { params,
+    return this.http.get<boolean>('/api/check-artiste', { params,
       headers: this.authStore.getJsonHeaders()})
   }
 
   // gen oauth url
   genOAuthUrl(artisteId: string): Observable<string> {
-    return this.http.get<string>(`/api/stripe/oauth-gen/${artisteId}`,
+    return this.http.get<string>(`/api/stripe/gen-oauth/${artisteId}`,
       { headers: this.authStore.getJsonHeaders(),
         responseType: 'text' as 'json' })
   }
 
-  // check if artiste stripe access token is in redis
+  // check if artiste stripe access token is in mysql
   stripeAccessTokenExists(artisteId: string): Observable<boolean> {
     return this.http.get<boolean>(`api/stripe/check-access/${artisteId}`,
       { headers: this.authStore.getJsonHeaders() })

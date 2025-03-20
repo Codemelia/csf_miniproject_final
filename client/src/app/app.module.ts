@@ -43,6 +43,7 @@ import { OverviewComponent } from './components/dashboard/overview.component';
 import { TipsHistoryComponent } from './components/dashboard/tips-history.component';
 import { AuthStore } from './stores/auth.store';
 import { provideComponentStore } from '@ngrx/component-store';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -102,7 +103,8 @@ const routes: Routes = [
     MatDialogModule,
     MatSidenavModule,
     MatMenuModule,
-    MatListModule
+    MatListModule,
+    MatButtonToggleModule
   ],
   providers: [
     provideHttpClient(),

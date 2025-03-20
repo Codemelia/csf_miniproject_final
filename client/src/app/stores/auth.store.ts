@@ -148,7 +148,7 @@ export class AuthStore extends ComponentStore<AuthState> {
         const token = this.state().token
         return new HttpHeaders({
             'Authorization': `Bearer ${token}`
-    })
+        })
     }
 
     // methods to get values from state directly for one-time usage

@@ -3,7 +3,6 @@ package csf.finalmp.app.server.models;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-// PURPOSE OF THIS MODEL
 // CONV TO AUTH REQUEST TO SERVER SIDE USER OBJECT
 
 public class User {

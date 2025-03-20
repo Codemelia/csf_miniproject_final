@@ -17,8 +17,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import csf.finalmp.app.server.models.Artiste;
-import csf.finalmp.app.server.repositories.ArtisteRepository;
+import csf.finalmp.app.server.models.ArtisteTransactionDetails;
+import csf.finalmp.app.server.repositories.ArtisteTransactionRepository;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 
@@ -37,7 +37,7 @@ public class StripeService {
     private String stripeClientId;
 
     @Autowired
-    private ArtisteRepository artisteRepo;
+    private ArtisteTransactionRepository artisteTransRepo;
 
     private final RestTemplate template = new RestTemplate();
 
@@ -110,14 +110,14 @@ public class StripeService {
                 .formatted(stripeAccessToken, stripeRefreshToken, stripeAccountId));
 
             // save stripe account id
-            Artiste artiste = new Artiste();
+            ArtisteTransactionDetails artiste = new ArtisteTransactionDetails();
             artiste.setArtisteId(artisteId);
             artiste.setStripeAccountId(stripeAccountId);
 
             // save stripe access token and refresh token
             artiste.setStripeAccessToken(stripeAccessToken);
             artiste.setStripeRefreshToken(stripeRefreshToken);
-            artisteRepo.updateArtisteStripe(artiste);
+            artisteTransRepo.saveArtisteStripe(artiste);
 
         } else {
             logger.severe(">>> Stripe OAuth Error: %s".formatted(response.getStatusCode().toString()));

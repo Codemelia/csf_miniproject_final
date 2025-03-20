@@ -6,14 +6,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import csf.finalmp.app.server.services.UserService;
-import csf.finalmp.app.server.services.ArtisteService;
+import csf.finalmp.app.server.services.ArtisteTransactionService;
 import csf.finalmp.app.server.services.TipService;
 
 @SpringBootApplication
 public class ServerApplication implements CommandLineRunner {
 
 	@Autowired
-	private ArtisteService artisteSvc;
+	private ArtisteTransactionService artisteTransSvc;
 
 	@Autowired
 	private TipService tipSvc;
@@ -34,8 +34,8 @@ public class ServerApplication implements CommandLineRunner {
 		boolean usersExists = userSvc.tableExists();
 		if(!usersExists) { userSvc.createTable(); }
 
-		boolean artisteExists = artisteSvc.tableExists();
-		if (!artisteExists) { artisteSvc.createTable();	}
+		boolean artisteExists = artisteTransSvc.tableExists();
+		if (!artisteExists) { artisteTransSvc.createTable();	}
 
 		boolean tipsExists = tipSvc.tableExists();
 		if(!tipsExists) { tipSvc.createTable(); }

@@ -22,7 +22,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // subscriptions
   private artisteSub!: Subscription
-  private querySub!: Subscription
   private stripeSub!: Subscription
 
   // data and states
@@ -55,14 +54,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       });
     }
-
-    // handling query params for Stripe completion state
-    this.querySub = this.route.queryParams.subscribe((params) => {
-      const fromStripe = params['stripeComplete']
-      if (fromStripe === 'true') {
-        console.log('>>> Stripe has been linked')
-      }
-    });
 
     // checking if artiste exists
     if (this.artisteId != null) {
@@ -98,9 +89,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // unsub
   ngOnDestroy(): void {
-    if (this.artisteSub) this.artisteSub.unsubscribe()
-    if (this.querySub) this.querySub.unsubscribe()
-    if (this.stripeSub) this.stripeSub.unsubscribe()
+    this.artisteSub?.unsubscribe()
+    this.stripeSub?.unsubscribe()
   }
 
 }

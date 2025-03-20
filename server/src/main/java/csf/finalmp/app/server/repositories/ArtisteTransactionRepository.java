@@ -2,18 +2,18 @@ package csf.finalmp.app.server.repositories;
 
 import java.util.List;
 
-import static csf.finalmp.app.server.utils.ArtisteSql.*;
+import static csf.finalmp.app.server.utils.ArtisteTransactionSql.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import csf.finalmp.app.server.exceptions.custom.UserNotFoundException;
-import csf.finalmp.app.server.models.Artiste;
+import csf.finalmp.app.server.models.ArtisteTransactionDetails;
 
-// PURPOSE OF THIS REPO: DB CRUD OPS FOR ARTISTES
+// MYSQL CRUD OPS FOR ARTISTE TRANSACTION DETAILS
 
 @Repository
-public class ArtisteRepository {
+public class ArtisteTransactionRepository {
     
     @Autowired
     private JdbcTemplate template;
@@ -31,41 +31,15 @@ public class ArtisteRepository {
         template.execute(CREATE_ARTISTES_TABLE);
     }
 
-    // insert artiste into table and return rows inserted
-    public int insertArtiste(Artiste artiste) {
-
-        return template.update(INSERT_ARTISTE, 
-            artiste.getArtisteId(),
-            artiste.getStageName(),
-            artiste.getBio(),
-            artiste.getPhoto(),
-            artiste.getQrCode(),
-            artiste.getQrCodeUrl());
-        
-    }
-
-    // update artiste stripe details
-    public int updateArtisteStripe(Artiste artiste) {
+    // insert artiste stripe details
+    public int saveArtisteStripe(ArtisteTransactionDetails artisteDetails) {
         
         return template.update(
-            UPDATE_ARTISTE_STRIPE,
-            artiste.getStripeAccountId(),
-            artiste.getStripeAccessToken(),
-            artiste.getStripeRefreshToken(),
-            artiste.getArtisteId());
-
-    }
-
-    // update artiste and return rows updated
-    public int updateArtisteProfile(Artiste artiste) {
-
-        return template.update(
-            UPDATE_ARTISTE_PROFILE,
-            artiste.getStageName(),
-            artiste.getBio(),
-            artiste.getPhoto(),
-            artiste.getThankYouMessage(),
-            artiste.getArtisteId());
+            INSERT_ARTISTE_STRIPE,
+            artisteDetails.getArtisteId(),
+            artisteDetails.getStripeAccountId(),
+            artisteDetails.getStripeAccessToken(),
+            artisteDetails.getStripeRefreshToken());
 
     }
 
@@ -74,7 +48,7 @@ public class ArtisteRepository {
     public int updateArtisteWallet(String artisteId, double balance) {
 
         return template.update(
-            UPDATE_WALLET, 
+            UPDATE_ARTISTE_WALLET, 
             balance, 
             artisteId);
 
@@ -82,23 +56,17 @@ public class ArtisteRepository {
 
     // get artiste by id
     // on error, throw custom error
-    public Artiste getArtisteById(String artisteId) {
+    public ArtisteTransactionDetails getArtisteById(String artisteId) {
 
         try {
             return template.queryForObject(
                 SELECT_ARTISTE_BY_ID, 
-                (rs, rowNum) -> new Artiste(
+                (rs, rowNum) -> new ArtisteTransactionDetails(
                     rs.getString("artiste_id"), 
-                    rs.getString("stage_name"), 
-                    rs.getString("bio"), 
-                    rs.getBytes("photo"), 
-                    rs.getBytes("qr_code"),
-                    rs.getString("qr_code_url"),
                     rs.getString("stripe_account_id"), 
                     rs.getString("stripe_access_token"),
                     rs.getString("stripe_refresh_token"),
                     rs.getDouble("wallet_balance"),
-                    rs.getString("thank_you_message"),
                     rs.getTimestamp("created_at").toLocalDateTime(), 
                     rs.getTimestamp("updated_at").toLocalDateTime()),
                 artisteId);
@@ -110,22 +78,16 @@ public class ArtisteRepository {
     }
 
     // get all artistes in db
-    public List<Artiste> getAllArtistes() {
+    public List<ArtisteTransactionDetails> getAllArtistes() {
 
         return template.query(
             SELECT_ALL_ARTISTES, 
-            (rs, rowNum) -> new Artiste(
+            (rs, rowNum) -> new ArtisteTransactionDetails(
                 rs.getString("artiste_id"), 
-                rs.getString("stage_name"), 
-                rs.getString("bio"), 
-                rs.getBytes("photo"), 
-                rs.getBytes("qr_code"),
-                rs.getString("qr_code_url"),
                 rs.getString("stripe_account_id"),
                 rs.getString("stripe_access_token"),
                 rs.getString("stripe_refresh_token"),
                 rs.getDouble("wallet_balance"), 
-                rs.getString("thank_you_message"),
                 rs.getTimestamp("created_at").toLocalDateTime(), 
                 rs.getTimestamp("updated_at").toLocalDateTime()));
 
@@ -137,16 +99,6 @@ public class ArtisteRepository {
         return template.queryForObject(CHECK_ARTISTE_ID,
         Integer.class,
         artisteId);
-
-    }
-
-    // check existing stagename in db
-    public Integer checkArtisteStageName(String stageName) {
-
-        return template.queryForObject(
-            CHECK_ARTISTE_STAGE_NAME,
-            Integer.class,
-            stageName);
 
     }
 
@@ -172,14 +124,6 @@ public class ArtisteRepository {
     public String getArtisteIdByStageName(String artisteStageName) {
         return template.queryForObject(
             SELECT_ARTISTE_ID_BY_STAGE_NAME, 
-            String.class,
-            artisteStageName);
-    }
-
-    // get artiste ty message by stage name
-    public String getArtisteThankYouMessage(String artisteStageName) {
-        return template.queryForObject(
-            SELECT_ARTISTE_THANK_YOU_MSG_BY_STAGE_NAME, 
             String.class,
             artisteStageName);
     }

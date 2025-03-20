@@ -6,17 +6,25 @@
         <mat-card-subtitle>🌟 STEP 1: The Spotlight is on You</mat-card-subtitle>
         <mat-form-field>
             <mat-label>Your Stage Name</mat-label>
-            <input matInput [(ngModel)]="stageName" #stageNameInput="ngModel" placeholder="Be unique, help Vibers identify you easily " required>
-            <mat-error *ngIf="stageNameInput.invalid && stageNameInput.touched">Enter your stage name so Vibers know who you are!</mat-error>
+            <input matInput [(ngModel)]="stageName" #stageNameInput="ngModel" 
+                placeholder="Be unique, help Vibers identify you easily" required maxlength="100">
+            <mat-error *ngIf="stageNameInput.invalid 
+                && stageNameInput.touched">Enter your stage name so Vibers know who you are!</mat-error>
         </mat-form-field>
         <button mat-raised-button color="primary" (click)="nextStep()" 
             [disabled]="stageNameInput.invalid">Next</button>
     </div>
     <div class="step" *ngIf="step === 2">
-        <mat-card-subtitle>🎤 STEP 2: What's Your Story?</mat-card-subtitle>
+        <mat-card-subtitle>🎯 STEP 2: Your Areas of Expertise</mat-card-subtitle>
+        <mat-label>Categories that Best Apply to You</mat-label>
         <mat-form-field>
-            <mat-label>Your Bio</mat-label>
-            <textarea matInput [(ngModel)]="bio" placeholder="Tell us more about yourself"></textarea>
+            <mat-button-toggle-group [(ngModel)]="selectedCategories" name="categories" aria-label="Category Selection" multiple>
+                <mat-button-toggle *ngFor="let category of categories" [value]="category"
+                    [disabled]="(selectedCategories.length || 0) >= 5 && 
+                    !selectedCategories.includes(category)">
+                    {{ category }}
+                </mat-button-toggle>
+            </mat-button-toggle-group>
         </mat-form-field>
         <mat-card-actions>
             <button mat-raised-button color="warn" (click)="previousStep()">Back</button>
@@ -24,26 +32,49 @@
         </mat-card-actions>
     </div>
     <div class="step" *ngIf="step === 3">
-        <mat-card-subtitle>🎭 STEP 3: Your Stage, Your Image</mat-card-subtitle>
+        <mat-card-subtitle>🎤 STEP 3: What's Your Story?</mat-card-subtitle>
+        <mat-form-field>
+            <mat-label>Your Bio</mat-label>
+            <textarea matInput [(ngModel)]="bio" #bioInput="ngModel"
+                placeholder="Tell us more about yourself" maxlength="255"></textarea>
+            <mat-hint align="end">{{ bioInput?.value?.length || 0 }}/255</mat-hint>
+        </mat-form-field>
+        <mat-card-actions>
+            <button mat-raised-button color="warn" (click)="previousStep()">Back</button>
+            <button mat-raised-button color="primary" (click)="nextStep()">Next</button>
+        </mat-card-actions>
+    </div>
+    <div class="step" *ngIf="step === 4">
+        <mat-card-subtitle>🎭 STEP 4: Your Stage, Your Image</mat-card-subtitle>
         <div class="img-input">
             <mat-label style="margin-bottom: 15px;">Your Profile Photo</mat-label>
             <label class="custom-file-input" for="fileInput">Choose File</label>
             <input type="file" id="fileInput" (change)="onFileChange($event)" accept="image/*">
             <p *ngIf="!photoUrl">No file chosen</p>
             <img *ngIf="photoUrl" [src]="photoUrl" alt="Preview" class="preview">
+            <mat-error *ngIf="fileTooLarge">File size exceeds 10MB. Please upload a smaller file.</mat-error>
         </div>
         <mat-card-actions>
             <button mat-raised-button color="warn" (click)="previousStep()">Back</button>
-            <button mat-raised-button color="primary" (click)="saveData()" 
-                [disabled]="!stageName">Save and Set Up Stripe</button>
+            <button mat-raised-button color="primary" (click)="nextStep()">Next</button>
         </mat-card-actions>
     </div>
-    <div class="step" *ngIf="step === 4">
-        <mat-card-subtitle>Step 4: Set Up Your Stripe Account</mat-card-subtitle>
+    <div class="step" *ngIf="step === 5">
+        <mat-card-subtitle>🤗 STEP 5: Thank Your Supporters</mat-card-subtitle>
+        <mat-form-field>
+            <mat-label>Your Thank You Message</mat-label>
+            <textarea matInput [(ngModel)]="thankYouMessage" #thankYouMessageInput="ngModel" 
+                placeholder="Write a little thank you note to Vibers who send you tips!"
+                maxlength="255"></textarea>
+            <mat-hint align="end">{{ thankYouMessageInput?.value?.length || 0 }}/255</mat-hint>
+        </mat-form-field>
+        <button mat-raised-button color="warn" (click)="previousStep()">Back</button>
+        <button mat-raised-button color="primary" (click)="saveData()" style="margin-top: 15px;">Save and Set Up Stripe</button>
+    </div>
+    <div class="step" *ngIf="step === 6">
+        <mat-card-subtitle>Step 6: Set Up Your Stripe Account</mat-card-subtitle>
         <mat-label style="margin-bottom: 20px;">This step is crucial to help you get that 💰!</mat-label>
         <mat-card-actions>
-            <button *ngIf="error" mat-raised-button color="accent" (click)="previousStep()">
-                Back</button>
             <button mat-raised-button color="accent" (click)="genOAuthUrl()" 
                 [disabled]="isStripeLinked || !artisteExists">
                 {{ isStripeLinked ? 'Stripe Already Connected' : 'Connect Stripe Account' }}

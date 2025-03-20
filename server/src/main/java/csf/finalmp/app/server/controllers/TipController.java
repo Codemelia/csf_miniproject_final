@@ -22,7 +22,8 @@ import com.stripe.exception.StripeException;
 
 import csf.finalmp.app.server.exceptions.custom.StripePaymentException;
 import csf.finalmp.app.server.models.Tip;
-import csf.finalmp.app.server.services.ArtisteService;
+import csf.finalmp.app.server.services.ArtisteProfileService;
+import csf.finalmp.app.server.services.ArtisteTransactionService;
 import csf.finalmp.app.server.services.EmailService;
 import csf.finalmp.app.server.services.TipService;
 
@@ -40,7 +41,10 @@ public class TipController {
     private TipService tipSvc;
 
     @Autowired
-    private ArtisteService artisteSvc;
+    private ArtisteTransactionService artisteTransSvc;
+
+    @Autowired
+    private ArtisteProfileService artisteProfSvc;
 
     @Autowired
     private EmailService emailSvc;
@@ -68,13 +72,16 @@ public class TipController {
         logger.info(">>> Processing tip confirmation for Tip Request: %s".formatted(confirmedRequest.toString()));
         if (confirmedRequest.getPaymentStatus().contains("succeeded")) {
             String artisteId = tipSvc.saveTip(confirmedRequest);
-            artisteSvc.updateArtisteWallet(artisteId, confirmedRequest.getAmount());
+            artisteTransSvc.updateArtisteWallet(artisteId, confirmedRequest.getAmount());
             logger.info(">>> Tip saved for Artiste with ID: %s".formatted(artisteId));
-            String thankYouMessage = artisteSvc.getArtisteThankYouMessage(confirmedRequest.getStageName()); // get thank you message
-            emailSvc.sendTemplateEmail(confirmedRequest, thankYouMessage);
+            String thankYouMessage = artisteProfSvc.getArtisteThankYouMsgById(artisteId); // change to artiste profile
+
+            if (confirmedRequest.getTipperEmail() != null) // send receipt email if tipper email provided
+                emailSvc.sendTemplateEmail(confirmedRequest, thankYouMessage);
+
             return ResponseEntity.ok().body(thankYouMessage);
         } else {
-            throw new StripePaymentException("Payment failed. Please try again."); // throw exception as I am only saving successful payments
+            throw new StripePaymentException("Payment failed. Please try again."); // only saving succesful payments
         }
     
     }

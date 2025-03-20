@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import csf.finalmp.app.server.exceptions.custom.UserNotFoundException;
-import csf.finalmp.app.server.services.ArtisteService;
+import csf.finalmp.app.server.services.ArtisteProfileService;
+import csf.finalmp.app.server.services.ArtisteTransactionService;
 import csf.finalmp.app.server.services.StripeService;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -34,31 +35,23 @@ public class StripeController {
     private StripeService stripeSvc;
 
     @Autowired
-    private ArtisteService artisteSvc;
+    private ArtisteTransactionService artisteTransSvc;
+
+    @Autowired
+    private ArtisteProfileService artisteProfSvc;
 
     private Logger logger = Logger.getLogger(StripeController.class.getName());
 
-    @GetMapping(path = "/oauth-gen/{artisteId}")
+    @GetMapping(path = "/gen-oauth/{artisteId}")
     public ResponseEntity<String> genOAuthUrl(
         @PathVariable("artisteId") String artisteId) {
         
         logger.info(">>> Generating OAuth URL for artiste with ID: %s".formatted(artisteId));
-        if (!artisteSvc.checkArtisteId(artisteId)) {
+        if (!artisteProfSvc.checkArtisteId(artisteId)) {
             throw new UserNotFoundException("Vibee could not be found.");
         }
         String oAuthUrl = stripeSvc.genOAuthUrl(artisteId);
         return ResponseEntity.status(HttpStatus.CREATED).body(oAuthUrl);
-    }
-
-    // check if access token exists under artiste id
-    @GetMapping(path = "/check-access/{artisteId}")
-    public ResponseEntity<Boolean> getStripeAccountId(
-        @PathVariable("artisteId") String artisteId) {
-
-        logger.info(">>> Checking Stripe access token for artiste with ID: %s".formatted(artisteId));
-        boolean stripeAccessValid = artisteSvc.checkArtisteStripeAccess(artisteId);
-        return ResponseEntity.ok().body(stripeAccessValid);
-
     }
 
     // store oauth details and send a redirect back to dashboard on frontend app
@@ -75,7 +68,18 @@ public class StripeController {
 
         logger.info(">>> Callback from Stripe OAuth received: %s | %s".formatted(code, state));
         stripeSvc.saveOAuthResponse(code, state, error); // exceptions will be handled by controller advice
-        response.sendRedirect("%s/dashboard?%s".formatted(frontendBaseUrl, "stripeComplete=true"));
+        response.sendRedirect("%s/dashboard/overview".formatted(frontendBaseUrl));
+
+    }
+
+    // check if access token exists under artiste id
+    @GetMapping(path = "/check-access/{artisteId}")
+    public ResponseEntity<Boolean> getStripeAccountId(
+        @PathVariable("artisteId") String artisteId) {
+
+        logger.info(">>> Checking Stripe access token for artiste with ID: %s".formatted(artisteId));
+        boolean stripeAccessValid = artisteTransSvc.checkArtisteStripeAccess(artisteId);
+        return ResponseEntity.ok().body(stripeAccessValid);
 
     }
     

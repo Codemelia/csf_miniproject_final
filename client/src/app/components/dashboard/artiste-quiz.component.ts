@@ -24,13 +24,26 @@ export class ArtisteQuizComponent implements OnInit, OnDestroy {
   artisteId: string | null = null
 
   step: number = 1
-  totalSteps: number = 5
-  progress: number = 20 // Initial progress (1/5)
+  totalSteps: number = 7
+  progress: number = 100 / 7 // Initial progress (1/7)
+
+  // categories for artistes to choose from
+  categories: string[] = [
+    'Music', 'Comedy', 'Dance', 'Theater',
+    'Poetry', 'Film', 'Visual Arts', 'Literature',
+    'Photography', 'Magic', 'Fashion', 'Podcasting',
+    'Street Performance', 'Painting', 'Animation', 'Illustration',
+    'Live Streaming', 'Radio', 'Fitness', 'Crafts',
+    'Gaming', 'Esports', 'Live Music' ]
 
   stageName = ''
-  bio = ''
+  selectedCategories: string[] = []
+  bio: string | null = null
   photo: Blob | null = null
+  thankYouMessage: string | null = null
+
   photoUrl: string | null = null
+  fileTooLarge: boolean = false;
 
   error!: ApiError
   successMsg: string | null = null
@@ -52,7 +65,7 @@ export class ArtisteQuizComponent implements OnInit, OnDestroy {
     }
 
     if (this.artisteExists && !this.isStripeLinked) {
-      this.step = 4 // if artiste exists but stripe oauth not complete, set step to 4 directly
+      this.step = 6 // if artiste exists but stripe oauth not complete, set step to 4 directly
       this.progress = (this.step / this.totalSteps) * 100 // set progress to full directly
     }
     
@@ -76,15 +89,31 @@ export class ArtisteQuizComponent implements OnInit, OnDestroy {
   onFileChange(event: any) {
       this.photo = event.target.files[0]
 
-      // conv to base64 url for preview
-      const reader = new FileReader()
-      reader.onload = () => {
-        this.photoUrl = reader.result as string
+      if (this.photo) {
+
+        // set max size to 10mb in bytes
+        // if image size too large, set file too large to show error on form
+        const maxSize = 10 * 1024 * 1024
+        if (this.photo.size > maxSize) {
+
+          this.fileTooLarge = true
+          this.photoUrl = null
+
+        } else {
+
+          this.fileTooLarge = false
+
+          // conv to base64 url for preview
+          const reader = new FileReader()
+          reader.onload = () => {
+            this.photoUrl = reader.result as string
+          }
+
+          reader.readAsDataURL(this.photo)
+        }
+
       }
 
-      if (this.photo != null) {
-        reader.readAsDataURL(this.photo)
-      }
   }
 
   // save artiste data before setting up stripe
@@ -145,8 +174,13 @@ export class ArtisteQuizComponent implements OnInit, OnDestroy {
 
   // helper method for saving artiste after conversion of photo
   private saveArtiste(photoBlob: Blob | null) {
+
+    console.log('>>> Categories selected: ', this.selectedCategories)
     if (this.artisteId) {
-      this.artisteSub = this.artisteSvc.createArtiste(this.artisteId, this.stageName, this.bio, photoBlob).subscribe({
+      this.artisteSub = this.artisteSvc.createArtiste(
+        this.artisteId, this.stageName, this.selectedCategories, 
+        this.bio, photoBlob, this.thankYouMessage
+      ).subscribe({
         next: (resp) => {
           console.log(`>>> Artiste save response: ${resp}`)
           
@@ -165,7 +199,7 @@ export class ArtisteQuizComponent implements OnInit, OnDestroy {
           }
         },
         error: (err) => {
-          this.error = err
+          this.error = err.error
           console.log(this.error)
         }
       })

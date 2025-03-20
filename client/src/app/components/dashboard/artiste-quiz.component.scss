@@ -44,6 +44,25 @@ mat-form-field {
     }
 }
 
+mat-button-toggle-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    background-color: #350180;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+mat-button-toggle {
+    border-radius: 8px;
+    background-color: #350180;
+    margin: 5px;
+}
+
+mat-button-toggle:hover {
+    background-color: #6200ea;
+}
+
 mat-card-actions {
     display: flex;
     justify-content: center;

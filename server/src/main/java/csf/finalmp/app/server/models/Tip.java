@@ -2,9 +2,6 @@ package csf.finalmp.app.server.models;
 
 import java.time.LocalDateTime;
 
-import com.stripe.model.PaymentMethod;
-
-// PURPOSE OF THIS MODEL
 // STORE AND RETRIEVE TIP DETAILS
 
 public class Tip {

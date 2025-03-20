@@ -2,17 +2,13 @@ package csf.finalmp.app.server.repositories;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 import csf.finalmp.app.server.models.Tip;
 
 import static csf.finalmp.app.server.utils.TipSql.*;
 
-import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.util.List;
-import java.util.Objects;
 
 @Repository
 public class TipRepository {

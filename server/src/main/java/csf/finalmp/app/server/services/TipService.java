@@ -29,7 +29,10 @@ public class TipService {
 
     // for inter-table validation only
     @Autowired
-    private ArtisteService artisteSvc;
+    private ArtisteTransactionService artisteTransSvc;
+
+    @Autowired
+    private ArtisteProfileService artisteProfSvc;
 
     // logger to ensure proper tracking
     private Logger logger = Logger.getLogger(TipService.class.getName());
@@ -59,7 +62,7 @@ public class TipService {
 
         // check if artiste stage name exists in artistes table
         String artisteStageName = unconfirmedRequest.getStageName();
-        boolean stageNameExists = artisteSvc.checkArtisteStageName(artisteStageName);
+        boolean stageNameExists = artisteProfSvc.checkArtisteStageName(artisteStageName);
 
         // if artiste exists, proceed with trans
         // otherwise, throw error
@@ -71,17 +74,17 @@ public class TipService {
         }
  
         // retrieve artiste id
-        String artisteId = artisteSvc.getArtisteIdByStageName(artisteStageName);
+        String artisteId = artisteProfSvc.getArtisteIdByStageName(artisteStageName);
 
         // check if artiste has stripe access token (i.e. registered stripe connected acc)
-        boolean hasAccessToken = artisteSvc.checkArtisteStripeAccess(artisteId);
+        boolean hasAccessToken = artisteTransSvc.checkArtisteStripeAccess(artisteId);
 
         if (!hasAccessToken) {
             throw new StripePaymentException("Vibee has not completed their payment profile. Please try again later.");
         }
 
         // get artiste stripe account id
-        String artisteStripeId = artisteSvc.getStripeAccountId(artisteId);
+        String artisteStripeId = artisteTransSvc.getStripeAccountId(artisteId);
 
         // get tipper id or assign new guest id if null
         String tipperId = unconfirmedRequest.getTipperId();
@@ -129,7 +132,7 @@ public class TipService {
         }
 
         // retrieve artiste id
-        String artisteId = artisteSvc.getArtisteIdByStageName(confirmedRequest.getStageName());
+        String artisteId = artisteProfSvc.getArtisteIdByStageName(confirmedRequest.getStageName());
 
         // set current tip variables
         Tip tip = new Tip();
