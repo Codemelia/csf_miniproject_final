@@ -1,5 +1,3 @@
-import { PaymentMethod } from "@stripe/stripe-js"
-
 export interface ApiError {
     timestamp: Date
     status: number
@@ -25,13 +23,14 @@ export interface AuthResponse {
     userId: string
     token: string
     message: string
+    expiry: Date
 }
 
 export interface AuthState {
     token: string | null
-    loggedIn: boolean;
-    userRole: string | null;
-    userId: string | null;
+    loggedIn: boolean
+    userRole: string | null
+    userId: string | null
 }
 
 export interface DecodedToken {

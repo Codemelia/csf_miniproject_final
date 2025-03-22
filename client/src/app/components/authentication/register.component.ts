@@ -37,12 +37,12 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.regisSub = this.authStore.registrationResult$.subscribe(response => {
       if ('userId' in response) {
         this.successMsg = response.message // prompts user to login after successful registration
-        setTimeout(() => this.router.navigate(['/']), 2000);
+        setTimeout(() => this.router.navigate(['/']), 2000)
       } else {
-        this.error = response;
-        this.successMsg = null;
+        this.error = response
+        this.successMsg = null
       }
-    });
+    })
   }
 
 
@@ -71,26 +71,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
       this.authStore.register(user);
     }
   }
-
-  /*
-  // register on submit
-  register() {
-    if (this.form.valid) {
-      const { email, username, password, phoneNumber, role } = this.form.value
-      this.regisSub = this.authStore.register(email, username, password, phoneNumber, role).subscribe({
-        next: (response) => {
-          this.successMsg = 'Registration successful! Please log in.'
-          console.log('>>> Registration successful', response)
-          setTimeout(() => this.router.navigate(['/']), 2000) // redirect to login page aft 2 secs
-        },
-        error: (err) => {
-          this.error = err.error
-          console.error('>>> Registration error', this.error)
-        }
-      })
-    }
-  }
-  */
 
   // unsub
   ngOnDestroy(): void {

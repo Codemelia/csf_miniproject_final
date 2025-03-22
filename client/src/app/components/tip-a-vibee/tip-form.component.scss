@@ -28,6 +28,17 @@ mat-card-title {
         0px 0px 8px rgba(255, 255, 255, 1); 
 }
 
+mat-card-actions {
+    display: flex;
+    justify-content: center;
+
+}
+
+mat-panel-title {
+    color: #ffb0ee;
+    font-size: 90%;
+}
+
 .full-width {
     width: 100%;
     margin-bottom: 15px;
@@ -58,18 +69,6 @@ mat-card-title {
     }
 }
 
-mat-card-actions {
-    display: flex;
-    justify-content: center;
-
-}
-
-mat-panel-title {
-    color: #ffb0ee;
-    font-size: 90%;
-}
-
-/* button styles */
 button {
     background-color: #6200ea;
     color: white;

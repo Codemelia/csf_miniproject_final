@@ -67,26 +67,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
   }
 
-  /*
-  // submit button
-  login() {
-    if (this.form.valid) {
-      const user: UserLogin = this.form.value
-      this.loginSub = this.authStore.login(user).subscribe({
-        next: () => {
-          this.successMsg = 'Registration successful! Please log in.'
-          console.log('>>> User login successful')
-          this.router.navigate(['/home'])
-        },
-        error: (err) => {
-          this.error = err.error
-          console.error('>>> User login failed: ', this.error)
-        }
-      })
-    }
-  }
-  */
-
   // unsub
   ngOnDestroy(): void {
       this.loginSub?.unsubscribe()

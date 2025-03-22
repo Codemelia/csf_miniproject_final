@@ -1,0 +1,15 @@
+<div class="popup-container">
+  <div class="popup-content" *ngIf="isSuccess">
+    <mat-icon class="success-icon">check_circle_outline</mat-icon>
+    <h2>Payment successful</h2>
+    <p>{{ artisteThankYouMessage }}</p>
+    <button mat-raised-button color="primary" (click)="closePopup()">Close</button>
+  </div>
+  <div class="popup-content" *ngIf="isLoading">
+    <div class="loading-spinner-container">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+    <h2>Payment is being processed...</h2>
+    <p>Sit tight!</p>
+  </div>
+</div>  

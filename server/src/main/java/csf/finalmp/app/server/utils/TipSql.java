@@ -14,8 +14,8 @@ public class TipSql {
     public static final String CREATE_TIPS_TABLE = """
         CREATE TABLE IF NOT EXISTS tips (
             tip_id BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL, 
-            tipper_name VARCHAR(100),
-            tipper_message VARCHAR(255),
+            tipper_name VARCHAR(100) DEFAULT 'Viber',
+            tipper_message VARCHAR(100) DEFAULT 'No message written',
             tipper_email VARCHAR(255),
             tipper_id CHAR(8) NOT NULL, 
             artiste_id CHAR(8) NOT NULL, 
@@ -34,9 +34,10 @@ public class TipSql {
     """;
 
     // select tips by artiste ID
-    public static final String SELECT_TIPS_BY_MID = """
-        SELECT * FROM tips
-            WHERE artiste_id = ?;    
+    public static final String SELECT_TIPS_BY_AID = """
+        SELECT tip_id, tipper_name, tipper_message, amount, payment_intent_id, updated_at FROM tips
+            WHERE artiste_id = ?
+            ORDER BY updated_at DESC;    
     """;
 
     // select tip by tip ID

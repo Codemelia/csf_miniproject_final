@@ -75,7 +75,7 @@ public class ArtisteController {
     }
 
     // check if artiste id exists in both mongo and mysql
-    @GetMapping(path = "/check-artiste")
+    @GetMapping(path = "/artiste/check")
     public ResponseEntity<Boolean> checkArtisteId(
         @RequestParam("artisteId") String artisteId
     ) {

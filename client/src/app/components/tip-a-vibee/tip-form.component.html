@@ -48,14 +48,14 @@
                             <input matInput type="text" name="tipperMessage" 
                                 formControlName="tipperMessage" placeholder="Leave a nice message for the Vibee 💖">
                             <mat-error *ngIf="form.get('tipperMessage')?.hasError('maxlength') &&
-                                form.get('tipperMessage')?.touched">Your message must not exceed 255 characters
+                                form.get('tipperMessage')?.touched">Your message must not exceed 100 characters
                             </mat-error>
                         </mat-form-field>
             
                         <mat-form-field appearance="fill" class="full-width">
                             <mat-label><mat-icon> mail_outline</mat-icon> Your Email</mat-label>
                             <input matInput type="email" name="tipperEmail" 
-                                formControlName="tipperEmail" placeholder="Enter your email to receive a receipt via email 🧾">
+                                formControlName="tipperEmail" placeholder="Receive a receipt and some surprises via email 🧾">
                             <mat-error *ngIf="(form.get('tipperEmail')?.hasError('maxlength') ||
                                 form.get('tipperEmail')?.hasError('emailOrEmpty')) && 
                                 form.get('tipperEmail')?.touched">Your email address must be valid and below 255 characters

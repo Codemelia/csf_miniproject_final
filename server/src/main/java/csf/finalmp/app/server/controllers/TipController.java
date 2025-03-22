@@ -76,7 +76,7 @@ public class TipController {
             logger.info(">>> Tip saved for Artiste with ID: %s".formatted(artisteId));
             String thankYouMessage = artisteProfSvc.getArtisteThankYouMsgById(artisteId); // change to artiste profile
 
-            if (confirmedRequest.getTipperEmail() != null) // send receipt email if tipper email provided
+            if (confirmedRequest.getTipperEmail() != null && !confirmedRequest.getTipperEmail().isBlank()) // send receipt email if tipper email provided
                 emailSvc.sendTemplateEmail(confirmedRequest, thankYouMessage);
 
             return ResponseEntity.ok().body(thankYouMessage);

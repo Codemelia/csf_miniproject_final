@@ -1,6 +1,6 @@
 .db-container {
     background-color: #000000;
-    height: 100vh;
+    height: 98%;
     display: flex;
     overflow: hidden;
     border-radius: 15px;
@@ -26,25 +26,32 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: center; 
     text-align: left;
-}
-  
-.sidebar mat-nav-list a {
-    color: #FFFFFF;
-    width: 75%;
-    height: auto;
-    padding: 10px 15px 10px 15px;
-    margin-top: 5px;
-}
-  
-.sidebar mat-nav-list a:hover {
-    background-color: #333333;
-}
-  
-.sidebar mat-nav-list a.active {
-    background-color: #ac00ca;
-    color: #FFFFFF;
+
+    a {
+        display: flex;
+        align-items: center;
+        color: #FFFFFF;
+        width: 75%;
+        padding: 10px 15px;
+        margin-top: 5px;
+        text-decoration: none;  
+    }
+
+    a mat-icon {
+        margin-right: 10px;
+        vertical-align: middle; 
+    }
+
+    a:hover {
+        background-color: #810097;
+    }
+
+    a:focus {
+        background-color: #b800d8;
+        color: #FFFFFF;
+    }
 }
   
 mat-sidenav-content {
@@ -76,7 +83,7 @@ mat-sidenav-content {
 
 mat-toolbar {
     font-size: 200%;
-    margin: 20px auto;
+    margin-top: 20px;
     color: #000000;
     font-weight: bold;
     text-shadow: 

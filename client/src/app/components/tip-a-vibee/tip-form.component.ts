@@ -8,8 +8,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthStore } from '../../stores/auth.store';
 import { environment } from '../../environments/environment';
 import { emailOrEmptyValidator } from '../../validatorfns/email-or-empty.validator';
-import { MatDialog } from '@angular/material/dialog';
-import { SuccessPopupComponent } from './success-popup.component';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { DialogPopupComponent } from './dialog-popup.component';
 
 @Component({
   selector: 'app-tip',
@@ -43,6 +43,7 @@ export class TipFormComponent implements OnInit, OnDestroy {
   // feedback messages for view
   error!: ApiError
   private dialog = inject(MatDialog)
+  private dialogRef!: MatDialogRef<DialogPopupComponent, any>
 
   // for sending tip request to server
   protected unconfirmRequest!: Tip
@@ -99,7 +100,7 @@ export class TipFormComponent implements OnInit, OnDestroy {
         [ Validators.maxLength(100)]
       ),
       tipperMessage: this.fb.control<string | null>(null,
-        [ Validators.maxLength(255) ]
+        [ Validators.maxLength(100) ]
       ),
       tipperEmail: this.fb.control<string | null>(null,
         [ emailOrEmptyValidator(), Validators.maxLength(255) ] // custom validator to allow empty input
@@ -140,6 +141,9 @@ export class TipFormComponent implements OnInit, OnDestroy {
   // tip artiste method
   async tipArtiste() {
 
+    // show loading pop up
+    this.onPaymentLoading()
+
     // get token from local storage
     // extract user id as tipper id
     // allow null tipper id for guests
@@ -153,6 +157,7 @@ export class TipFormComponent implements OnInit, OnDestroy {
         error: 'Stripe Load Error',
         message: 'Payment system failed to initialise. Please refresh the page.'
       }
+      this.dialogRef.close() // close dialog on error
       return
     } else
 
@@ -164,6 +169,7 @@ export class TipFormComponent implements OnInit, OnDestroy {
         error: 'Invalid Card Error',
         message: 'Please complete your card details.'
       }
+      this.dialogRef.close() // close dialog on error
       return
     }
 
@@ -193,6 +199,7 @@ export class TipFormComponent implements OnInit, OnDestroy {
         error: 'Invalid Card Error',
         message: 'Card is invalid. Please try again.'
       }
+      this.dialogRef.close() // close dialog on error
       return
     }
 
@@ -219,6 +226,7 @@ export class TipFormComponent implements OnInit, OnDestroy {
             error: 'Internal Server Error',
             message: 'There was an error processing your payment. Please try again.'
           }
+          this.dialogRef.close() // close dialog on error
           return
         }
 
@@ -244,24 +252,17 @@ export class TipFormComponent implements OnInit, OnDestroy {
           // save tip on server
           this.saveTipSub = this.tipSvc.saveTip(this.confirmRequest).pipe(
             tap(thankYouMessage => { // method returns artiste's thank you message as response
-              if (thankYouMessage != null && thankYouMessage.length > 0) { // validate ty response
-                console.log('>>> Payment successful')
+              console.log('>>> Payment successful')
                 if (this.stripe) this.mountCardElement(this.stripe) // remount card element
                 this.form.reset() // reset form when payment goes through
+                this.dialogRef.close() // close dialog on error
                 this.onPaymentSuccess(thankYouMessage) // send artiste ty message to dialog and open
-              } else {
-                this.error = {
-                  timestamp: new Date(),
-                  status: 500,
-                  error: 'Internal Server Error',
-                  message: 'There was an error processing your payment. Please try again.'
-                }
-                console.log('>>> Payment failed')
               }
-            }),
+            ),
             catchError(error => {
               this.error = error.error
               console.error('Tip save error:', error)
+              this.dialogRef.close() // close dialog on error
               return of(null)
             })
           ).subscribe()
@@ -274,13 +275,15 @@ export class TipFormComponent implements OnInit, OnDestroy {
             error: 'Stripe Payment Error',
             message: confirmResult.error.message
           }
-          console.error('>>> Payment confirmation error: ', confirmResult.error);
+          console.error('>>> Payment confirmation error: ', confirmResult.error)
+          this.dialogRef.close() // close dialog on error
         } 
 
       }),
       catchError(error => {
         this.error = error.error
         console.error('>>> Tip failed: ', error)
+        this.dialogRef.close() // close dialog on error
         return of(null)
       })
     ).subscribe()
@@ -338,12 +341,19 @@ export class TipFormComponent implements OnInit, OnDestroy {
   
   // on payment success, popup window displaying thank you message
   onPaymentSuccess(artisteThankYouMessage: string): void {
-
-    // get dialog data
-    const dialogRef = this.dialog.open(SuccessPopupComponent, {
+    this.dialogRef = this.dialog.open(DialogPopupComponent, {
       width: '400px',
-      data: { artisteThankYouMessage: artisteThankYouMessage }
+      data: { artisteThankYouMessage: artisteThankYouMessage, isLoading: false, isSuccess: true }
     })
+  }
+
+  // on payment loading, popup window displaying loading message
+  onPaymentLoading() {
+    this.dialogRef = this.dialog.open(DialogPopupComponent, {
+      width: '400px',
+      disableClose: true, // Prevent closing the dialog until payment completes
+      data: { isLoading: true, artisteThankYouMessage: '', isSuccess: false } // Initially show loading state
+    });
   }
 
   // unsub from svc on destroy

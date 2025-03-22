@@ -3,9 +3,23 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-    overflow-x: hidden;
+    overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
+.full-page {
+    background-image: url('/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.app-name {
+    font-weight: bold;
+}
 
 mat-toolbar {
     display: flex;
@@ -13,60 +27,56 @@ mat-toolbar {
     padding: 0 20px;
     background: linear-gradient(90deg, #6200ea, #d81b60);
     height: 80px;
+    width: 100%;
+    position: relative;
+    top: 0;
+    z-index: 1000; /* Toolbar above main content */
 }
 
 mat-toolbar span {
     font-size: 150%;
 }
 
-.full-page {
-    min-height: 100vh;
-    background-image: url('/background.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-// Main content styling
 main {
     padding: 20px;
-    max-width: 1200px; // Limiting the width for larger screens
-    margin: 0 auto; // Centering the main content
-    min-height: calc(100vh - 64px - 80px); // Ensure full height minus toolbar and footer height
+    max-width: 1200px;
+    margin: 80px auto 60px auto; /* Offset for fixed header and footer */
+    flex-grow: 1; /* Allow main to expand */
+    width: 100%;
+    height: auto;
+    position: relative; /* Establish stacking context */
+    z-index: 500; /* Below toolbar/footer but above background */
+    overflow: visible; /* Ensure content can overflow */
 }
 
-// Toolbar title styling
-span {
-    color: #ffffff;
-    font-weight: bold;
-}
-
-// Footer styling
 .footer {
     background: linear-gradient(90deg, #6200ea, #d81b60);
-    padding: 20px 0; // Increased padding for a thicker footer
-    text-align: center; // Centering footer text
+    padding: 20px 0;
+    text-align: center;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    z-index: 1000; /* Footer above main content */
+    margin-top: 20px;
 }
 
-// Footer text styling
 .footer p {
-    margin: 0; // Remove default margin
-    font-size: 16px; // Slightly larger font size for readability
-    color: white; // Ensuring text color contrasts well with the footer background
+    margin: 0;
+    font-size: 16px;
+    color: white;
 }
 
-// Hover effect for footer links (if added in future)
 .footer a {
-    color: #d5006d; // Link color matching the magenta theme
-    text-decoration: none; // Remove underline
-    transition: color 0.3s ease; // Smooth transition for color change
+    color: #d5006d;
+    text-decoration: none;
+    transition: color 0.3s ease;
 }
 
 .footer a:hover {
-    text-decoration: underline; // Underline on hover for better UX
+    text-decoration: underline;
 }
 
-// responsive
+/* Responsive adjustments */
 @media (max-width: 480px) {
     mat-toolbar {
         height: 60px;
@@ -79,6 +89,7 @@ span {
 
     main {
         padding: 10px;
+        margin: 60px auto 50px auto;
         width: 100%;
     }
 

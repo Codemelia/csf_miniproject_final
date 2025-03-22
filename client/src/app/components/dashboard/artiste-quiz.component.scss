@@ -1,6 +1,6 @@
 .quiz-container { 
-    max-width: 600px;
-    min-width: 600px;
+    max-width: 1200px;
+    min-width: 800px;
     height: auto;
     padding: 30px;
     text-align: center; 
@@ -81,9 +81,8 @@ button:hover {
 }
 
 .preview { 
-    min-width: 250px;
-    max-width: 300px;
-    height: auto;
+    max-height: 250px;
+    width: auto;
     margin: 10px auto; 
     display: block;
     border-radius: 8px;
@@ -102,7 +101,7 @@ button:hover {
 }
 
 input[type="file"] {
-    display: none;  /* hide default file input */
+    display: none;  // hide default file input
 }
 
 .custom-file-input {

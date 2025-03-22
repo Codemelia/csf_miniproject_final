@@ -4,13 +4,14 @@ import { catchError, Observable, of } from 'rxjs';
 import { AuthStore } from '../stores/auth.store';
 import { Router } from '@angular/router';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ArtisteService {
 
+  // service/store
   private http = inject(HttpClient)
   private authStore = inject(AuthStore)
+
+  // ARTISTE AUTHENTICATION FUNCTIONS
 
   // create artiste object
   // returns feedback string
@@ -37,9 +38,11 @@ export class ArtisteService {
   // returns true if exist
   artisteExists(artisteId: string): Observable<boolean> {
     const params = new HttpParams().set('artisteId', artisteId)
-    return this.http.get<boolean>('/api/check-artiste', { params,
+    return this.http.get<boolean>('/api/artiste/check', { params,
       headers: this.authStore.getJsonHeaders()})
   }
+
+  // ARTISTE STRIPE FUNCTIONS
 
   // gen oauth url
   genOAuthUrl(artisteId: string): Observable<string> {
@@ -58,6 +61,20 @@ export class ArtisteService {
           return of(false); // return false in case of an error
         })
       )
+  }
+
+  // ARTISTE WALLET FUNCTIONS
+  requestPayout(walletBalance: number) {
+    throw new Error('Method not implemented.');
+  }
+  getPayoutHistory() {
+    throw new Error('Method not implemented.');
+  }
+  getPendingPayouts() {
+    throw new Error('Method not implemented.');
+  }
+  getWalletBalance() {
+    throw new Error('Method not implemented.');
   }
 
 }

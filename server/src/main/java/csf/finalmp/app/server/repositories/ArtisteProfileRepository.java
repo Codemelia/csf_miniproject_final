@@ -23,20 +23,20 @@ public class ArtisteProfileRepository {
     @Autowired
     private MongoTemplate template;
 
-    private final String ARTISTE_PROFILES_CN = "artiste_profiles";
+    private final String ARTISTE_PROFILES_CN = "artisteProfiles";
 
     // insert artiste profile data
     /*
         db.artiste_profiles.insert({
             _id: <artisteId>,
-            stage_name: <stageName>,
+            stageName: <stageName>,
             bio: <bio>,
             photo: BinData(0, <photo>),
-            qr_code: BinData(0, <qrCode>),
-            qr_code_url: <qrCodeUrl>,
-            thank_you_message: <thankYouMessage>,
-            created_at: <createdAt>,
-            updated_at: <updatedAt>
+            qrCode: BinData(0, <qrCode>),
+            qrCodeUrl: <qrCodeUrl>,
+            thankYouMessage: <thankYouMessage>,
+            createdAt: <createdAt>,
+            updatedAt: <updatedAt>
         })
     */
     public boolean saveArtisteProfile(ArtisteProfile profile) {
@@ -45,16 +45,16 @@ public class ArtisteProfileRepository {
         // convert artiste profile to document
         Document doc = new Document()
             .append("_id", profile.getArtisteId())
-            .append("stage_name", profile.getStageName())
+            .append("stageName", profile.getStageName())
             .append("categories", profile.getCategories())
             .append("bio", profile.getBio())
             .append("photo", profile.getPhoto())
-            .append("qr_code_url", profile.getQrCodeUrl())
-            .append("thank_you_message", 
+            .append("qrCodeUrl", profile.getQrCodeUrl())
+            .append("thankYouMessage", 
                 profile.getThankYouMessage() != null ? profile.getThankYouMessage() 
                     : "Thank you for supporting our Vibees!")
-            .append("created_at", LocalDateTime.now().toString())
-            .append("updated_at", LocalDateTime.now().toString());
+            .append("createdAt", LocalDateTime.now().toString())
+            .append("updatedAt", LocalDateTime.now().toString());
 
         // insert the document into collection - return true if success
         template.insert(doc, ARTISTE_PROFILES_CN);
@@ -108,7 +108,7 @@ public class ArtisteProfileRepository {
                 update.set("photo", photoBytes);
             }
             if (thankYouMessage != null) {
-                update.set("thank_you_message", thankYouMessage);
+                update.set("thankYouMessage", thankYouMessage);
             }
 
             // perform the update and return true if successful
@@ -129,7 +129,7 @@ public class ArtisteProfileRepository {
     public boolean checkArtisteStageName(String artisteStageName) {
         
         // new query with criteria definition
-        Criteria crit = Criteria.where("stage_name").is(artisteStageName);
+        Criteria crit = Criteria.where("stageName").is(artisteStageName);
         Query query = new Query(crit);
 
         // check if any doc match query and return boolean
@@ -164,7 +164,7 @@ public class ArtisteProfileRepository {
     public String getArtisteIdByStageName(String artisteStageName) {
         
         // new query with criteria definition
-        Criteria crit = Criteria.where("stage_name").is(artisteStageName);
+        Criteria crit = Criteria.where("stageName").is(artisteStageName);
         Query query = new Query(crit);
 
         // include id only
@@ -172,7 +172,7 @@ public class ArtisteProfileRepository {
 
         // find the document and return id as string
         Document result = template.findOne(query, Document.class, ARTISTE_PROFILES_CN);
-        return result != null ? result.getObjectId("_id").toString() : null;
+        return result != null ? result.getString("_id") : null;
 
     }
 
@@ -190,11 +190,11 @@ public class ArtisteProfileRepository {
         Query query = new Query(crit);
 
         // include id only
-        query.fields().include("thank_you_message");
+        query.fields().include("thankYouMessage");
 
         // find the document and return id as string
         Document result = template.findOne(query, Document.class, ARTISTE_PROFILES_CN);
-        return result != null ? result.getString("thank_you_message") 
+        return result != null ? result.getString("thankYouMessage") 
             : "Thank you for supporting our Vibees!";
 
     }

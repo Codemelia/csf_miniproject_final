@@ -33,8 +33,8 @@ export class AuthStore extends ComponentStore<AuthState> {
     private initializeState(): void {
         const token = localStorage.getItem(this.tokenKey)
         if (token) {
-        const decoded = this.decodeToken(token)
-        this.setState({ token, loggedIn: true, userId: decoded.userId, userRole: decoded.userRole })
+            const decoded = this.decodeToken(token)
+            this.setState({ token, loggedIn: true, userId: decoded.userId, userRole: decoded.userRole })
         }
     }
 

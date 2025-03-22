@@ -1,24 +1,17 @@
 import { inject, Injectable } from '@angular/core';
-import { ComponentStore } from '@ngrx/component-store';
 import { Tip, TipResponse } from '../models/app.models';
-import { Observable } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, tap, map, catchError, throwError, of, BehaviorSubject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { AuthStore } from '../stores/auth.store';
 
-// inserted here to avoid confusion; only used in service
-export interface TipState {
-  amount: number;
-  artisteId: string | null;
-}
-
-@Injectable({ providedIn: 'root' })
-export class TipService extends ComponentStore<TipState> {
+@Injectable()
+export class TipService {
 
   // tip state variables
   private http = inject(HttpClient)
   private authStore = inject(AuthStore)
-  amount: number = 0
-  artisteId: string | null = null
+
+  private artisteId: string | null = null
 
   // send tip as tip request obj to server
   // retrieves client secret from server
@@ -33,5 +26,21 @@ export class TipService extends ComponentStore<TipState> {
       headers: this.authStore.getJsonHeaders(),
       responseType: 'text' as 'json' })
   }
+
+  // get tips from mysql
+  getTips(): Observable<Tip[]> {
+    this.artisteId = this.authStore.extractUIDFromToken()
+    return this.http.get<Tip[]>(`/api/tips/${this.artisteId}`, {
+        headers: this.authStore.getJsonHeaders()
+    }).pipe(
+        tap(tips => { return tips }),
+        catchError(error => {
+            console.error('Error fetching tips:', error);
+            return of([])
+        })
+    )
+  }
+
+  
 
 }

@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ApiError } from '../../models/app.models';
-import { catchError, Subscription, tap } from 'rxjs';
+import { catchError, Subscription, tap, throwError } from 'rxjs';
 import { AuthStore } from '../../stores/auth.store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ArtisteService } from '../../services/artiste.service';
@@ -16,9 +16,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   // services
   private authStore = inject(AuthStore)
   protected artisteSvc = inject(ArtisteService)
-  private route = inject(ActivatedRoute)
   private cdr = inject(ChangeDetectorRef)
-  private router = inject(Router)
 
   // subscriptions
   private artisteSub!: Subscription
@@ -31,11 +29,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   isLoading: boolean = true // for API loading state
   error!: ApiError
   isMenuCollapsed = false
-
-  // toggle menu visibility
-  toggleMenu() {
-    this.isMenuCollapsed = !this.isMenuCollapsed
-  }
 
   ngOnInit(): void {
     this.artisteId = this.authStore.extractUIDFromToken()
@@ -55,7 +48,12 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       });
     }
 
-    // checking if artiste exists
+    this.checkIfArtisteExists()
+
+  }
+
+  // checking if artiste exists
+  checkIfArtisteExists(): void {
     if (this.artisteId != null) {
       this.isLoading = true;
       this.artisteSub = this.artisteSvc.artisteExists(this.artisteId).pipe(
@@ -71,15 +69,32 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           }
         }),
         catchError((err) => {
-          this.error = err
+          this.error = err.error
           this.isLoading = false
-          return []
+          return throwError(() => this.error)
         })
       ).subscribe()
     } else {
       this.isLoading = false
     }
+  }
 
+  // toggle menu visibility
+  toggleMenu() {
+    this.isMenuCollapsed = !this.isMenuCollapsed
+  }
+  
+  get isContentAvailable(): boolean {
+    return !this.isLoading && this.isStripeLinked && this.artisteExists;
+  }
+
+  get isMenuOpen(): boolean {
+    return !this.isLoading && this.isStripeLinked && this.artisteExists && !this.isMenuCollapsed;
+  }
+
+  // logout
+  logout() {
+    this.authStore.logout()
   }
 
   // trigger change detection after view init

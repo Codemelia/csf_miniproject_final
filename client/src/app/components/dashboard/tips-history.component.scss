@@ -1,0 +1,133 @@
+.tips-card {
+    height: auto;
+    width: auto;
+    margin: 20px auto;
+    padding: 30px;
+    border-radius: 15px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+mat-card-header {
+    background-color: #ffd0f5;
+    color: #333;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+mat-card-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+mat-card-subtitle {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.table-container {
+    overflow-x: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+table {
+    width: 100%;
+    margin-top: 30px;
+    border-collapse: collapse;
+}
+
+th {
+    color: #ffffff;
+    font-weight: bold;
+    padding: 15px 10px 15px 10px;
+    text-shadow: 
+        0.8px 0.8px 0px rgba(98, 0, 234, 1),  
+        -0.8px -0.8px 0px rgba(255, 49, 210, 1); 
+    border-bottom: 2px solid #ff31d2;
+    text-align: center;
+}
+
+.sort-button {
+    color: #ffffff;
+    font-weight: bold;
+    text-shadow: 
+        0.8px 0.8px 0px rgba(98, 0, 234, 1),  
+        -0.8px -0.8px 0px rgba(255, 49, 210, 1); 
+}
+
+.trans-date-header .header-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+td {
+    padding: 15px 10px 15px 10px;
+    border-bottom: 1px solid #ffd0f5;
+    text-align: center;
+}
+
+.row:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.row:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+.amount-cell {
+    font-weight: bold;
+    color: #2ecc71;
+}
+
+.search-container {
+    margin-bottom: 20px;
+}
+  
+.table-container {
+    width: 100%;
+}
+
+.mat-table {
+    width: 80%;
+}
+
+.sort-container {
+    width: 15%;
+    margin-left: 20px;
+}
+
+mat-paginator {
+    margin-top: 20px;
+    background-color: #ffffff;
+    color: #333;
+    border-top: 2px solid #ff31d2;
+}
+
+@media (max-width: 768px) {
+    .dashboard-card {
+        padding: 15px;
+    }
+
+    mat-card-header {
+        padding: 15px;
+    }
+
+    table {
+        font-size: 0.9rem;
+    }
+
+    th.mat-header-cell, td.mat-cell {
+        padding: 5px;
+    }
+
+    .truncate {
+        max-width: 100px;
+    }
+}

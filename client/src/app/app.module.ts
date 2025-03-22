@@ -32,18 +32,25 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatListModule } from '@angular/material/list';
+import { MatSortModule } from '@angular/material/sort';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { RoleGuard } from './guards/role.guard';
 import { AuthGuard } from './guards/auth.guard';
 import { WalletComponent } from './components/dashboard/wallet.component';
 import { ProfileComponent } from './components/dashboard/profile.component';
 import { ArtisteQuizComponent } from './components/dashboard/artiste-quiz.component';
-import { SuccessPopupComponent } from './components/tip-a-vibee/success-popup.component';
+import { DialogPopupComponent } from './components/tip-a-vibee/dialog-popup.component';
 import { OverviewComponent } from './components/dashboard/overview.component';
 import { TipsHistoryComponent } from './components/dashboard/tips-history.component';
 import { AuthStore } from './stores/auth.store';
 import { provideComponentStore } from '@ngrx/component-store';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { ArtisteService } from './services/artiste.service';
+import { DashboardService } from './services/dashboard.service';
+import { TipService } from './services/tip.service';
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -77,7 +84,7 @@ const routes: Routes = [
     WalletComponent,
     ProfileComponent,
     ArtisteQuizComponent,
-    SuccessPopupComponent,
+    DialogPopupComponent,
     OverviewComponent,
     TipsHistoryComponent
   ],
@@ -86,6 +93,7 @@ const routes: Routes = [
     RouterModule.forRoot(routes, { useHash: true }),
     BrowserAnimationsModule,
     ReactiveFormsModule,
+    FormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
@@ -96,7 +104,6 @@ const routes: Routes = [
     MatSelectModule,
     MatTabsModule,
     MatProgressBarModule,
-    FormsModule,
     MatProgressSpinner,
     MatExpansionModule,
     MatIconModule,
@@ -104,12 +111,19 @@ const routes: Routes = [
     MatSidenavModule,
     MatMenuModule,
     MatListModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    MatSortModule,
+    MatPaginatorModule,
+    MatSnackBarModule,
+    MatTooltipModule
   ],
   providers: [
     provideHttpClient(),
     provideAnimationsAsync(),
-    provideComponentStore(AuthStore)
+    provideComponentStore(AuthStore),
+    ArtisteService,
+    DashboardService,
+    TipService
   ],
   bootstrap: [AppComponent]
 })

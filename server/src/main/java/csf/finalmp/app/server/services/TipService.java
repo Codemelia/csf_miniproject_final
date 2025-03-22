@@ -138,10 +138,12 @@ public class TipService {
         Tip tip = new Tip();
 
         String tipperName = confirmedRequest.getTipperName();
-        if (tipperName != null && !tipperName.isBlank()) tip.setTipperName(tipperName);
+        if (tipperName != null && !tipperName.isBlank()) { tip.setTipperName(tipperName); }
+            else { tip.setTipperName("Viber"); }
 
         String tipperMessage = confirmedRequest.getTipperMessage();
-        if (tipperMessage != null && !tipperMessage.isBlank()) tip.setTipperMessage(tipperMessage);
+        if (tipperMessage != null && !tipperMessage.isBlank()) { tip.setTipperMessage(tipperMessage); }
+        else { tip.setTipperMessage("No message written"); }
 
         String tipperEmail = confirmedRequest.getTipperEmail();
         if (tipperEmail != null && !tipperEmail.isBlank()) tip.setTipperEmail(tipperEmail);

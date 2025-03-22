@@ -26,14 +26,14 @@
         font-size: 48px;
         width: 48px;
         height: auto;
-        color: green;
+        color: rgb(0, 155, 0);
         display: block;
         margin: 0 auto;
     }
-    
+
     h2 {
         margin: 10px 0;
-        color: #4caf50;
+        color: #000000;
     }
     
     p {
@@ -50,6 +50,12 @@
     button:hover {
         background-color: #3700b3;
     }
+
+
+    .loading-spinner-container {
+        margin-bottom: 15px;
+    }
+      
 
 }
 
