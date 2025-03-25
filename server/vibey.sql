@@ -1,0 +1,44 @@
+CREATE DATABASE vibey;
+USE vibey;
+
+SELECT * FROM tips;
+
+select * from users;
+
+SELECT * FROM artiste_transaction_details;
+
+CREATE TABLE IF NOT EXISTS users (
+	user_id CHAR(8) PRIMARY KEY NOT NULL, 
+	email VARCHAR(255) NOT NULL UNIQUE,
+	password VARCHAR(60) NOT NULL, 
+	phone_number VARCHAR(50),
+	role VARCHAR(50) NOT NULL, 
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+	updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS artiste_transaction_details (
+	artiste_id CHAR(8) PRIMARY KEY, 
+	stripe_account_id VARCHAR(255) NOT NULL UNIQUE,
+	stripe_access_token VARCHAR(255) NOT NULL,
+	stripe_refresh_token VARCHAR(255) NOT NULL,
+	earnings DECIMAL(10, 2) DEFAULT 0.00,
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+	updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	FOREIGN KEY (artiste_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS tips (
+	tip_id BIGINT AUTO_INCREMENT PRIMARY KEY, 
+	tipper_name VARCHAR(100) DEFAULT 'Viber',
+	tipper_message VARCHAR(100) DEFAULT 'No message written',
+	tipper_email VARCHAR(255),
+	tipper_id CHAR(8) NOT NULL, 
+	artiste_id CHAR(8) NOT NULL, 
+	amount DECIMAL(10, 2) DEFAULT 0.00 NOT NULL, 
+	payment_intent_id VARCHAR(255) NOT NULL UNIQUE, 
+	payment_status VARCHAR(30) DEFAULT 'pending' NOT NULL,
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+	updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	FOREIGN KEY(artiste_id) REFERENCES artiste_transaction_details(artiste_id) ON DELETE CASCADE
+);

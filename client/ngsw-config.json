@@ -7,7 +7,7 @@
       "installMode": "prefetch",
       "resources": {
         "files": [
-          "/favicon.ico",
+          "/vibey_logo.png",
           "/index.csr.html",
           "/index.html",
           "/manifest.webmanifest",

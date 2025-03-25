@@ -6,7 +6,7 @@ import { ApiError, Tip, TipResponse } from '../../models/app.models';
 import { catchError, map, of, Subscription, switchMap, tap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthStore } from '../../stores/auth.store';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { emailOrEmptyValidator } from '../../validatorfns/email-or-empty.validator';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DialogPopupComponent } from './dialog-popup.component';

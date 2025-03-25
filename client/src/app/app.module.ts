@@ -49,7 +49,6 @@ import { AuthGuard } from './guards/auth.guard';
 import { AuthStore } from './stores/auth.store';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ArtisteService } from './services/artiste.service';
-import { DashboardService } from './services/dashboard.service';
 import { TipService } from './services/tip.service';
 import { SpotifyService } from './services/spotify.service';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -130,7 +129,6 @@ const routes: Routes = [
     provideAnimationsAsync(),
     AuthStore,
     ArtisteService,
-    DashboardService,
     TipService,
     SpotifyService
   ],

@@ -16,21 +16,19 @@ export class TipService {
   // send tip as tip request obj to server
   // retrieves client secret from server
   getPaymentIntentClientSecret(unconfirmRequest: Tip): Observable<TipResponse> {
-    return this.http.post<TipResponse>('/api/tips/process', unconfirmRequest, { 
-      headers: this.authStore.getJsonHeaders() })
+    return this.http.post<TipResponse>('/api/tips/process', unconfirmRequest)
   }
 
   // save tip after confirmed payment
   saveTip(confirmRequest: Tip): Observable<string> {
-    return this.http.post<string>('api/tips/save', confirmRequest, { 
-      headers: this.authStore.getJsonHeaders(),
-      responseType: 'text' as 'json' })
+    return this.http.post<string>('api/tips/save', confirmRequest, 
+      { responseType: 'text' as 'json' })
   }
 
   // get tips from mysql
   getTips(): Observable<Tip[]> {
     this.artisteId = this.authStore.extractUIDFromToken()
-    return this.http.get<Tip[]>(`/api/tips/${this.artisteId}`, {
+    return this.http.get<Tip[]>(`/api/tips/get/${this.artisteId}`, {
         headers: this.authStore.getJsonHeaders()
     }).pipe(
         tap(tips => { return tips }),

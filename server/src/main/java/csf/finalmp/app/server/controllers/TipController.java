@@ -88,7 +88,7 @@ public class TipController {
 
     // get tip by artiste id
     // returns tip object
-    @GetMapping(path = "/{artisteId}")
+    @GetMapping(path = "/get/{artisteId}")
     public ResponseEntity<List<Tip>> getTipsByArtisteId(
         @PathVariable String artisteId
     ) {

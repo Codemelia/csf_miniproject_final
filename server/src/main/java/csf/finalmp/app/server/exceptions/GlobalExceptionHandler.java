@@ -17,8 +17,6 @@ import csf.finalmp.app.server.exceptions.custom.UserAlreadyExistsException;
 import csf.finalmp.app.server.exceptions.custom.UserNotFoundException;
 import csf.finalmp.app.server.exceptions.custom.UserAuthenticationException;
 
-import redis.clients.jedis.exceptions.JedisConnectionException;
-
 // PURPOSE OF THIS HANDLER
 // HANDLE REST ENDPOINT EXCEPTIONS
 
@@ -139,18 +137,6 @@ public class GlobalExceptionHandler {
         ApiError error = new ApiError(
             HttpStatus.INTERNAL_SERVER_ERROR.value(), 
             "SQL Database Error", 
-            e.getMessage()
-        );
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(error);
-    }
-
-    // handle redis connection errors
-    @ExceptionHandler(JedisConnectionException.class)
-    public ResponseEntity<ApiError> handleJedisConnectionException(JedisConnectionException e) {
-        ApiError error = new ApiError(
-            HttpStatus.INTERNAL_SERVER_ERROR.value(), 
-            "Redis Connection Error", 
             e.getMessage()
         );
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

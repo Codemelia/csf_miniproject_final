@@ -78,7 +78,7 @@ public class SpotifyController {
     }
 
     // search spotify for top 5 tracks
-    @GetMapping("/{artisteId}/search")
+    @GetMapping("/search/{artisteId}")
     public ResponseEntity<List<SpotifyTrack>> searchTracks(
         @PathVariable String artisteId,
         @RequestParam("query") String query) {
@@ -90,7 +90,7 @@ public class SpotifyController {
     }
 
     // save playlist and return playlist name and url
-    @PutMapping("/{artisteId}/save-playlist")
+    @PutMapping("/save-playlist/{artisteId}")
     public ResponseEntity<ArtisteSpotifyDetails> savePlaylist(
         @PathVariable String artisteId,
         @RequestBody List<SpotifyTrack> selectedTracks) {
@@ -101,7 +101,7 @@ public class SpotifyController {
     }
 
     // get playlist url from mongo
-    @GetMapping("/{artisteId}/get-playlist")
+    @GetMapping("/get-playlist/{artisteId}")
     public ResponseEntity<String> getPlaylist(
         @PathVariable String artisteId) {
 

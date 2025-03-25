@@ -29,19 +29,19 @@ export class SpotifyService {
     // search tracks
     searchTracks(artisteId: string, query: string): Observable<SpotifyTrack[]> {
         const params = new HttpParams().set('query', query)
-        return this.http.get<SpotifyTrack[]>(`/api/spotify/${artisteId}/search`,
+        return this.http.get<SpotifyTrack[]>(`/api/spotify/search/${artisteId}`,
             { params, headers: this.authStore.getJsonHeaders() })
     }
     
     // save playlist
     savePlaylist(artisteId: string, selectedTracks: SpotifyTrack[]): Observable<PlaylistDetails> {
-        return this.http.put<PlaylistDetails>(`/api/spotify/${artisteId}/save-playlist`, 
+        return this.http.put<PlaylistDetails>(`/api/spotify/save-playlist/${artisteId}`, 
             selectedTracks, { headers: this.authStore.getJsonHeaders() })
     }
 
     // get playlist url
     getPlaylistUrl(artisteId: string): Observable<string> {
-        return this.http.get<string>(`/api/spotify/${artisteId}/get-playlist`,
+        return this.http.get<string>(`/api/spotify/get-playlist/${artisteId}`,
             { headers: this.authStore.getJsonHeaders(), 
                 responseType: 'text' as 'json' })
     }

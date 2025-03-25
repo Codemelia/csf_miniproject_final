@@ -37,11 +37,13 @@ public class SecurityConfig {
             .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/api/auth/**").permitAll() // allow registration and login
-                .requestMatchers("/api/spotify/oauth/**").permitAll() // permit all for oauth callback
-                .requestMatchers("/api/tips/save/**", "/api/tips/process/**").permitAll() // permit all to allow guest tipping
-                .requestMatchers("/api/stripe/oauth/**").permitAll() // permit all for stripe oauth callback
-                .anyRequest().authenticated()) // any other request authenticated
+                .requestMatchers("/api/artiste/**", "/api/artistes/**").authenticated()
+                .requestMatchers("/api/spotify/gen-oauth/**", "/api/spotify/linked/**", "/api/spotify/search/**", 
+                    "/api/spotify/save-playlist/**", "/api/spotify/save-playlist/**", 
+                    "/api/spotify/get-playlist/**").authenticated()
+                .requestMatchers("/api/stripe/gen-oauth/**", "/api/stripe/check-access/**").authenticated()
+                .requestMatchers("/api/tips/get/**").authenticated()
+                .anyRequest().permitAll()) // any other request permitted
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
