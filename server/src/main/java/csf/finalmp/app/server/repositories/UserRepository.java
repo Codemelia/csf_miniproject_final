@@ -40,27 +40,12 @@ public class UserRepository {
             INSERT_USER, 
             userId,
             user.getEmail(),
-            user.getUsername(),
             user.getPassword(),
             user.getPhoneNumber(),
             user.getRole());
 
         // return user id
         return userId;
-
-    }
-
-    // update user
-    public void updateUser(User user) {
-
-        template.update(
-            UPDATE_USER, 
-            user.getEmail(),
-            user.getUsername(),
-            user.getPassword(),
-            user.getPhoneNumber(),
-            user.getRole(),
-            user.getUserId());
 
     }
 
@@ -73,7 +58,6 @@ public class UserRepository {
             (rs, rowNum) -> new User(
                 rs.getString("user_id"), 
                 rs.getString("email"),
-                rs.getString("username"), 
                 rs.getString("password"), 
                 rs.getString("phone_number"),
                 rs.getString("role"),
@@ -84,16 +68,6 @@ public class UserRepository {
             return null; // return null to handle on service layer
         }
         
-
-    }
-
-    // check if user exists in mysql
-    public Integer userExists(String username) {
-        
-        return template.queryForObject(
-            CHECK_USERNAME, 
-            Integer.class,
-            username);
 
     }
 

@@ -30,15 +30,15 @@ public class ServerApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 
 		// check if tables exists, if not create tables
-		// order: users > artistes > tips
+		// order: users > artistes > tips > payouts
 		boolean usersExists = userSvc.tableExists();
-		if(!usersExists) { userSvc.createTable(); }
+		if(!usersExists) userSvc.createTable();
 
 		boolean artisteExists = artisteTransSvc.tableExists();
-		if (!artisteExists) { artisteTransSvc.createTable();	}
+		if (!artisteExists) artisteTransSvc.createTable();
 
 		boolean tipsExists = tipSvc.tableExists();
-		if(!tipsExists) { tipSvc.createTable(); }
+		if(!tipsExists) tipSvc.createTable();
 
 	}
 

@@ -31,25 +31,27 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   isMenuCollapsed = false
 
   ngOnInit(): void {
+
+    // authentication
     this.artisteId = this.authStore.extractUIDFromToken()
     console.log('>>> Artiste ID: ', this.artisteId)
-    
-    // check if artiste ID is available and linked with Stripe
-    if (this.artisteId) {
-      this.stripeSub = this.artisteSvc.stripeAccessTokenExists(this.artisteId).subscribe({
-        next: (resp) => {
-          this.isStripeLinked = resp
-          console.log('>>> Stripe linked: ', this.isStripeLinked)
-        },
-        error: () => {
-          this.isStripeLinked = false
-          console.log('>>> Stripe not linked')
-        }
-      });
-    }
-
     this.checkIfArtisteExists()
+    this.checkArtisteStripe()
 
+  }
+  
+  // check artiste stripe
+  checkArtisteStripe() {
+    this.stripeSub = this.artisteSvc.stripeAccessTokenExists(this.artisteId!).subscribe({
+      next: (resp) => {
+        this.isStripeLinked = resp
+        console.log('>>> Stripe linked: ', this.isStripeLinked)
+      },
+      error: () => {
+        this.isStripeLinked = false
+        console.log('>>> Stripe not linked')
+      }
+    })
   }
 
   // checking if artiste exists
@@ -61,15 +63,13 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           next: (resp) => {
             this.artisteExists = resp
             console.log('>>> Artiste exists: ', this.artisteExists)
-            this.isLoading = false
-          },
-          error: (err) => {
-            this.error = err
+            localStorage.setItem('artisteExists', JSON.stringify(this.artisteExists)) // set status to local storage
             this.isLoading = false
           }
         }),
         catchError((err) => {
           this.error = err.error
+          this.artisteExists = false
           this.isLoading = false
           return throwError(() => this.error)
         })

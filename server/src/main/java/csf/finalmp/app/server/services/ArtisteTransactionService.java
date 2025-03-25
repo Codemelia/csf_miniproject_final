@@ -42,15 +42,14 @@ public class ArtisteTransactionService {
         logger.info(">>> MySQL: Artistes table created");
     }
 
-
-    // update artiste wallet
+    // update artiste earnings
     // returns true if > 0 rows updated
-    public boolean updateArtisteWallet(String artisteId, Double amount) {
+    public boolean updateArtisteEarnings(String artisteId, Double amount) {
 
-        // get curr balance, add amount, save in artiste wallet
-        Double balance = artisteTransRepo.getArtisteBalance(artisteId);
+        // get curr balance, add amount, save in artiste earnings
+        Double balance = artisteTransRepo.getArtisteEarnings(artisteId);
         balance += amount;
-        return artisteTransRepo.updateArtisteWallet(artisteId, balance) > 0;
+        return artisteTransRepo.updateArtisteEarnings(artisteId, balance) > 0;
         
     }
 
@@ -81,31 +80,13 @@ public class ArtisteTransactionService {
     }
 
     // retrieve artiste curr balance
-    public Double getBalance(String artisteId) {
-        return artisteTransRepo.getArtisteBalance(artisteId);
+    public Double getArtisteEarnings(String artisteId) {
+        return artisteTransRepo.getArtisteEarnings(artisteId);
     }
 
     // get artist stripe account id
     public String getStripeAccountId(String artisteId) {
         return artisteTransRepo.getStripeAccountId(artisteId); 
-    }
-
-    // delete artiste from db
-    // returns id if update successful; throws error otherwise
-    public String deleteArtiste(String artisteId) {
-
-        int rows = artisteTransRepo.deleteArtiste(artisteId);
-        if (rows > 0) {
-            logger.info(
-                ">>> MySQL: Successfully deleted artiste with ID: %s".formatted(artisteId));
-            return artisteId;
-        } else {
-            logger.severe(
-                ">>> MySQL: Failed to delete artiste with ID: %s".formatted(artisteId));
-            throw new UserNotFoundException(
-                "Vibee does not exist. Please ensure you have the correct Vibee ID.");
-        }
-
     }
 
     // check if artiste has valid access token

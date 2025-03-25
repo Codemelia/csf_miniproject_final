@@ -101,7 +101,7 @@ export class AuthStore extends ComponentStore<AuthState> {
     // remove token from local storage
     // return values as initialised state
     readonly logout = this.updater(() => {
-        localStorage.removeItem(this.tokenKey)
+        localStorage.clear()
         this.router.navigate(['/'])
         return { token: null, loggedIn: false, userId: null, userRole: null }
     })

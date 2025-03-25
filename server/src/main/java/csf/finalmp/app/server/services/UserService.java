@@ -8,8 +8,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import csf.finalmp.app.server.configs.JwtUtil;
-import csf.finalmp.app.server.exceptions.custom.InvalidCredentialsException;
 import csf.finalmp.app.server.exceptions.custom.UserAlreadyExistsException;
+import csf.finalmp.app.server.exceptions.custom.UserAuthenticationException;
 import csf.finalmp.app.server.exceptions.custom.UserNotFoundException;
 import csf.finalmp.app.server.models.User;
 import csf.finalmp.app.server.repositories.UserRepository;
@@ -53,7 +53,7 @@ public class UserService {
     // insert user into table and retrieve id from db
     public String registerUser(User user) {
 
-        // check if username exists in db
+        // check if email exists in db
         // returns true if > 0 rows found with email | false if none found
         boolean emailExists = userRepo.emailExists(user.getEmail()) > 0;
 
@@ -78,7 +78,7 @@ public class UserService {
         String email = user.getEmail();
         String password = user.getPassword();
 
-        // check if username exists in db
+        // check if email exists in db
         // returns true if > 0 rows found with email | false if none found
         boolean emailExists = userRepo.emailExists(email) > 0;
 
@@ -101,7 +101,7 @@ public class UserService {
             logger.info(
                 ">>> AUTH: User with ID %s login failed".formatted(fullUser.getUserId())
             );
-            throw new InvalidCredentialsException(
+            throw new UserAuthenticationException(
                 "Invalid credentials provided. Please try again.");
         }
 
@@ -115,32 +115,6 @@ public class UserService {
     // get user role by id
     public String getUserRoleById(String userId) {
         return userRepo.getUserRoleById(userId);
-    }
-
-    public void updateUser(User user) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateUser'");
-    }
-
-    // update user details
-    public String updateUser(User user, String userId) {
-
-        // check if username exists in db
-        // returns true if > 0 rows found with username | false if none found
-        boolean userExists = userRepo.userExists(user.getUsername()) > 0;
-
-        // if user does not exist in db, throw custom exception
-        if(!userExists) {
-            throw new UserNotFoundException("User not found.");
-        }
-
-        user.setPassword(encoder.encode(user.getPassword())); // encode password before storage
-        user.setUserId(userId); // set id for validation before update
-        userRepo.updateUser(user);
-        logger.info(
-            ">>> AUTH: Updated user with ID: %s".formatted(userId));
-        return userId;
-
     }
 
 }

@@ -35,10 +35,13 @@ public class StripeController {
     private StripeService stripeSvc;
 
     @Autowired
-    private ArtisteTransactionService artisteTransSvc;
+    private ArtisteProfileService artisteProfSvc;
 
     @Autowired
-    private ArtisteProfileService artisteProfSvc;
+    private ArtisteTransactionService artisteTransSvc;
+
+    // @Value("${stripe.webhook.secret}")
+    // private String webhookSecret;
 
     private Logger logger = Logger.getLogger(StripeController.class.getName());
 
@@ -46,7 +49,7 @@ public class StripeController {
     public ResponseEntity<String> genOAuthUrl(
         @PathVariable("artisteId") String artisteId) {
         
-        logger.info(">>> Generating OAuth URL for artiste with ID: %s".formatted(artisteId));
+        logger.info(">>> Generating Stripe OAuth URL for artiste ID: %s".formatted(artisteId));
         if (!artisteProfSvc.checkArtisteId(artisteId)) {
             throw new UserNotFoundException("Vibee could not be found.");
         }
@@ -62,12 +65,13 @@ public class StripeController {
         @RequestParam(value = "state", required = true) String state,
         HttpServletResponse response) throws Exception {
 
-        if (error != null && error.equals("access_denied")) {
-            response.sendRedirect("%s/dashboard".formatted(frontendBaseUrl));
+        if (error != null || code == null || state == null) {
+            logger.warning(">>> Stripe error occurred");
+            response.sendRedirect("%s/dashboard/overview".formatted(frontendBaseUrl));
         }
 
         logger.info(">>> Callback from Stripe OAuth received: %s | %s".formatted(code, state));
-        stripeSvc.saveOAuthResponse(code, state, error); // exceptions will be handled by controller advice
+        stripeSvc.saveOAuthResponse(code, state);
         response.sendRedirect("%s/dashboard/overview".formatted(frontendBaseUrl));
 
     }
@@ -82,5 +86,5 @@ public class StripeController {
         return ResponseEntity.ok().body(stripeAccessValid);
 
     }
-    
+
 }

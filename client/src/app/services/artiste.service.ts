@@ -3,6 +3,7 @@ import { inject, Injectable, OnInit } from '@angular/core';
 import { catchError, Observable, of } from 'rxjs';
 import { AuthStore } from '../stores/auth.store';
 import { Router } from '@angular/router';
+import { ArtisteProfile } from '../models/app.models';
 
 @Injectable()
 export class ArtisteService {
@@ -13,33 +14,28 @@ export class ArtisteService {
 
   // ARTISTE AUTHENTICATION FUNCTIONS
 
-  // create artiste object
+  // create artiste profile
   // returns feedback string
-  createArtiste(artisteId: string, stageName: string, categories: string[], 
-      bio: string | null, photoBlob: Blob | null, thankYouMessage: string | null): Observable<string> {
-    if (artisteId) {
-      const formData = new FormData();
-      formData.append('stageName', stageName)
-      if (categories && categories.length > 0) {
-        formData.append('categories', categories.join(',')) }
-      if (bio) { formData.append('bio', bio) }
-      if (photoBlob) { formData.append('photo', photoBlob ) }
-      if (thankYouMessage) { formData.append('thankYouMessage', thankYouMessage) }
-  
-      return this.http.post<string>(`/api/artiste/create/${artisteId}`, formData, {
-        headers: this.authStore.getNoContentHeaders(),
-        responseType: 'text' as 'json' })
-    } else {
-      return of('Could not retrieve Vibee ID for Vibee profile creation.');
-    }
+  createArtisteProfile(profile: ArtisteProfile): Observable<string> {
+    const formData = new FormData();
+    formData.append('stageName', profile.stageName)
+    if (profile.categories && profile.categories.length > 0) {
+      formData.append('categories', profile.categories.join(',')) }
+    if (profile.bio) { formData.append('bio', profile.bio) }
+    if (profile.photo) { formData.append('photo', profile.photo ) }
+    if (profile.thankYouMessage) { formData.append('thankYouMessage', profile.thankYouMessage) }
+
+    return this.http.post<string>(`/api/artiste/create-profile/${profile.artisteId}`, formData, {
+      headers: this.authStore.getNoContentHeaders(),
+      responseType: 'text' as 'json' })
   }
 
   // check if artiste id exists in db
   // returns true if exist
   artisteExists(artisteId: string): Observable<boolean> {
     const params = new HttpParams().set('artisteId', artisteId)
-    return this.http.get<boolean>('/api/artiste/check', { params,
-      headers: this.authStore.getJsonHeaders()})
+    return this.http.get<boolean>('/api/artiste/check', 
+      { params, headers: this.authStore.getJsonHeaders()})
   }
 
   // ARTISTE STRIPE FUNCTIONS
@@ -53,7 +49,7 @@ export class ArtisteService {
 
   // check if artiste stripe access token is in mysql
   stripeAccessTokenExists(artisteId: string): Observable<boolean> {
-    return this.http.get<boolean>(`api/stripe/check-access/${artisteId}`,
+    return this.http.get<boolean>(`/api/stripe/check-access/${artisteId}`,
       { headers: this.authStore.getJsonHeaders() })
       .pipe(
         catchError(() => {
@@ -63,18 +59,46 @@ export class ArtisteService {
       )
   }
 
-  // ARTISTE WALLET FUNCTIONS
-  requestPayout(walletBalance: number) {
-    throw new Error('Method not implemented.');
+  // get artiste profile
+  getArtisteProfile(artisteId: string): Observable<ArtisteProfile> {
+    return this.http.get<ArtisteProfile>(`/api/artiste/profile/${artisteId}`,
+    { headers: this.authStore.getJsonHeaders() })
   }
-  getPayoutHistory() {
-    throw new Error('Method not implemented.');
+
+  // update artiste profile
+  updateArtisteProfile(profile: ArtisteProfile, artisteId: string): Observable<boolean> {
+    const formData = new FormData();
+    formData.append('stageName', profile.stageName)
+    if (profile.categories && profile.categories.length > 0) {
+      formData.append('categories', profile.categories.join(',')) }
+    if (profile.bio) { formData.append('bio', profile.bio) }
+    if (profile.photo) { formData.append('photo', profile.photo ) }
+    if (profile.thankYouMessage) { formData.append('thankYouMessage', profile.thankYouMessage) }
+
+    return this.http.put<boolean>(`/api/artiste/update-profile/${artisteId}`,
+      formData, { headers: this.authStore.getNoContentHeaders() })
+      .pipe(
+        catchError(() => {
+          console.log('>>> Error updating profile');
+          return of(false); // return false in case of an error
+        })
+      )
   }
-  getPendingPayouts() {
-    throw new Error('Method not implemented.');
+
+  // get all artiste profiles
+  getAllArtisteProfiles(artisteId: string): Observable<ArtisteProfile[]> {
+    return this.http.get<ArtisteProfile[]>(`/api/artistes`,
+      { headers: this.authStore.getJsonHeaders() })
   }
-  getWalletBalance() {
-    throw new Error('Method not implemented.');
+
+  // get prof photo mime type
+  // get file type
+  getImageMimeType(base64: string): string {
+    if (base64.startsWith("/9j/")) return "image/jpeg"; // JPEG
+    if (base64.startsWith("iVBORw0KGgo")) return "image/png"; // PNG
+    if (base64.startsWith("R0lGODdh") || base64.startsWith("R0lGODlh")) return "image/gif"; // GIF
+    if (base64.startsWith("UklGR")) return "image/webp"; // WebP
+    return "image/png"; // fallback
   }
 
 }

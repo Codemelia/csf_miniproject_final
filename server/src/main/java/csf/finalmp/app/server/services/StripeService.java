@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,6 +16,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import csf.finalmp.app.server.exceptions.custom.StripePaymentException;
 import csf.finalmp.app.server.models.ArtisteTransactionDetails;
 import csf.finalmp.app.server.repositories.ArtisteTransactionRepository;
 import jakarta.json.Json;
@@ -30,6 +30,9 @@ public class StripeService {
     @Value("${backend.app.url}")
     private String backendBaseUrl;
 
+    @Value("${frontend.app.url}")
+    private String frontendBaseUrl;
+
     @Value("${stripe.secret.key}")
     private String stripeSecretKey;
 
@@ -41,7 +44,7 @@ public class StripeService {
 
     private final RestTemplate template = new RestTemplate();
 
-    private final String STRIPE_BASE_URL = "https://connect.stripe.com/oauth/authorize";
+    private static final String STRIPE_OAUTH_BASE_URL = "https://connect.stripe.com/oauth/authorize";
     private final String STRIPE_OAUTH_TOKEN_URL = "https://connect.stripe.com/oauth/token";
 
     private final Logger logger = Logger.getLogger(StripeService.class.getName());
@@ -50,10 +53,12 @@ public class StripeService {
     // https://connect.stripe.com/oauth/authorize?response_type=code&client_id=stripe_client_id&scope=read_write&redirect_uri=http://backend-url/oauth/callback&state=123
     public String genOAuthUrl(String artisteId) {
 
-        return UriComponentsBuilder.fromUriString(STRIPE_BASE_URL)
+        return UriComponentsBuilder.fromUriString(STRIPE_OAUTH_BASE_URL)
             .queryParam("response_type", "code")
             .queryParam("client_id", stripeClientId)
             .queryParam("scope", "read_write")
+            .queryParam("refresh_uri", String.format("%s/dashboard/overview",
+                frontendBaseUrl))
             .queryParam("redirect_uri", String.format("%s/api/stripe/oauth/callback",
                 backendBaseUrl)) // server endpoint for callback
             .queryParam("state", artisteId) // send id as state for later verification
@@ -62,12 +67,7 @@ public class StripeService {
     }
 
     // handle oauth callback
-    public void saveOAuthResponse(String code, String state, String error) throws Exception {
-
-        if (error != null || code == null) {
-            logger.severe(">>> Stripe OAuth Error: %s".formatted(error));
-            throw new Exception("Error received on Stripe OAuth callback. Please try again.");
-        }
+    public void saveOAuthResponse(String code, String state) throws Exception {
 
         // ensure type safety
         String artisteId = String.valueOf(state);
@@ -96,33 +96,31 @@ public class StripeService {
         logger.info(">>> Received Stripe OAuth Response: %s".formatted(response.getBody()));
 
         // check response and return if avail
-        if (response.getStatusCode() == HttpStatus.OK) {
-
-            String responseBody = response.getBody();
-
-            // parse json response
-            JsonObject responseJson = Json.createReader(new StringReader(responseBody))
-                .readObject();
-            String stripeAccessToken = responseJson.getString("access_token");
-            String stripeAccountId = responseJson.getString("stripe_user_id");
-            String stripeRefreshToken = responseJson.getString("refresh_token");
-            logger.info(">>> Parsed from Stripe OAuth Response: Access Token: %s | Refresh Token: %s | Account ID: %s"
-                .formatted(stripeAccessToken, stripeRefreshToken, stripeAccountId));
-
-            // save stripe account id
-            ArtisteTransactionDetails artiste = new ArtisteTransactionDetails();
-            artiste.setArtisteId(artisteId);
-            artiste.setStripeAccountId(stripeAccountId);
-
-            // save stripe access token and refresh token
-            artiste.setStripeAccessToken(stripeAccessToken);
-            artiste.setStripeRefreshToken(stripeRefreshToken);
-            artisteTransRepo.saveArtisteStripe(artiste);
-
-        } else {
+        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
             logger.severe(">>> Stripe OAuth Error: %s".formatted(response.getStatusCode().toString()));
-            throw new Exception("An unexpected error occurred. Please try again.");
+            throw new StripePaymentException("An unexpected error occurred. Please try again.");
         }
+
+        String responseBody = response.getBody();
+
+        // parse json response
+        JsonObject responseJson = Json.createReader(new StringReader(responseBody))
+            .readObject();
+        String stripeAccessToken = responseJson.getString("access_token");
+        String stripeAccountId = responseJson.getString("stripe_user_id");
+        String stripeRefreshToken = responseJson.getString("refresh_token");
+        logger.info(">>> Parsed from Stripe OAuth Response: Access Token: %s | Refresh Token: %s | Account ID: %s"
+            .formatted(stripeAccessToken, stripeRefreshToken, stripeAccountId));
+
+        // save stripe account id
+        ArtisteTransactionDetails artiste = new ArtisteTransactionDetails();
+        artiste.setArtisteId(artisteId);
+        artiste.setStripeAccountId(stripeAccountId);
+
+        // save stripe access token and refresh token
+        artiste.setStripeAccessToken(stripeAccessToken);
+        artiste.setStripeRefreshToken(stripeRefreshToken);
+        artisteTransRepo.saveArtisteStripe(artiste);
 
     }
     

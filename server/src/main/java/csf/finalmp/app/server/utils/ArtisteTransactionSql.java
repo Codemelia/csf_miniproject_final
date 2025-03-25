@@ -13,24 +13,24 @@ public class ArtisteTransactionSql {
     public static final String CREATE_ARTISTES_TABLE = """
         CREATE TABLE IF NOT EXISTS artiste_transaction_details (
             artiste_id CHAR(8) PRIMARY KEY, 
-            stripe_account_id VARCHAR(255) UNIQUE,
-            stripe_access_token VARCHAR(255),
-            stripe_refresh_token VARCHAR(255),
-            wallet_balance DECIMAL(10, 2) DEFAULT 0.00,
+            stripe_account_id VARCHAR(255) NOT NULL UNIQUE,
+            stripe_access_token VARCHAR(255) NOT NULL,
+            stripe_refresh_token VARCHAR(255) NOT NULL,
+            earnings DECIMAL(10, 2) DEFAULT 0.00,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             FOREIGN KEY (artiste_id) REFERENCES users(user_id) ON DELETE CASCADE);
     """;
 
     // update artiste access token and account id
     public static final String INSERT_ARTISTE_STRIPE = """
-        INSERT INTO artiste_transaction_details (artiste_id, stripe_account_id, stripe_access_token, stripe_refresh_token)
-            VALUES (?, ?, ?, ?);  
+        INSERT INTO artiste_transaction_details (artiste_id, stripe_account_id, stripe_access_token, stripe_refresh_token, earnings)
+            VALUES (?, ?, ?, ?, ?);  
     """;
 
-    // indiv method to update artiste wallet to avoid any confusion
-    public static final String UPDATE_ARTISTE_WALLET = """
-        UPDATE artiste_transaction_details SET wallet_balance = ?
+    // indiv method to update artiste earnings to avoid any confusion
+    public static final String UPDATE_ARTISTE_EARNINGS = """
+        UPDATE artiste_transaction_details SET earnings = ?
             WHERE artiste_id =?;        
     """;
 
@@ -45,9 +45,9 @@ public class ArtisteTransactionSql {
         SELECT * FROM artiste_transaction_details;        
     """;
 
-    // select artiste wallet balance
-    public static final String SELECT_ARTISTE_BALANCE_BY_ID = """
-        SELECT wallet_balance FROM artiste_transaction_details
+    // select artiste earnings balance
+    public static final String SELECT_ARTISTE_EARNINGS_BY_ID = """
+        SELECT earnings FROM artiste_transaction_details
             WHERE artiste_id = ?;
     """;
 
@@ -67,13 +67,7 @@ public class ArtisteTransactionSql {
     public static final String CHECK_ARTISTE_ID = """
         SELECT EXISTS(SELECT 1 FROM artiste_transaction_details WHERE artiste_id = ?);
     """;
-
-    // delete artiste from db
-    public static final String DELETE_ARTISTE = """
-        DELETE FROM artiste_transaction_details
-            WHERE artiste_id = ?;        
-    """;
-
+    
     // check if artiste id row has valid stripe access token
     public static final String CHECK_ARTISTE_ACCESS_TOKEN = """
         SELECT COUNT(*) FROM artiste_transaction_details

@@ -1,0 +1,160 @@
+<div class="profile-page" *ngIf="artisteExists && !isLoading">
+    <div class="profile-container">
+        <mat-card class="form-card">
+            <mat-card-header>
+                <mat-card-title>{{ stageName }}</mat-card-title>
+                <mat-error *ngIf="error">{{ error.message }}</mat-error>
+            </mat-card-header>
+            <mat-card-content>
+                <form [formGroup]="profileForm" (submit)="updateProfile()">
+        
+                    <div class="img-input">
+                        <mat-label style="margin-bottom: 15px;">Profile Photo</mat-label>
+                        <img
+                        [src]="photoUrl || '/default_profile_pic.png'"
+                        alt="Profile Photo"
+                        style="border-radius: 100%;"
+                        class="preview">
+                        <input type="file" id="fileInput" (change)="onFileChange($event)" accept="image/*">
+                        <label class="custom-file-input" for="fileInput">Choose File</label>
+                        <mat-error *ngIf="fileTooLarge">File size exceeds 10MB. Please upload a smaller file.</mat-error>
+                    </div>
+        
+                    <div class="categories-input">
+                        <mat-label>Categories (Select up to 5)</mat-label>
+                        <mat-button-toggle-group
+                            formControlName="categories"
+                            multiple
+                            aria-label="Category Selection">
+                            <mat-button-toggle
+                            *ngFor="let category of categories"
+                            [value]="category"
+                            [disabled]="profileForm.get('categories')!.value.length >= 5 && 
+                                !profileForm.get('categories')!.value.includes(category)">
+                            {{ category }}
+                            </mat-button-toggle>
+                        </mat-button-toggle-group>
+                    </div>
+
+                    <mat-form-field>
+                        <mat-label>Bio</mat-label>
+                        <textarea matInput formControlName="bio"
+                        placeholder="Tell us more about yourself" maxlength="150">
+                    </textarea>
+                    <mat-hint align="end">{{ profileForm.get('bio')?.value.length || 0 }}/150</mat-hint>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Thank You Message</mat-label>
+                        <textarea matInput formControlName="thankYouMessage"
+                            placeholder="Write a short thank you message to your supporters!" maxlength="150">
+                        </textarea>
+                        <mat-hint align="end">{{ profileForm.get('thankYouMessage')?.value.length || 0 }}/150</mat-hint>
+                    </mat-form-field>
+        
+                    <button mat-raised-button color="primary" type="submit"
+                        [disabled]="profileForm.invalid">Update Profile</button>
+                </form>
+            </mat-card-content>
+        </mat-card>
+    </div>
+  
+    <div class="qr-section">
+        <mat-card class="qr-card">
+            <mat-card-header>
+                <mat-card-title>Tipping Page</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+            <img [src]="qrCodeViewUrl || '/default_qr_code.png'" 
+                alt="QR Code"
+                style="border-radius: 40px;"
+                class="preview">
+            <button mat-raised-button color="accent" (click)="shareQrCodeUrl()">Share</button>
+            </mat-card-content>
+        </mat-card>
+    
+        <mat-card class="spotify-container">
+            <mat-card-header style="margin-top: 15px;">
+                <mat-card-title>Exclusive Spotify Playlist</mat-card-title>
+                <mat-card-subtitle>Curate an exclusive Spotify playlist to be sent to Vibers who tip you!</mat-card-subtitle>
+                <div *ngIf="spotifyError" class="feedback">
+                    <mat-error>{{ spotifyError.message }}</mat-error>
+                </div>
+            </mat-card-header>
+
+            <mat-progress-bar *ngIf="spotifyLoading" mode="indeterminate"></mat-progress-bar>
+
+            <mat-card-content *ngIf="!spotifyLoading">
+                <div *ngIf="!spotifyLinked">
+                  <button mat-raised-button color="accent" (click)="linkSpotify()">Link Spotify Account</button>
+                </div>
+                <!-- Search Tracks Card -->
+                <mat-card *ngIf="spotifyLinked" class="search-card">
+                    <mat-card-content>
+                    <form [formGroup]="spotifyForm" (submit)="searchTracks()">
+                        <mat-form-field>
+                            <mat-label>Search Tracks</mat-label>
+                            <input matInput formControlName="searchQuery" placeholder="Type to search Spotify tracks">
+                        </mat-form-field>
+                        <button mat-raised-button type="submit" [disabled]="spotifyForm.get('searchQuery')?.value.length < 2">
+                            Search
+                        </button>
+                    </form>
+                    </mat-card-content>
+                </mat-card>
+                
+                <!-- Selected Tracks Card -->
+                <mat-card *ngIf="spotifyLinked" class="tracks-card">
+                    <mat-card-header>
+                        <mat-card-title>Search Results</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <div *ngIf="searchResults.length > 0" class="selected-tracks">
+                            <!-- Display each track as an iframe -->
+                            @for (track of searchResults; let idx = $index; track $index) {
+                                <div class="track-row">
+                                    <button mat-icon-button color="accent" 
+                                        class="track-select-button" 
+                                        (click)="selectTrack(track)">
+                                    <mat-icon>{{ selectedTracks.includes(track) ? 'playlist_add_check' : 'playlist_add' }}</mat-icon>
+                                    </button>
+                                    <iframe [src]="track.sanitizedUrl" 
+                                        frameborder="0" allow="encrypted-media">
+                                    </iframe>
+                                </div>
+                            }
+                        </div>
+                        <div *ngIf="searchResults.length == 0 || searchResults == null">
+                            <p>No tracks found</p>
+                        </div>
+                        <button mat-raised-button type="button" style="margin-top: 15px;" (click)="savePlaylist()" [disabled]="selectedTracks.length === 0">
+                            Save Playlist
+                        </button>
+                    </mat-card-content>
+                </mat-card>
+
+                <mat-card class="playlist-card" *ngIf="spotifyLinked && playlistUrl">
+                    <mat-card-header>
+                        <mat-card-title>Playlist Saved</mat-card-title>
+                    </mat-card-header>
+                    <button mat-raised-button type="button" (click)="sharePlaylist()">Share</button>
+                </mat-card>
+                <mat-card class="playlist-card" *ngIf="spotifyLinked && !playlistUrl">
+                    <mat-card-header>
+                        <mat-card-title>No Playlist Saved</mat-card-title>
+                    </mat-card-header>
+                </mat-card>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>
+  
+<mat-card *ngIf="!artisteExists && !isLoading">
+    <mat-card-header>
+        <mat-card-title>Please complete your Vibee profile</mat-card-title>
+    </mat-card-header>
+</mat-card>
+
+<div *ngIf="isLoading" class="spinner-page">
+    <mat-spinner></mat-spinner>
+</div>

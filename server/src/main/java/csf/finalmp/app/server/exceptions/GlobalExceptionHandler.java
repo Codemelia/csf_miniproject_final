@@ -9,10 +9,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.google.zxing.WriterException;
-import com.stripe.exception.SignatureVerificationException;
 import com.stripe.exception.StripeException;
 
-import csf.finalmp.app.server.exceptions.custom.InvalidCredentialsException;
+import csf.finalmp.app.server.exceptions.custom.SpotifyException;
 import csf.finalmp.app.server.exceptions.custom.StripePaymentException;
 import csf.finalmp.app.server.exceptions.custom.UserAlreadyExistsException;
 import csf.finalmp.app.server.exceptions.custom.UserNotFoundException;
@@ -26,27 +25,27 @@ import redis.clients.jedis.exceptions.JedisConnectionException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    // handle spotify exception
+    @ExceptionHandler(SpotifyException.class)
+    public ResponseEntity<ApiError> handleSpotifyException(SpotifyException e) {
+        ApiError error = new ApiError(
+            HttpStatus.BAD_REQUEST.value(), 
+            "Spotify Error", 
+            e.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(error);
+    }
+
     // handle writer exception
     @ExceptionHandler(WriterException.class)
     public ResponseEntity<ApiError> handleWriterException(WriterException e) {
         ApiError error = new ApiError(
-            HttpStatus.BAD_REQUEST.value(), 
+            HttpStatus.INTERNAL_SERVER_ERROR.value(), 
             "QR Code Generation Error", 
             e.getMessage()
         );
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(error);
-    }
-
-    // handle stripe webhook exception
-    @ExceptionHandler(SignatureVerificationException.class)
-    public ResponseEntity<ApiError> handleSignatureVerificationException(SignatureVerificationException e) {
-        ApiError error = new ApiError(
-            HttpStatus.BAD_REQUEST.value(), 
-            "Invalid Webhook Signature Error", 
-            e.getMessage()
-        );
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(error);
     }
 
@@ -94,18 +93,6 @@ public class GlobalExceptionHandler {
             e.getMessage()
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-            .body(error);
-    }
-
-    // handle custom invalid login credentials exception
-    @ExceptionHandler(InvalidCredentialsException.class)
-    public ResponseEntity<ApiError> handleInvalidCredentialsException(InvalidCredentialsException e) {
-        ApiError error = new ApiError(
-            HttpStatus.UNAUTHORIZED.value(), 
-            "Invalid Login Credentials Error", 
-            e.getMessage()
-        );
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
             .body(error);
     }
 

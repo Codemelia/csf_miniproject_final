@@ -16,29 +16,23 @@ public class UserSql {
         CREATE TABLE IF NOT EXISTS users (
             user_id CHAR(8) PRIMARY KEY NOT NULL, 
             email VARCHAR(255) NOT NULL UNIQUE,
-            username VARCHAR(30) NOT NULL UNIQUE, 
             password VARCHAR(60) NOT NULL, 
             phone_number VARCHAR(50),
             role VARCHAR(50) NOT NULL, 
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL);
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP);
     """;
 
     // insert user
     public static final String INSERT_USER = """
-        INSERT INTO users (user_id, email, username, password, phone_number, role) 
-            VALUES (?, ?, ?, ?, ?, ?);  
+        INSERT INTO users (user_id, email, password, phone_number, role) 
+            VALUES (?, ?, ?, ?, ?);  
     """;
 
     // select user by displayname
     public static final String SELECT_USER_BY_EMAIL = """
         SELECT * FROM users
             WHERE email = ?;
-    """;
-
-    // check if display name exists in db
-    public static final String CHECK_USERNAME = """
-        SELECT EXISTS(SELECT 1 FROM users WHERE username = ?)         
     """;
 
     // check if email exists in db

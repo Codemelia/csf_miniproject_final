@@ -13,7 +13,7 @@ public class TipSql {
     // create table
     public static final String CREATE_TIPS_TABLE = """
         CREATE TABLE IF NOT EXISTS tips (
-            tip_id BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL, 
+            tip_id BIGINT AUTO_INCREMENT PRIMARY KEY, 
             tipper_name VARCHAR(100) DEFAULT 'Viber',
             tipper_message VARCHAR(100) DEFAULT 'No message written',
             tipper_email VARCHAR(255),
@@ -22,8 +22,8 @@ public class TipSql {
             amount DECIMAL(10, 2) DEFAULT 0.00 NOT NULL, 
             payment_intent_id VARCHAR(255) NOT NULL UNIQUE, 
             payment_status VARCHAR(30) DEFAULT 'pending' NOT NULL,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             FOREIGN KEY(artiste_id) REFERENCES artiste_transaction_details(artiste_id) ON DELETE CASCADE);
     """;
 

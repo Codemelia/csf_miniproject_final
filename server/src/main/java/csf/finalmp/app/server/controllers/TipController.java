@@ -72,7 +72,7 @@ public class TipController {
         logger.info(">>> Processing tip confirmation for Tip Request: %s".formatted(confirmedRequest.toString()));
         if (confirmedRequest.getPaymentStatus().contains("succeeded")) {
             String artisteId = tipSvc.saveTip(confirmedRequest);
-            artisteTransSvc.updateArtisteWallet(artisteId, confirmedRequest.getAmount());
+            artisteTransSvc.updateArtisteEarnings(artisteId, confirmedRequest.getAmount());
             logger.info(">>> Tip saved for Artiste with ID: %s".formatted(artisteId));
             String thankYouMessage = artisteProfSvc.getArtisteThankYouMsgById(artisteId); // change to artiste profile
 

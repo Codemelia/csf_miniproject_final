@@ -2,30 +2,37 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
-    margin-bottom: 30px;
-    margin-top: 15px;
+    margin: 10px;
 }
 
 mat-card {
-    border: 2px solid #9C27B0;
     border-radius: 12px;
     text-align: center;
     background-color: #ffffff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 
+        1px 1px 0px rgba(98, 0, 234, 1),  
+        -1px -1px 0px rgb(255, 49, 210, 1),
+        0px 0px 5px rgba(255, 255, 255, 0.5);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    padding: 20px;
+    padding: 35px;
 
     &:hover {
         transform: translateY(-5px);
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        box-shadow: 
+            1px 1px 0px rgba(98, 0, 234, 1),  
+            -1px -1px 0px rgb(255, 49, 210, 1),
+            0px 0px 10px rgba(255, 255, 255, 1);
     }
 }
 
 mat-card-title {
     font-size: 1.2rem;
     font-weight: 600;
-    color: #333;
     margin-bottom: 15px;
+    color: #000;
+    text-shadow: 
+        0.8px 0.8px 0px rgba(98, 0, 234, 1),  
+        -0.8px -0.8px 0px rgba(255, 49, 210, 1); 
 }
 
 mat-card-content {
@@ -38,6 +45,13 @@ mat-card-content {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
+    margin: 15px 10px 30px 10px;
+
+    mat-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
 }
 
 canvas {
@@ -46,6 +60,23 @@ canvas {
     background-color: #f9f9f9;
     border-radius: 8px;
     padding: 10px;
+    margin: 0 auto;
+}
+
+mat-spinner {
+    --mat-spinner-color: #E91E63;
+}
+
+.spinner-page {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 /* Responsive Design */

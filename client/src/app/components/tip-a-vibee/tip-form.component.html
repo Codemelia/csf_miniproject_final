@@ -71,7 +71,7 @@
                 </div>
     
                 <mat-card-actions>
-                    <button mat-raised-button type="submit" color="accent" [disabled]="form.invalid">Tip Now</button>
+                    <button mat-raised-button type="submit" color="accent" [disabled]="form.invalid || !cardComplete">Tip Now</button>
                 </mat-card-actions>
     
                 <div *ngIf="error" class="feedback">

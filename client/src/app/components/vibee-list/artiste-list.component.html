@@ -1,0 +1,34 @@
+<div class="vibee-list-page">
+    <div *ngIf="isLoading" class="spinner-page">
+      <mat-spinner></mat-spinner>
+    </div>
+    <div *ngIf="!isLoading && error" class="error-message">
+      <mat-error>{{ error.message }}</mat-error>
+    </div>
+
+    <mat-form-field appearance="outline" class="search-bar">
+        <mat-label>Search Artistes</mat-label>
+        <input matInput [(ngModel)]="searchTerm" (input)="filterArtistes()" placeholder="Enter name...">
+        <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <div *ngIf="!isLoading && !error" class="vibee-grid">
+      <mat-card *ngFor="let vibee of filteredArtistes" class="vibee-card">
+        <mat-card-header>
+          <img mat-card-avatar [src]="vibee.photoUrl || '/default_profile_pic.png'" alt="Profile Photo">
+          <mat-card-title>{{ vibee.stageName }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="categories">
+            <mat-chip-listbox aria-label="Categories">
+              <mat-chip *ngFor="let category of vibee.categories">{{ category }}</mat-chip>
+            </mat-chip-listbox>
+          </div>
+          <p>{{ vibee.bio | slice:0:100 }}</p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-raised-button color="primary" (click)="tipVibee(vibee.qrCodeUrl)">Tip Vibee</button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+</div>

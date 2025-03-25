@@ -15,16 +15,6 @@
             </mat-form-field>
 
             <mat-form-field appearance="fill" class="full-width">
-                <mat-label><mat-icon>person</mat-icon> Username</mat-label>
-                <input matInput formControlName="username" placeholder="Enter username">
-                <mat-error *ngIf="(form.get('username')?.hasError('required') || 
-                    form.get('username')?.hasError('minlength') ||
-                    form.get('username')?.hasError('maxlength')) &&
-                    form.get('username')?.touched">Username must be between 8 and 30 characters
-                </mat-error>
-            </mat-form-field>
-
-            <mat-form-field appearance="fill" class="full-width">
                 <mat-label><mat-icon>lock</mat-icon> Password</mat-label>
                 <input matInput type="password" formControlName="password" placeholder="Enter password">
                 <mat-error *ngIf="(form.get('password')?.hasError('required') || 

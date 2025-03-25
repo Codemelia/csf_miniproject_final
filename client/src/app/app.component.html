@@ -4,7 +4,7 @@
     <span class="app-name">VIBEY</span>
     <div>
   
-        <div *ngIf="authStore.authState$ | async as auth">
+        <div *ngIf="authStore.authState$ | async as auth" class="nav-links">
   
           <button mat-button routerLink="/home" *ngIf="auth.loggedIn == true">Home</button>
           <button mat-button routerLink="/vibees" *ngIf="auth.loggedIn">Vibees</button>

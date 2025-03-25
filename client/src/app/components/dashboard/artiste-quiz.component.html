@@ -1,4 +1,4 @@
-<mat-card class="quiz-container">
+<mat-card class="quiz-container" *ngIf="!isLoading">
     <mat-card-title>Complete Your Vibee Profile</mat-card-title>
     <mat-card-subtitle>Complete your Vibee profile to start earning tips!</mat-card-subtitle>
     <mat-progress-bar mode="determinate" [value]="progress"></mat-progress-bar>
@@ -15,37 +15,7 @@
             [disabled]="stageNameInput.invalid">Next</button>
     </div>
     <div class="step" *ngIf="step === 2">
-        <mat-card-subtitle>🎯 STEP 2: Your Areas of Expertise</mat-card-subtitle>
-        <mat-label>Categories that Best Apply to You</mat-label>
-        <mat-form-field>
-            <mat-button-toggle-group [(ngModel)]="selectedCategories" name="categories" aria-label="Category Selection" multiple>
-                <mat-button-toggle *ngFor="let category of categories" [value]="category"
-                    [disabled]="(selectedCategories.length || 0) >= 5 && 
-                    !selectedCategories.includes(category)">
-                    {{ category }}
-                </mat-button-toggle>
-            </mat-button-toggle-group>
-        </mat-form-field>
-        <mat-card-actions>
-            <button mat-raised-button color="warn" (click)="previousStep()">Back</button>
-            <button mat-raised-button color="primary" (click)="nextStep()">Next</button>
-        </mat-card-actions>
-    </div>
-    <div class="step" *ngIf="step === 3">
-        <mat-card-subtitle>🎤 STEP 3: What's Your Story?</mat-card-subtitle>
-        <mat-form-field>
-            <mat-label>Your Bio</mat-label>
-            <textarea matInput [(ngModel)]="bio" #bioInput="ngModel"
-                placeholder="Tell us more about yourself" maxlength="255"></textarea>
-            <mat-hint align="end">{{ bioInput?.value?.length || 0 }}/255</mat-hint>
-        </mat-form-field>
-        <mat-card-actions>
-            <button mat-raised-button color="warn" (click)="previousStep()">Back</button>
-            <button mat-raised-button color="primary" (click)="nextStep()">Next</button>
-        </mat-card-actions>
-    </div>
-    <div class="step" *ngIf="step === 4">
-        <mat-card-subtitle>🎭 STEP 4: Your Stage, Your Image</mat-card-subtitle>
+        <mat-card-subtitle>🎭 STEP 2: Your Stage, Your Image</mat-card-subtitle>
         <div class="img-input">
             <mat-label style="margin-bottom: 15px;">Your Profile Photo</mat-label>
             <label class="custom-file-input" for="fileInput">Choose File</label>
@@ -59,14 +29,42 @@
             <button mat-raised-button color="primary" (click)="nextStep()">Next</button>
         </mat-card-actions>
     </div>
+    <div class="step" *ngIf="step === 3">
+        <mat-card-subtitle>🎤 STEP 3: What's Your Story?</mat-card-subtitle>
+        <mat-form-field>
+            <mat-label>Your Bio</mat-label>
+            <textarea matInput [(ngModel)]="bio" #bioInput="ngModel"
+                placeholder="Tell us more about yourself" maxlength="150"></textarea>
+            <mat-hint align="end">{{ bioInput?.value?.length || 0 }}/150</mat-hint>
+        </mat-form-field>
+        <mat-card-actions>
+            <button mat-raised-button color="warn" (click)="previousStep()">Back</button>
+            <button mat-raised-button color="primary" (click)="nextStep()">Next</button>
+        </mat-card-actions>
+    </div>
+    <div class="step" *ngIf="step === 4">
+        <mat-card-subtitle>🎯 STEP 4: Your Areas of Expertise</mat-card-subtitle>
+        <mat-label>Your Categories (Select up to 5)</mat-label>
+        <mat-button-toggle-group [(ngModel)]="selectedCategories" name="categories" aria-label="Category Selection" multiple>
+            <mat-button-toggle *ngFor="let category of categories" [value]="category"
+                [disabled]="(selectedCategories.length || 0) >= 5 && 
+                !selectedCategories.includes(category)">
+                {{ category }}
+            </mat-button-toggle>
+        </mat-button-toggle-group>
+        <mat-card-actions>
+            <button mat-raised-button color="warn" (click)="previousStep()">Back</button>
+            <button mat-raised-button color="primary" (click)="nextStep()">Next</button>
+        </mat-card-actions>
+    </div>
     <div class="step" *ngIf="step === 5">
         <mat-card-subtitle>🤗 STEP 5: Thank Your Supporters</mat-card-subtitle>
         <mat-form-field>
             <mat-label>Your Thank You Message</mat-label>
             <textarea matInput [(ngModel)]="thankYouMessage" #thankYouMessageInput="ngModel" 
-                placeholder="Write a little thank you note to Vibers who send you tips!"
-                maxlength="255"></textarea>
-            <mat-hint align="end">{{ thankYouMessageInput?.value?.length || 0 }}/255</mat-hint>
+                placeholder="Write a short thank you message to your supporters!"
+                maxlength="150"></textarea>
+            <mat-hint align="end">{{ thankYouMessageInput?.value?.length || 0 }}/150</mat-hint>
         </mat-form-field>
         <button mat-raised-button color="warn" (click)="previousStep()">Back</button>
         <button mat-raised-button color="primary" (click)="saveData()" style="margin-top: 15px;">Save and Set Up Stripe</button>
@@ -75,14 +73,17 @@
         <mat-card-subtitle>Step 6: Set Up Your Stripe Account</mat-card-subtitle>
         <mat-label style="margin-bottom: 20px;">This step is crucial to help you get that 💰!</mat-label>
         <mat-card-actions>
-            <button mat-raised-button color="accent" (click)="genOAuthUrl()" 
+            <button mat-raised-button color="accent" (click)="linkStripe()" 
                 [disabled]="isStripeLinked || !artisteExists">
                 {{ isStripeLinked ? 'Stripe Already Connected' : 'Connect Stripe Account' }}
             </button>
         </mat-card-actions>
     </div>
-    <div *ngIf="error || successMsg" class="feedback">
+    <div *ngIf="error" class="feedback">
         <mat-error *ngIf="error">{{ error.message }}</mat-error>
-        <span class="success-message" *ngIf="successMsg">{{ successMsg }}</span>
     </div>
 </mat-card>
+
+<div *ngIf="isLoading" class="spinner-page">
+    <mat-spinner></mat-spinner>
+</div>

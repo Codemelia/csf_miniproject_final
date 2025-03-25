@@ -106,7 +106,7 @@ public class TipService {
                     .setDestination(artisteStripeId) // Set destination to the musician's Stripe account
                     .build()
             )
-            .setApplicationFeeAmount((long) (tipAmountInCents * 0.1)) // platform fee: 10%
+            .setApplicationFeeAmount((long) (tipAmountInCents * 0.15)) // platform fee: 15%
             .build();
 
         // create payment intent with params and return client secret for client side confirmation

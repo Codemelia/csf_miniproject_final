@@ -1,0 +1,318 @@
+.profile-page {
+    padding: 20px;
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    margin: 10px;
+    align-items: stretch;
+}
+
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.qr-section {
+    display: flex;
+    flex-direction: column;
+    width: 45%;
+    height: auto;
+    flex-grow: 1;
+
+    .qr-card {
+        height: 30%;
+    }
+
+    .spotify-container {
+        height: 70%;
+    }
+}
+
+.form-card {
+    flex: 1; /* Makes the form section take up the remaining space */
+    height: 100%;
+}
+
+form {
+    padding: 20px 0 10px 0;
+    max-width: 600px;
+    height: auto;
+}
+  
+mat-card {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    background-color: #00000000;
+    transition: background-color 0.3s ease;
+    box-shadow:
+        0.8px 0.8px 0px rgba(98, 0, 234, 1),  
+        -0.8px -0.8px 0px rgba(255, 49, 210, 1),
+        0px 0px 5px rgba(255, 255, 255, 1); 
+
+    &:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Raised shadow effect */
+        transform: translateY(-3px); 
+        box-shadow:
+            0.8px 0.8px 0px rgba(98, 0, 234, 1),  
+            -0.8px -0.8px 0px rgba(255, 49, 210, 1),
+            0px 0px 10px rgba(255, 255, 255, 1); 
+    }
+
+    mat-card-header {
+        margin: 15px auto 0 auto;
+        display: flex;
+        flex-direction: column;
+    }
+  
+    mat-card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #FFFFFF;
+        text-shadow: 
+            0.8px 0.8px 0px rgba(98, 0, 234, 1),  
+            -0.8px -0.8px 0px rgba(255, 49, 210, 1); 
+    }
+}
+
+mat-form-field { 
+    width: 100%;
+    margin: 10px auto;
+
+    input, textarea {
+        padding: 10px;
+    }
+}
+
+mat-button-toggle-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    background-color: #36018000;
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid #ffffff3d;
+}
+
+mat-button-toggle {
+    border-radius: 8px;
+    background-color: #350180;
+    margin: 5px;
+}
+
+mat-button-toggle:hover {
+    background-color: #6200ea;
+}
+
+mat-card-actions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+mat-label {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+/* button styles */
+button {
+    transition: background-color 0.3s ease;
+    margin: 10px auto;
+    text-transform: uppercase;
+    font-weight: bold;
+    box-shadow: 
+        0.8px 0.8px 0px rgba(98, 0, 234, 1),  
+        -0.8px -0.8px 0px rgba(255, 49, 210, 1),
+        0px 0px 5px rgba(255, 255, 255, 1); 
+}
+
+button:hover {
+    background-color: #6200ea;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Raised shadow effect */
+    transform: translateY(-3px); 
+    box-shadow: 
+        0.8px 0.8px 0px rgba(98, 0, 234, 1),  
+        -0.8px -0.8px 0px rgba(255, 49, 210, 1),
+        0px 0px 5px rgba(255, 255, 255, 1); 
+}
+
+.preview { 
+    object-fit: cover;
+    height: auto;
+    width: 100%;
+    max-height: 200px;
+    max-width: 200px;
+    margin: 10px auto; 
+    display: block;
+    box-shadow:
+        0.8px 0.8px 0px rgba(98, 0, 234, 1),  
+        -0.8px -0.8px 0px rgba(255, 49, 210, 1),
+        0px 0px 5px rgba(255, 255, 255, 1);
+}
+
+.img-input {
+    margin: 0 auto 30px auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+input[type="file"] {
+    display: none;  // hide default file input
+}
+
+.custom-file-input {
+    padding: 10px 20px;
+    background-color: #350180;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.custom-file-input:hover {
+    background-color: #6200ea;
+}
+
+.categories-input {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+mat-spinner {
+    --mat-spinner-color: #E91E63;
+}
+
+.spinner-page {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* spotify design */
+.spotify-container {
+    border-radius: 8px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Adjusts the positioning of the children from the top */
+    align-items: center;
+    overflow-y: auto; 
+
+    .search-card,
+    .tracks-card,
+    .playlist-card {
+        width: 100%; /* Ensure the cards stretch across the container */
+        padding: 0 10px;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .search-card {
+        max-height: 30%;
+    }
+
+    .tracks-card {
+        min-height: 50%;
+    }
+
+    .playlist-card {
+        max-height: 20%;
+    }
+
+    .selected-tracks {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .track-row {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    button {
+        margin-bottom: 0;
+    }
+
+    mat-card-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 15px;
+    }
+
+    mat-card-header {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto 10px auto;
+    }
+
+    mat-form-field {
+        overflow-x: auto;
+        margin-bottom: 0;
+    }
+    
+    mat-input-element {
+        color: white;
+    }
+    
+    .mat-hint {
+        color: #B3B3B3;
+    }
+
+    iframe {
+        display: block; 
+        width: 300px;
+        height: 80px;
+        padding: 0;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        outline: none;
+        margin: 0 auto; 
+        position: relative; 
+        border-radius: 12px;
+        margin-bottom: 10px;
+    }
+    
+    iframe:hover {
+        opacity: 0.9; 
+        transform: translateY(-3px); 
+        box-shadow: 
+            0.8px 0.8px 0px rgba(98, 0, 234, 1),  
+            -0.8px -0.8px 0px rgba(255, 49, 210, 1),
+            0px 0px 5px rgba(255, 255, 255, 1); 
+    }
+    
+    .feedback {
+        margin-top: 15px;
+        display: flex;
+        justify-content: center;
+    
+        mat-error {
+            font-size: 14px;
+        }
+    }
+
+}

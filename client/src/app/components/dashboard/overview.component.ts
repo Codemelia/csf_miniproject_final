@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { ArtisteService } from '../../services/artiste.service';
 
 import { Chart, registerables } from 'chart.js';
 import { Tip } from '../../models/app.models';
@@ -40,25 +39,25 @@ export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   // chart set up 
-  private tips!: Tip[]
+  private tips: Tip[] = []
   private monthlyChart: Chart | null = null
   private dailyChart: Chart | null = null
-  private isViewInitialized = false;
+  isViewInitialized: boolean = false;
 
   ngOnInit(): void {
       this.tips$ = this.tipSvc.getTips() // get tips on init
       this.tips$.subscribe(tips => {
         this.tips = tips // set tips
         this.calculateSummaryData(tips) // calc summary cards data
-        if (this.isViewInitialized)
-          this.setupCharts(tips) // set up charts
+        if (this.isViewInitialized) {
+          this.setupCharts(tips); // update charts if view is initialized
+        }
       });
   }
 
   ngAfterViewInit(): void {
     this.isViewInitialized = true // set true after view init
-    if (this.tips)
-      this.setupCharts(this.tips) // set up charts after view init
+    this.setupCharts(this.tips) // set up charts after view init
   }
 
   // calculate data for summary cards
@@ -100,6 +99,10 @@ export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // set up monthly and daily charts
   private setupCharts(tips: Tip[]): void {
+
+    // destroy existing charts if they exist
+    this.monthlyChart?.destroy()
+    this.dailyChart?.destroy()
 
     // month
     const monthlyData = this.getMonthlyData(tips)
@@ -164,6 +167,12 @@ export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
           const year = date.getFullYear()
           labels.push(`${month} ${year}`)
 
+          // if tips are empty, push 0
+          if (tips.length === 0) {
+            values.push(0)
+            continue
+          }
+
           const monthlyTips = tips.filter(tip => {
             const tipDate = new Date(tip.updatedAt!) // date type safety
             return tipDate.getMonth() === date.getMonth() && tipDate.getFullYear() === date.getFullYear()
@@ -188,6 +197,12 @@ export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
           const day = date.getDate()
           const month = date.toLocaleString('default', { month: 'short' })
           labels.push(`${day} ${month}`)
+
+          // if tips are empty, push 0
+          if (tips.length === 0) {
+            values.push(0)
+            continue
+          }
 
           const dailyTips = tips.filter(tip => {
             const tipDate = new Date(tip.updatedAt!) // date type safety

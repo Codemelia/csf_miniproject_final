@@ -1,30 +1,62 @@
 .tips-card {
     height: auto;
-    width: auto;
-    margin: 20px auto;
-    padding: 30px;
-    border-radius: 15px;
+    max-width: 1200px;
+    margin: 10px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    text-align: center;
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    padding: 20px;
+    box-shadow: 
+            1px 1px 0px rgba(98, 0, 234, 1),  
+            -1px -1px 0px rgb(255, 49, 210, 1),
+            0px 0px 5px rgba(255, 255, 255, 1);
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 
+            1px 1px 0px rgba(98, 0, 234, 1),  
+            -1px -1px 0px rgb(255, 49, 210, 1),
+            0px 0px 10px rgba(255, 255, 255, 1);
+    }
 }
 
 mat-card-header {
     background-color: #ffd0f5;
-    color: #333;
     padding: 20px;
     border-radius: 10px;
+    text-align: left;
+    border: 1px solid #9C27B0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
 mat-card-title {
     font-size: 1.4rem;
     font-weight: 600;
     margin-bottom: 10px;
+    color: #000;
+    text-shadow: 
+        0.8px 0.8px 0px rgba(98, 0, 234, 1),  
+        -0.8px -0.8px 0px rgba(255, 49, 210, 1); 
 }
 
 mat-card-subtitle {
     font-size: 1rem;
     font-weight: 500;
     color: #333;
+}
+
+.subtitles {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 30px;
 }
 
 .table-container {
@@ -34,12 +66,17 @@ mat-card-subtitle {
     justify-content: center;
     align-items: center;
     text-align: center;
+    width: 100%; // Keep this
+    max-width: 100%; // Add this to prevent overflow
 }
 
 table {
     width: 100%;
+    max-width: 90%;
     margin-top: 30px;
     border-collapse: collapse;
+    box-sizing: border-box;
+    margin: 15px auto;
 }
 
 th {
@@ -51,6 +88,10 @@ th {
         -0.8px -0.8px 0px rgba(255, 49, 210, 1); 
     border-bottom: 2px solid #ff31d2;
     text-align: center;
+    max-width: 200px; // Prevent overly wide cells
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .sort-button {
@@ -71,6 +112,11 @@ td {
     padding: 15px 10px 15px 10px;
     border-bottom: 1px solid #ffd0f5;
     text-align: center;
+    max-width: 200px; // Prevent overly wide cells
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    background-color: #333;
 }
 
 .row:nth-child(even) {
@@ -108,6 +154,22 @@ mat-paginator {
     background-color: #ffffff;
     color: #333;
     border-top: 2px solid #ff31d2;
+}
+
+mat-spinner {
+    --mat-spinner-color: #E91E63;
+}
+
+.spinner-page {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 @media (max-width: 768px) {

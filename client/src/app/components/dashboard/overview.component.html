@@ -1,30 +1,34 @@
-<div class="summary-cards">
-    <mat-card>
-      <mat-card-title>Total Tips Earned</mat-card-title>
-      <mat-card-content>{{ summaryData.totalTipsEarned | currency:'SGD' }}</mat-card-content>
-    </mat-card>
-    <mat-card>
-      <mat-card-title>Tips This Month</mat-card-title>
-      <mat-card-content>{{ summaryData.tipsThisMonth | currency:'SGD' }}
-        ({{ summaryData.tipsCountThisMonth }} Tips)</mat-card-content>
-    </mat-card>
-    <mat-card>
-      <mat-card-title>Highest Single Tip</mat-card-title>
-      <mat-card-content>{{ summaryData.highestSingleTip | currency:'SGD' }}</mat-card-content>
-    </mat-card>
-    <mat-card>
-      <mat-card-title>Average Tip Amount</mat-card-title>
-      <mat-card-content>{{ summaryData.averageTipAmount | currency:'SGD' }}</mat-card-content>
-    </mat-card>
-  </div>
+<div class="summary-cards" *ngIf="isViewInitialized">
+  <mat-card>
+    <mat-card-title>Total Tips Earned</mat-card-title>
+    <mat-card-content>{{ summaryData.totalTipsEarned | currency:'SGD' }}</mat-card-content>
+  </mat-card>
+  <mat-card>
+    <mat-card-title>Tips This Month</mat-card-title>
+    <mat-card-content>{{ summaryData.tipsThisMonth | currency:'SGD' }}
+      ({{ summaryData.tipsCountThisMonth }} Tips)</mat-card-content>
+  </mat-card>
+  <mat-card>
+    <mat-card-title>Highest Single Tip</mat-card-title>
+    <mat-card-content>{{ summaryData.highestSingleTip | currency:'SGD' }}</mat-card-content>
+  </mat-card>
+  <mat-card>
+    <mat-card-title>Average Tip Amount</mat-card-title>
+    <mat-card-content>{{ summaryData.averageTipAmount | currency:'SGD' }}</mat-card-content>
+  </mat-card>
+</div>
   
-  <div class="charts">
-    <mat-card>
-      <mat-card-title>Monthly Tips (Past 12 Months)</mat-card-title>
-      <canvas id="monthlyChart"></canvas>
-    </mat-card>
-    <mat-card>
-      <mat-card-title>Daily Trends (Past 30 Days)</mat-card-title>
-      <canvas id="dailyChart"></canvas>
-    </mat-card>
+<div class="charts" *ngIf="isViewInitialized">
+  <mat-card>
+    <mat-card-title>Monthly Tips (Past 12 Months)</mat-card-title>
+    <canvas id="monthlyChart"></canvas>
+  </mat-card>
+  <mat-card>
+    <mat-card-title>Daily Trends (Past 30 Days)</mat-card-title>
+    <canvas id="dailyChart"></canvas>
+  </mat-card>
+</div>
+
+<div *ngIf="!isViewInitialized" class="spinner-page">
+  <mat-spinner></mat-spinner>
 </div>

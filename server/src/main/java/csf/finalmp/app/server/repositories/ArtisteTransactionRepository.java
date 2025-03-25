@@ -39,16 +39,17 @@ public class ArtisteTransactionRepository {
             artisteDetails.getArtisteId(),
             artisteDetails.getStripeAccountId(),
             artisteDetails.getStripeAccessToken(),
-            artisteDetails.getStripeRefreshToken());
+            artisteDetails.getStripeRefreshToken(),
+            0.0); // insert 0$ to earnings
 
     }
 
-    // update artiste wallet
+    // update artiste earnings
     // return int of rows affected
-    public int updateArtisteWallet(String artisteId, double balance) {
+    public int updateArtisteEarnings(String artisteId, double balance) {
 
         return template.update(
-            UPDATE_ARTISTE_WALLET, 
+            UPDATE_ARTISTE_EARNINGS, 
             balance, 
             artisteId);
 
@@ -66,7 +67,7 @@ public class ArtisteTransactionRepository {
                     rs.getString("stripe_account_id"), 
                     rs.getString("stripe_access_token"),
                     rs.getString("stripe_refresh_token"),
-                    rs.getDouble("wallet_balance"),
+                    rs.getDouble("earnings"),
                     rs.getTimestamp("created_at").toLocalDateTime(), 
                     rs.getTimestamp("updated_at").toLocalDateTime()),
                 artisteId);
@@ -87,7 +88,7 @@ public class ArtisteTransactionRepository {
                 rs.getString("stripe_account_id"),
                 rs.getString("stripe_access_token"),
                 rs.getString("stripe_refresh_token"),
-                rs.getDouble("wallet_balance"), 
+                rs.getDouble("earnings"), 
                 rs.getTimestamp("created_at").toLocalDateTime(), 
                 rs.getTimestamp("updated_at").toLocalDateTime()));
 
@@ -103,10 +104,10 @@ public class ArtisteTransactionRepository {
     }
 
     // get artiste curr balance
-    public Double getArtisteBalance(String artisteId) {
+    public Double getArtisteEarnings(String artisteId) {
 
         return template.queryForObject(
-            SELECT_ARTISTE_BALANCE_BY_ID, 
+            SELECT_ARTISTE_EARNINGS_BY_ID, 
             Double.class,
             artisteId);
 
@@ -126,16 +127,6 @@ public class ArtisteTransactionRepository {
             SELECT_ARTISTE_ID_BY_STAGE_NAME, 
             String.class,
             artisteStageName);
-    }
-
-    // delete artiste from db
-    // return int of rows affected
-    public Integer deleteArtiste(String artisteId) {
-
-        return template.update(DELETE_ARTISTE,
-            Integer.class,
-            artisteId);
-
     }
 
     // check if artiste has stripe access token

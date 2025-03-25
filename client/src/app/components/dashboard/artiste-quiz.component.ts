@@ -1,7 +1,7 @@
 import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ArtisteService } from '../../services/artiste.service';
-import { ApiError } from '../../models/app.models';
+import { ApiError, ArtisteProfile } from '../../models/app.models';
 import { Subscription, tap } from 'rxjs';
 
 @Component({
@@ -32,9 +32,9 @@ export class ArtisteQuizComponent implements OnInit, OnDestroy {
     'Music', 'Comedy', 'Dance', 'Theater',
     'Poetry', 'Film', 'Visual Arts', 'Literature',
     'Photography', 'Magic', 'Fashion', 'Podcasting',
-    'Street Performance', 'Painting', 'Animation', 'Illustration',
+    'Street Performance', 'Painting', 'Animation',
     'Live Streaming', 'Radio', 'Fitness', 'Crafts',
-    'Gaming', 'Esports', 'Live Music' ]
+    'Gaming', 'Others' ]
 
   stageName = ''
   selectedCategories: string[] = []
@@ -43,10 +43,9 @@ export class ArtisteQuizComponent implements OnInit, OnDestroy {
   thankYouMessage: string | null = null
 
   photoUrl: string | null = null
-  fileTooLarge: boolean = false;
+  fileTooLarge: boolean = false
 
   error!: ApiError
-  successMsg: string | null = null
 
   onboardingUrl: string | null = null
 
@@ -56,32 +55,28 @@ export class ArtisteQuizComponent implements OnInit, OnDestroy {
   private artisteSub!: Subscription
   private stripeSub!: Subscription
 
+  isLoading: boolean = false
+
   ngOnInit(): void {
 
-    if (!this.artisteId) {
-      this.error = { timestamp: new Date(), status: 401, error: 'Unauthorized', message: 'Unauthorized access. Please log in again.' }
-      this.router.navigate(['/'])
-      return;
-    }
-
     if (this.artisteExists && !this.isStripeLinked) {
-      this.step = 6 // if artiste exists but stripe oauth not complete, set step to 4 directly
-      this.progress = (this.step / this.totalSteps) * 100 // set progress to full directly
+      this.step = 6 // if artiste exists but stripe oauth not complete, set step to 6
+      this.progress = (this.step / this.totalSteps) * 100 // set 
     }
     
   }
 
   nextStep() {
       if (this.step < this.totalSteps) {
-          this.step++;
-          this.progress = (this.step / this.totalSteps) * 100
+        this.step++;
+        this.progress = (this.step / this.totalSteps) * 100
       }
   }
 
   previousStep() {
       if (this.step > 1) {
-          this.step--;
-          this.progress = (this.step / this.totalSteps) * 100
+        this.step--;
+        this.progress = (this.step / this.totalSteps) * 100
       }
   }
 
@@ -135,8 +130,8 @@ export class ArtisteQuizComponent implements OnInit, OnDestroy {
       reader.onload = () => {
         // convert the base64 result back to a Blob
         const photoBlob = this.dataURLtoBlob(reader.result as string)
-        console.log("Blob size (bytes):", photoBlob.size)
-        this.saveArtiste(photoBlob)
+        console.log("Blob size (bytes):", photoBlob?.size)
+        this.saveArtiste(photoBlob || null)
       };
       reader.readAsDataURL(this.photo) // convert photo to base64 for preview image
     } else {
@@ -146,19 +141,37 @@ export class ArtisteQuizComponent implements OnInit, OnDestroy {
   }
 
   // conv data url back to blob
-  dataURLtoBlob(dataURL: string): Blob {
+  dataURLtoBlob(dataURL: string): Blob | undefined {
     if (!dataURL) {
-      throw new Error("Invalid data URL provided.")
+      this.error = {
+        timestamp: new Date(),
+        status: 400,
+        error: 'Invalid data URL',
+        message: 'Invalid data URL'
+      }
+      return
     }
   
     const arr = dataURL.split(',') // to remove img prefix
     if (arr.length !== 2) {
-      throw new Error("Data URL format is incorrect.")
+      this.error = {
+        timestamp: new Date(),
+        status: 400,
+        error: 'Invalid data URL',
+        message: 'Invalid data URL'
+      }
+      return
     }
   
     const mimeMatch = arr[0].match(/:(.*?);/);
     if (!mimeMatch || mimeMatch.length < 2) {
-      throw new Error("Could not extract MIME type from data URL.")
+      this.error = {
+        timestamp: new Date(),
+        status: 400,
+        error: 'Invalid data URL',
+        message: 'Invalid data URL'
+      }
+      return
     }
     
     const mime = mimeMatch[1] // get mime type
@@ -174,56 +187,65 @@ export class ArtisteQuizComponent implements OnInit, OnDestroy {
 
   // helper method for saving artiste after conversion of photo
   private saveArtiste(photoBlob: Blob | null) {
-
-    console.log('>>> Categories selected: ', this.selectedCategories)
+    this.isLoading = true // set spinner
     if (this.artisteId) {
-      this.artisteSub = this.artisteSvc.createArtiste(
-        this.artisteId, this.stageName, this.selectedCategories, 
-        this.bio, photoBlob, this.thankYouMessage
-      ).subscribe({
+      const profile: ArtisteProfile = {
+        artisteId: this.artisteId,
+        stageName: this.stageName,
+        categories: this.selectedCategories,
+        bio: this.bio,
+        photo: photoBlob,
+        qrCode: null,
+        qrCodeUrl: null,
+        thankYouMessage: this.thankYouMessage,
+        photoUrl: null
+      }
+
+      this.artisteSub = this.artisteSvc.createArtisteProfile(profile).subscribe({
         next: (resp) => {
           console.log(`>>> Artiste save response: ${resp}`)
           
           if (resp.includes('successful')) {
             this.nextStep() // go next step in progress bar
-            this.successMsg = null
             this.artisteExists = true
+            this.isLoading = false
           } else {
-            console.error('>>> Stripe error:', resp)
+            console.error('>>> Error saving:', resp)
             this.error = {
               timestamp: new Date(),
               status: 400,
               error: 'Error saving profile. Please try again.',
               message: resp
             }
+            this.isLoading = false
           }
         },
         error: (err) => {
           this.error = err.error
           console.log(this.error)
+          this.isLoading = false
         }
       })
     }
   }
 
   // generate oauth url only if artisteId exists and stripe access token exists under that id
-  genOAuthUrl() {
+  linkStripe() {
+    this.isLoading = true // set spinner
     if (this.artisteId && !this.isStripeLinked) {
       this.stripeSub = this.artisteSvc.genOAuthUrl(this.artisteId).subscribe({
         next: (resp) => {
           if (resp.startsWith('https://')) {
-            this.successMsg = null
             console.log('>>> Stripe OAuth URL: ', resp as string)
-            this.onboardingUrl = resp
             setTimeout(() => {
-              if (this.onboardingUrl) {
-                window.location.href = this.onboardingUrl } // takes user to url
+              this.isLoading = false
+              window.location.href = resp // takes user to url
             }, 2000)
           }
         },
         error: (err) => {
-          this.successMsg = null
-          this.error = err
+          this.isLoading = false
+          this.error = err.error
           console.log('>>> Stripe OAuth URL creation failed: ', this.error.message)
         }
       })

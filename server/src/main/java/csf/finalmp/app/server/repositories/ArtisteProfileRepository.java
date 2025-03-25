@@ -1,6 +1,7 @@
 package csf.finalmp.app.server.repositories;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.Document;
@@ -27,7 +28,7 @@ public class ArtisteProfileRepository {
 
     // insert artiste profile data
     /*
-        db.artiste_profiles.insert({
+        db.artisteProfiles.insert({
             _id: <artisteId>,
             stageName: <stageName>,
             bio: <bio>,
@@ -42,23 +43,27 @@ public class ArtisteProfileRepository {
     public boolean saveArtisteProfile(ArtisteProfile profile) {
 
         try {
-        // convert artiste profile to document
-        Document doc = new Document()
+
+            // convert artiste profile to document
+            Document doc = new Document()
             .append("_id", profile.getArtisteId())
             .append("stageName", profile.getStageName())
-            .append("categories", profile.getCategories())
-            .append("bio", profile.getBio())
+            .append("categories", profile.getCategories() != null 
+                ? profile.getCategories() : new ArrayList<>().add("Others")) // default to others
+            .append("bio", profile.getBio() != null 
+                ? profile.getBio() : "Hi, I am a Vibee!") // default bio
             .append("photo", profile.getPhoto())
+            .append("qrCode", profile.getQrCode())
             .append("qrCodeUrl", profile.getQrCodeUrl())
-            .append("thankYouMessage", 
-                profile.getThankYouMessage() != null ? profile.getThankYouMessage() 
-                    : "Thank you for supporting our Vibees!")
+            .append("thankYouMessage", profile.getThankYouMessage() != null 
+                ? profile.getThankYouMessage() : "Thank you for supporting our Vibees!") // default message
             .append("createdAt", LocalDateTime.now().toString())
             .append("updatedAt", LocalDateTime.now().toString());
 
-        // insert the document into collection - return true if success
-        template.insert(doc, ARTISTE_PROFILES_CN);
+            // insert the document into collection - return true if success
+            template.insert(doc, ARTISTE_PROFILES_CN);
             return true;
+
         } catch (MongoWriteException e) {
             return false;
         } catch (Exception e) {
@@ -69,7 +74,7 @@ public class ArtisteProfileRepository {
 
     // update artiste profile
     /*
-        db.artiste_profiles.updateOne(
+        db.artisteProfiles.updateOne(
             { _id: <artisteId> },
             {
                 $set: {
@@ -90,28 +95,17 @@ public class ArtisteProfileRepository {
         String thankYouMessage = profile.getThankYouMessage();
 
         try {
-            // match the artiste by  ID
+
             Query query = new Query(Criteria.where("_id")
                 .is(profile.getArtisteId()));
-
-            // update object
             Update update = new Update();
 
             // set the fields if provided
-            if (categories != null && categories.size() > 0) {
-                update.set("categories", categories);
-            }
-            if (bio != null) {
-                update.set("bio", bio);
-            }
-            if (photoBytes != null && photoBytes.length >= 0) {
-                update.set("photo", photoBytes);
-            }
-            if (thankYouMessage != null) {
-                update.set("thankYouMessage", thankYouMessage);
-            }
+            if (categories != null && categories.size() > 0) update.set("categories", categories);
+            if (bio != null && !bio.isBlank()) update.set("bio", bio);
+            if (photoBytes != null && photoBytes.length >= 0) update.set("photo", photoBytes);
+            if (thankYouMessage != null && !thankYouMessage.isBlank()) update.set("thankYouMessage", thankYouMessage);
 
-            // perform the update and return true if successful
             template.updateFirst(query, update, ARTISTE_PROFILES_CN);
             return true;
 
@@ -122,55 +116,44 @@ public class ArtisteProfileRepository {
 
     // check if artiste stage name alr exists in mongodb
     /*
-        db.artiste_profiles.count({
-            stage_name: <stageName>
+        db.artisteProfiles.count({
+            stageName: <stageName>
         }) > 0
     */
     public boolean checkArtisteStageName(String artisteStageName) {
         
-        // new query with criteria definition
         Criteria crit = Criteria.where("stageName").is(artisteStageName);
         Query query = new Query(crit);
-
-        // check if any doc match query and return boolean
         return template.exists(query, ARTISTE_PROFILES_CN);
 
     }
 
     // check if artiste id alr exists in mongodb
     /*
-        db.artiste_profiles.count({
+        db.artisteProfiles.count({
             _id: <artisteId>
         }) > 0
     */
     public boolean checkArtisteId(String artisteId) {
         
-        // new query with criteria definition
         Criteria crit = Criteria.where("_id").is(artisteId);
         Query query = new Query(crit);
-
-        // check if any doc match query and return boolean
         return template.exists(query, ARTISTE_PROFILES_CN);
 
     }
 
     // get artiste id by stagename
     /*
-        db.artiste_profiles.findOne(
-            { stage_name: <artisteStageName> },
+        db.artisteProfiles.findOne(
+            { stageName: <artisteStageName> },
             { _id: 1 }
         )
     */
     public String getArtisteIdByStageName(String artisteStageName) {
         
-        // new query with criteria definition
         Criteria crit = Criteria.where("stageName").is(artisteStageName);
         Query query = new Query(crit);
-
-        // include id only
         query.fields().include("_id");
-
-        // find the document and return id as string
         Document result = template.findOne(query, Document.class, ARTISTE_PROFILES_CN);
         return result != null ? result.getString("_id") : null;
 
@@ -178,25 +161,69 @@ public class ArtisteProfileRepository {
 
     // get artiste ty msg by id
     /*
-        db.artiste_profiles.findOne(
+        db.artisteProfiles.findOne(
             { _id: <artisteId> },
-            { thank_you_message: 1 }
+            { thankYouMessage: 1 }
         )
     */
     public String getArtisteThankYouMsgById(String artisteId) {
         
-        // new query with criteria definition
         Criteria crit = Criteria.where("_id").is(artisteId);
         Query query = new Query(crit);
-
-        // include id only
         query.fields().include("thankYouMessage");
-
-        // find the document and return id as string
         Document result = template.findOne(query, Document.class, ARTISTE_PROFILES_CN);
         return result != null ? result.getString("thankYouMessage") 
             : "Thank you for supporting our Vibees!";
 
+    }
+
+    // get artiste profile by id
+    /*
+        db.artisteProfiles.findOne(
+            { _id: <artisteId> },
+            {
+                stageName: 1,
+                categories: 1,
+                bio: 1,
+                photo: 1,
+                qrCode: 1,
+                qrCodeUrl: 1,
+                thankYouMessage: 1
+            }
+        )
+    */
+    public ArtisteProfile getArtisteProfileById(String artisteId) {
+        
+        Criteria crit = Criteria.where("_id").is(artisteId);
+        Query query = new Query(crit);
+        query.fields().include("stageName", "categories", "bio", "photo", "qrCode", "qrCodeUrl", "thankYouMessage");
+        return template.findOne(query, ArtisteProfile.class, ARTISTE_PROFILES_CN);
+
+    }
+
+    // get artiste stage name by id
+    /*
+        db.artisteProfiles.findOne(
+            { _id: <artisteId> },
+            { stageName: 1 }
+        )
+    */
+    public String getArtisteStageNameById(String artisteId) {
+        
+        Criteria crit = Criteria.where("_id").is(artisteId);
+        Query query = new Query(crit);
+        query.fields().include("stageName");
+        Document result = template.findOne(query, Document.class, ARTISTE_PROFILES_CN);
+        return result.getString("stageName");
+
+    }
+
+    // get all artiste profiles
+    /*
+        db.artisteProfiles.find()
+    */
+    public List<ArtisteProfile> getAllArtisteProfiles() {
+        return template.findAll(ArtisteProfile.class, ARTISTE_PROFILES_CN);
     }
 
 }

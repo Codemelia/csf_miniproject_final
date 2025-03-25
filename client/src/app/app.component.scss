@@ -7,7 +7,7 @@ html, body {
 }
 
 .full-page {
-    background-image: url('/background.jpg');
+    background-image: url('/vibey_background.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -19,28 +19,47 @@ html, body {
 
 .app-name {
     font-weight: bold;
+    background-color: #FFF;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 
+        0px 0px 0px rgb(255, 255, 255), 
+        0.8px 0.8px 0px rgba(98, 0, 234, 1),  
+        -0.8px -0.8px 0px rgba(255, 49, 210, 1),
+        0px 0px 5px rgba(255, 255, 255, 0.5); 
 }
 
 mat-toolbar {
     display: flex;
     justify-content: space-between;
     padding: 0 20px;
-    background: linear-gradient(90deg, #6200ea, #d81b60);
-    height: 80px;
+    background: linear-gradient(
+        to right,
+        rgba(255, 49, 210, 0.2),
+        rgba(98, 0, 234, 0.2)
+    );
+    height: 100px;
     width: 100%;
     position: relative;
     top: 0;
-    z-index: 1000; /* Toolbar above main content */
+    z-index: 1000;
 }
 
 mat-toolbar span {
-    font-size: 150%;
+    font-size: 200%;
+    padding: 10px;
+}
+
+.nav-links button {
+    font-size: 100%;
+    padding: 30px 20px;
+    color: #FFF;
 }
 
 main {
     padding: 20px;
     max-width: 1200px;
-    margin: 80px auto 60px auto; /* Offset for fixed header and footer */
+    margin: 0 auto; /* Offset for fixed header and footer */
     flex-grow: 1; /* Allow main to expand */
     width: 100%;
     height: auto;
@@ -50,20 +69,23 @@ main {
 }
 
 .footer {
-    background: linear-gradient(90deg, #6200ea, #d81b60);
+    background: linear-gradient(
+        to right,
+        rgba(255, 49, 210, 0.2),
+        rgba(98, 0, 234, 0.2)
+    );
     padding: 20px 0;
     text-align: center;
     position: relative;
     bottom: 0;
     width: 100%;
     z-index: 1000; /* Footer above main content */
-    margin-top: 20px;
 }
 
 .footer p {
     margin: 0;
     font-size: 16px;
-    color: white;
+    color: #B3B3B3;
 }
 
 .footer a {
@@ -74,6 +96,36 @@ main {
 
 .footer a:hover {
     text-decoration: underline;
+}
+
+/* Style the scrollbar container */
+::-webkit-scrollbar {
+    width: 12px;  /* Set the width of the scrollbar */
+    height: 12px; /* Set the height for horizontal scrollbars */
+}
+
+/* Style the scrollbar track (the area the scrollbar moves within) */
+::-webkit-scrollbar-track {
+    background: #333;  /* Dark background for the track */
+    border-radius: 10px; /* Rounded corners */
+}
+
+/* Style the scrollbar thumb (the draggable part of the scrollbar) */
+::-webkit-scrollbar-thumb {
+    background: #888; /* Light grey color */
+    border-radius: 10px; /* Rounded corners */
+    border: 3px solid #333; /* Add border around the thumb */
+}
+
+/* Hover effect for the thumb */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;  /* Darker grey when hovered */
+}
+
+/* Firefox styling */
+* {
+    scrollbar-width: thin; /* Thin scrollbar */
+    scrollbar-color: #888 #333; /* Thumb and track color */
 }
 
 /* Responsive adjustments */

@@ -1,8 +1,13 @@
-<mat-card class="tips-card">
+<mat-card class="tips-card" *ngIf="artisteExists && isViewInitialised">
     <mat-card-header>
         <mat-card-title>Your Earnings 💰</mat-card-title>
-        <mat-card-subtitle>Total Tips: {{ totalTips | currency:'SGD' }}</mat-card-subtitle>
-        <mat-card-subtitle>Total Count: {{ totalTipCount }}</mat-card-subtitle>
+        <mat-card-subtitle style="color:rgb(182, 0, 0);">We charge a platform fee of 15% for every tip you receive</mat-card-subtitle>
+        <p style="color:rgb(182, 0, 0); font-style: italic;">Payouts are transferred to your registered bank account weekly</p>
+        <div class="subtitles">
+            <mat-card-subtitle>Total Gross: {{ totalTipAmount | currency:'SGD' }}</mat-card-subtitle>
+            <mat-card-subtitle>Total Net: {{ totalTipAmount * 0.85 | currency:'SGD' }}</mat-card-subtitle>
+            <mat-card-subtitle>Total Count: {{ totalTipCount }}</mat-card-subtitle>
+        </div>
     </mat-card-header>
     
     <mat-card-content>
@@ -25,9 +30,13 @@
                         {{ tip.tipperMessage }}
                     </td>
                 </ng-container>
-                <ng-container matColumnDef="amount">
-                    <th mat-header-cell *matHeaderCellDef>Amount (SGD)</th>
-                    <td mat-cell *matCellDef="let tip" class="amount-cell">{{ tip.amount | currency:'SGD' }}</td>
+                <ng-container matColumnDef="netAmount">
+                    <th mat-header-cell *matHeaderCellDef>Net Amount (SGD)</th>
+                    <td mat-cell *matCellDef="let tip" class="amount-cell">{{ tip.amount * 0.85 | currency:'SGD' }}</td>
+                </ng-container>
+                <ng-container matColumnDef="commission">
+                    <th mat-header-cell *matHeaderCellDef>Platform Fee (SGD)</th>
+                    <td mat-cell *matCellDef="let tip" class="amount-cell">{{ tip.amount * 0.15 | currency:'SGD' }}</td>
                 </ng-container>
                 <ng-container matColumnDef="paymentIntentId">
                     <th mat-header-cell *matHeaderCellDef>Transaction ID</th>
@@ -51,3 +60,13 @@
         </div>
     </mat-card-content>
 </mat-card>
+
+<mat-card *ngIf="!artisteExists && isViewInitialised">
+    <mat-card-header>
+        <mat-card-title>Please complete your Vibee profile</mat-card-title>
+    </mat-card-header>
+</mat-card>
+
+<div *ngIf="!isViewInitialised" class="spinner-page">
+    <mat-spinner></mat-spinner>
+</div>

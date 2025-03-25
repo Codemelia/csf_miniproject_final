@@ -1,21 +1,16 @@
 <div class="home-container">
 
-    <mat-card-title>Welcome to VIBEY!</mat-card-title>
-    <div class="feedback">
-        <mat-error *ngIf="errorMsg">{{ errorMsg }}</mat-error>
-    </div>
-
     <mat-card class="hero">
-        <mat-card-title>VIBEY: Where Vibes Meet Rewards</mat-card-title>
-        <p class="tagline">Vibers fuel the show, Vibees rock the stage, and everyone unlocks exclusive perks!</p>
-        <mat-card-actions *ngIf="isVibee">
-            <mat-label>Ready to start earning? Let's get started on your profile!</mat-label>
-            <button mat-raised-button color="primary" [routerLink]="['/dashboard']" ><mat-icon>edit</mat-icon>View Dashboard</button>
-        </mat-card-actions>
+        <mat-card-title>Welcome to VIBEY</mat-card-title>
+        <div class="feedback" *ngIf="errorMsg">
+            <mat-error>{{ errorMsg }}</mat-error>
+        </div>
+        <p class="tagline">Where Vibers fuel the show, Vibees rock the stage, and everyone enjoys exclusive perks 🎉</p>
+        <p>Ready to roll? Explore our Quick Actions now!</p>
         <mat-card-actions>
-            <mat-label>Explore our functions and community!</mat-label>
+            <button mat-raised-button color="primary" *ngIf="isVibee" [routerLink]="['/dashboard']" ><mat-icon>edit</mat-icon>View Dashboard</button>
             <button mat-raised-button color="primary" [routerLink]="['/vibees']" ><mat-icon>search</mat-icon>Explore Vibees</button>
-            <button mat-raised-button color="accent" [routerLink]="['/tip']"><mat-icon>card_giftcard</mat-icon>Tip a Vibee</button>
+            <button mat-raised-button color="primary" [routerLink]="['/tip']"><mat-icon>card_giftcard</mat-icon>Tip a Vibee</button>
         </mat-card-actions>
     </mat-card>
 
@@ -23,19 +18,10 @@
         <mat-card-title>About VIBEY</mat-card-title>
         <div class="about-content">
             <div class="text">
-                <p>VIBEY connects vibers (the public) with vibees (local artistes) in a street-to-digital ecosystem. Tip vibees via QR codes, and in return, you get exclusive access to artiste playlists and earn coupons from event sponsors!</p>
-                <p>Launched in Singapore, VIBEY empowers vibees with direct support, drives traffic to sponsors, and rewards vibers—all in one seamless platform. We aim to scale nation-wide and build vibrant communities, one tip at a time.</p>
+                <p>VIBEY connects Vibers (the public) with Vibees (local artistes) in a street-to-digital ecosystem. Tip Vibees through us and you'll get exclusive access to artiste events and items!</p>
+                <p>Launched in Singapore, VIBEY empowers Vibees with direct support, drives traffic to sponsors, and rewards Vibers—all in one seamless flow.</p>
             </div>
         </div>
-    </mat-card>
-
-    <mat-card class="user-section">
-        <mat-card-header>
-            <mat-card-title>Upcoming Events</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            <p>Browse all of our upcoming events!</p>
-        </mat-card-content>
     </mat-card>
 
 </div>

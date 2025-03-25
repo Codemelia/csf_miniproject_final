@@ -5,7 +5,10 @@ import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.*;
 
 import csf.finalmp.app.server.models.Tip;
+import csf.finalmp.app.server.repositories.ArtisteProfileRepository;
+import csf.finalmp.app.server.repositories.SpotifyRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +28,12 @@ public class EmailService {
     @Value("${sendgrid.template.id}")
     private String templateId;
 
+    @Autowired
+    private SpotifyRepository spotRepo;
+
+    @Autowired
+    private ArtisteProfileRepository artisteProfRepo;
+
     // send email using dynamic sendgrid template
     public void sendTemplateEmail(Tip confirmedRequest, String artisteThankYouMessage) throws IOException {
 
@@ -37,6 +46,12 @@ public class EmailService {
         String artisteStageName = confirmedRequest.getStageName();
         double amount = confirmedRequest.getAmount();
 
+        // get artiste id from stage name
+        String artisteId = artisteProfRepo.getArtisteIdByStageName(artisteStageName);
+
+        // get playlisturl
+        String playlistUrl = spotRepo.getPlaylistUrl(artisteId);
+
         Email from = new Email(vibeyEmail); // sender
         Email recipient = new Email(tipperEmail);
 
@@ -48,6 +63,9 @@ public class EmailService {
         personalization.addDynamicTemplateData("artisteStageName", artisteStageName);
         personalization.addDynamicTemplateData("artisteThankYouMessage", artisteThankYouMessage); // default alr set in mysql
         personalization.addDynamicTemplateData("amount", amount);
+        if (playlistUrl != null && !playlistUrl.isBlank()) {
+            personalization.addDynamicTemplateData("playlistUrl", playlistUrl);
+        }
 
         // build mail details
         Mail mail = new Mail();

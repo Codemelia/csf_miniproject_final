@@ -1,16 +1,22 @@
-import { NgModule } from '@angular/core';
+import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
-import { ArtisteListComponent } from './components/home/artiste-list.component';
+import { ArtisteListComponent } from './components/vibee-list/artiste-list.component';
 import { TipFormComponent } from './components/tip-a-vibee/tip-form.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { LoginComponent } from './components/authentication/login.component';
 import { RegisterComponent } from './components/authentication/register.component';
+import { ProfileEditComponent } from './components/dashboard/profile-edit.component';
+import { ArtisteQuizComponent } from './components/dashboard/artiste-quiz.component';
+import { DialogPopupComponent } from './components/tip-a-vibee/dialog-popup.component';
+import { OverviewComponent } from './components/dashboard/overview.component';
+import { TipsHistoryComponent } from './components/dashboard/tips-history.component';
 
 import { RouterModule, Routes } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -36,21 +42,17 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatChipsModule } from '@angular/material/chips';
 
 import { RoleGuard } from './guards/role.guard';
 import { AuthGuard } from './guards/auth.guard';
-import { WalletComponent } from './components/dashboard/wallet.component';
-import { ProfileComponent } from './components/dashboard/profile.component';
-import { ArtisteQuizComponent } from './components/dashboard/artiste-quiz.component';
-import { DialogPopupComponent } from './components/tip-a-vibee/dialog-popup.component';
-import { OverviewComponent } from './components/dashboard/overview.component';
-import { TipsHistoryComponent } from './components/dashboard/tips-history.component';
 import { AuthStore } from './stores/auth.store';
-import { provideComponentStore } from '@ngrx/component-store';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ArtisteService } from './services/artiste.service';
 import { DashboardService } from './services/dashboard.service';
 import { TipService } from './services/tip.service';
+import { SpotifyService } from './services/spotify.service';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -65,9 +67,8 @@ const routes: Routes = [
     children: [
       { path: 'overview', component: OverviewComponent },
       { path: 'tips-history', component: TipsHistoryComponent },
-      { path: 'wallet', component: WalletComponent },
-      { path: 'profile', component: ProfileComponent },
-      { path: '', redirectTo: 'overview', pathMatch: 'full' } // Default route
+      { path: 'profile-edit', component: ProfileEditComponent },
+      { path: '**', redirectTo: 'overview', pathMatch: 'full' } // Default route
     ] },
   { path: '**', redirectTo: '/', pathMatch: 'full' }
 ]
@@ -81,8 +82,7 @@ const routes: Routes = [
     DashboardComponent,
     LoginComponent,
     RegisterComponent,
-    WalletComponent,
-    ProfileComponent,
+    ProfileEditComponent,
     ArtisteQuizComponent,
     DialogPopupComponent,
     OverviewComponent,
@@ -90,10 +90,11 @@ const routes: Routes = [
   ],
   imports: [
     BrowserModule,
-    RouterModule.forRoot(routes, { useHash: true }),
+    RouterModule.forRoot(routes),
     BrowserAnimationsModule,
     ReactiveFormsModule,
     FormsModule,
+    CommonModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
@@ -115,15 +116,23 @@ const routes: Routes = [
     MatSortModule,
     MatPaginatorModule,
     MatSnackBarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatChipsModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    })
   ],
   providers: [
     provideHttpClient(),
     provideAnimationsAsync(),
-    provideComponentStore(AuthStore),
+    AuthStore,
     ArtisteService,
     DashboardService,
-    TipService
+    TipService,
+    SpotifyService
   ],
   bootstrap: [AppComponent]
 })

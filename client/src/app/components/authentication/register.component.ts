@@ -50,8 +50,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.form = this.fb.group({
       email: this.fb.control('',
         [ Validators.required, Validators.email, Validators.maxLength(255) ]),
-      username: this.fb.control('', 
-        [ Validators.required, Validators.minLength(8), Validators.maxLength(30) ]),
       password: this.fb.control('', 
         [ Validators.required, Validators.minLength(12), Validators.maxLength(42),
           // password must contain at least 1 uppercase letter, 1 lowercase letter, 1 digit, 1 special char 12-42 length

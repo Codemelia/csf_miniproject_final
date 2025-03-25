@@ -1,13 +1,18 @@
 .db-container {
-    background-color: #000000;
+    background-color: #00000080;
     height: 98%;
     display: flex;
+    flex-direction: row; // Explicitly set
+    width: 100%; // Ensure it spans the full viewport
     overflow: hidden;
     border-radius: 15px;
+    box-sizing: border-box;
 }
   
 .sidebar {
-    background-color: #4300a1;
+    background: linear-gradient(to top, 
+        rgba(98, 0, 234, 0.5), 
+        rgba(255, 49, 210, 0.5));
     overflow: hidden;
     width: 220px;
     height: 100vh;
@@ -15,7 +20,7 @@
 }
   
 .sidebar mat-toolbar {
-    background-color: #4300a1;
+    background-color: #4300a100;
     color: #FFFFFF;
     width: 95%;
     min-height: 64px;
@@ -55,23 +60,29 @@
 }
   
 mat-sidenav-content {
-    overflow: hidden;
+    overflow-y: auto;
     height: 100vh;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
     transition: margin-left 0.3s ease-in-out;
+    margin-left: 0;
 
     mat-toolbar button {
         margin: 0 10px 0 10px;
     }
+
+    &.menu-open {
+        margin-left: 220px; // Shift when menu is open
+    }
 }
   
 .header {
-    background-color: #000000;
+    background-color: #00000000;
     color: #FFFFFF;
     width: 100%;
-    transition: width 0.3s ease-in-out;
+    box-sizing: border-box; // Include padding/borders in width
+    transition: none; // Remove width transition, not needed
 }
   
 .header button {
@@ -94,9 +105,23 @@ mat-toolbar {
 .content {
     flex-grow: 1;
     padding: 20px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.router-wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto; // Allow horizontal scroll if needed
 }
   
-.full-page {
+.spinner-page {
     position: fixed;
     top: 0;
     left: 0;
@@ -107,8 +132,21 @@ mat-toolbar {
     align-items: center;
     background-color: rgba(0, 0, 0, 0.5);
 }
+
+.quiz-page {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    max-width: 800px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto;
+    flex-grow: 1;
+}
   
 mat-spinner {
     --mat-spinner-color: #E91E63;
 }
-

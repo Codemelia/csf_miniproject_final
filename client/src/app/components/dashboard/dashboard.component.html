@@ -1,4 +1,5 @@
-<mat-sidenav-container class="db-container">
+<mat-sidenav-container class="db-container" 
+  *ngIf="isContentAvailable && !isLoading">
   <mat-sidenav 
     [opened]="isMenuOpen" 
     mode="side" 
@@ -8,33 +9,33 @@
     <mat-nav-list>
       <a mat-list-item routerLink="/dashboard/overview"><mat-icon> show_chart</mat-icon>Overview</a>
       <a mat-list-item routerLink="/dashboard/tips-history"><mat-icon> attach_money</mat-icon>Tips History</a>
-      <a mat-list-item routerLink="/dashboard/wallet"><mat-icon>account_balance_wallet</mat-icon>Wallet</a>
-      <a mat-list-item routerLink="/dashboard/profile"><mat-icon>account_circle</mat-icon>Profile</a>
+      <a mat-list-item routerLink="/dashboard/profile-edit"><mat-icon>account_circle</mat-icon>Profile</a>
     </mat-nav-list>
   </mat-sidenav>
 
-  <mat-sidenav-content>
-    <mat-toolbar *ngIf="isContentAvailable" class="header">
+  <mat-sidenav-content [ngClass]="{'menu-open': isMenuOpen}">
+    <mat-toolbar class="header">
       <button mat-icon-button (click)="toggleMenu()">
         <mat-icon>menu</mat-icon>
       </button>
       <span>Vibey Dashboard</span>
     </mat-toolbar>
 
-    <div *ngIf="isContentAvailable" class="content">
-      <router-outlet></router-outlet>
-    </div>
-
-    <div *ngIf="isLoading" class="full-page">
-      <mat-spinner></mat-spinner>
-    </div>
-
-    <div *ngIf="!isContentAvailable && !isLoading" class="full-page">
-      <app-artiste-quiz 
-        [isStripeLinked]="isStripeLinked" 
-        [artisteExists]="artisteExists" 
-        [artisteId]="artisteId">
-      </app-artiste-quiz>
+    <div class="content">
+      <div class="router-wrapper">
+        <router-outlet></router-outlet>
+      </div>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
+<div *ngIf="!isContentAvailable && !isLoading" class="quiz-page">
+  <app-artiste-quiz 
+    [isStripeLinked]="isStripeLinked" 
+    [artisteExists]="artisteExists" 
+    [artisteId]="artisteId">
+  </app-artiste-quiz>
+</div>
+
+<div *ngIf="isLoading" class="spinner-page">
+  <mat-spinner></mat-spinner>
+</div>

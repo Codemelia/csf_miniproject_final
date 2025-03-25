@@ -1,4 +1,4 @@
-package csf.finalmp.app.server.models.authentication;
+package csf.finalmp.app.server.models.helpers;
 
 // PURPOSE OF THIS MODEL
 // SEND AUTH RESPONSE AFTER VALIDATING AUTH REQUESTS

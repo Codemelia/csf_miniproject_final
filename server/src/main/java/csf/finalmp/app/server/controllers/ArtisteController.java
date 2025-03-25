@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import csf.finalmp.app.server.models.ArtisteProfile;
 import csf.finalmp.app.server.services.ArtisteProfileService;
+// import csf.finalmp.app.server.services.ArtisteTransactionService;
 
 // PURPOSE OF THIS CONTROLLER
 // PROVIDE REST ENDPOINTS FOR ARTISTE REQUESTS FROM CLIENT
@@ -37,12 +39,15 @@ public class ArtisteController {
     @Autowired
     private ArtisteProfileService artisteProfSvc;
 
+    // @Autowired
+    // private ArtisteTransactionService artisteTransSvc;
+
     // logger to ensure proper tracking
     private Logger logger = Logger.getLogger(ArtisteController.class.getName());
 
     // insert artiste profile to mongodb
     // return string feedback
-    @PostMapping(path = "/artiste/create/{artisteId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(path = "/artiste/create-profile/{artisteId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> createArtiste(
         @PathVariable("artisteId") String artisteId,
         @RequestPart("stageName") String stageName,
@@ -58,30 +63,53 @@ public class ArtisteController {
 
     }
 
+    // check if artiste id exists in both mongo and mysql
+    @GetMapping(path = "/artiste/check")
+    public ResponseEntity<Boolean> checkArtisteId(
+        @RequestParam("artisteId") String artisteId) {
+
+        logger.info(">>> Checking artiste ID: %s".formatted(artisteId));
+        boolean artisteExistsMongo = artisteProfSvc.checkArtisteId(artisteId);
+        return ResponseEntity.ok(artisteExistsMongo);
+
+    }
+
+    // retrieve artiste profile
+    @GetMapping(path = "/artiste/profile/{artisteId}")
+    public ResponseEntity<ArtisteProfile> getArtisteProfile(
+        @PathVariable String artisteId) {
+        
+        logger.info(">>> Getting profile of artiste ID: %s".formatted(artisteId));
+        ArtisteProfile profile = artisteProfSvc.getArtisteProfileById(artisteId);
+        return ResponseEntity.ok(profile);
+
+    }
+
     // update artiste profile
-    // return id if update op successful
-    @PutMapping(path = "/artiste/{id}/update")
-    public ResponseEntity<String> updateArtiste(
-        @PathVariable String artisteId,
-        @RequestPart(value = "categories", required = false) List<String> categories,
+    @PutMapping(path = "/artiste/update-profile/{artisteId}")
+    public ResponseEntity<Boolean> updateArtisteProfile(
+        @PathVariable("artisteId") String artisteId,
+        @RequestPart("stageName") String stageName,
+        @RequestPart(value = "categories", required = false) String categoriesString,
         @RequestPart(value = "bio", required = false) String bio,
         @RequestPart(value = "photo", required = false) MultipartFile photo,
         @RequestPart(value = "thankYouMessage", required = false) String thankYouMessage) throws IOException {
 
-        logger.info(">>> Updating artiste with ID: %s".formatted(artisteId));
-        artisteProfSvc.updateArtisteProfile(artisteId, categories, bio, photo, thankYouMessage); // change to artiste profile
-        return ResponseEntity.ok().body("Vibee profile successfully updated!");
+        logger.info(">>> Updating profile of artiste ID: %s".formatted(artisteId));
+        List<String> categories = categoriesString != null ? Arrays.asList(categoriesString.split(",")) : new ArrayList<>();
+        boolean updated = artisteProfSvc.updateArtisteProfile(artisteId, stageName, categories, bio, photo, thankYouMessage);
+        return ResponseEntity.ok(updated);
 
     }
 
-    // check if artiste id exists in both mongo and mysql
-    @GetMapping(path = "/artiste/check")
-    public ResponseEntity<Boolean> checkArtisteId(
-        @RequestParam("artisteId") String artisteId
-    ) {
-        logger.info(">>> Checking artiste ID: %s".formatted(artisteId));
-        boolean artisteExistsMongo = artisteProfSvc.checkArtisteId(artisteId);
-        return ResponseEntity.ok().body(artisteExistsMongo);
+    // get all artiste profiles
+    @GetMapping(path = "/artistes")
+    public ResponseEntity<List<ArtisteProfile>> getAllArtisteProfiles() {
+
+        logger.info(">>> Retrieving all artiste profiles");
+        List<ArtisteProfile> artistes = artisteProfSvc.getAllArtisteProfiles();
+        return ResponseEntity.ok(artistes);
+
     }
 
 }

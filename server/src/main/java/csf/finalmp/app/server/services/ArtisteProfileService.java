@@ -51,30 +51,11 @@ public class ArtisteProfileService {
             throw new UserAlreadyExistsException("Stage name already exists. Please choose another.");
         }
 
-        boolean idExists = checkArtisteId(artisteId);
-        if (idExists) {
-            throw new UserAlreadyExistsException("Vibee already exists. Please login to your Vibee account.");
-        }
-
-        // set variables
-        ArtisteProfile artisteProfile = new ArtisteProfile();
-        artisteProfile.setArtisteId(artisteId);
-        artisteProfile.setStageName(artisteStageName);
-
-        if (categories != null && categories.size() > 0) { artisteProfile.setCategories(categories); } 
-        else { artisteProfile.setCategories(categories); }
-
-        if (bio != null && !bio.isEmpty()) { artisteProfile.setBio(bio); } 
-        else { artisteProfile.setBio(null); }
-
-        if (photo != null) { artisteProfile.setPhoto(photo.getBytes()); } 
-        else { artisteProfile.setPhoto(null); }
-
-        if (thankYouMessage != null) { artisteProfile.setThankYouMessage(thankYouMessage); } 
-        else { artisteProfile.setThankYouMessage("Thank you for supporting our Vibees!"); } // default message
+        ArtisteProfile artisteProfile = parseToProfile(artisteId, artisteStageName, categories, 
+            bio, photo, thankYouMessage);
 
         // gen qr code url for tipping
-        // http://localhost:4200/tip/{stagename}
+        // http://localhost:4200/tip-form/{stagename}
         String qrCodeUrl = String.format("%s/tip-form/%s", frontendBaseUrl, 
             URLEncoder.encode(artisteStageName, StandardCharsets.UTF_8));
         QRCodeWriter qrWriter = new QRCodeWriter();
@@ -94,16 +75,31 @@ public class ArtisteProfileService {
 
     }
 
-    // update artiste profile
-    public boolean updateArtisteProfile(String artisteId, List<String> categories, String bio, MultipartFile photo,
-            String thankYouMessage) throws IOException {
+    // helper method to parse variables to profile
+    public ArtisteProfile parseToProfile(String artisteId, String artisteStageName, List<String> categories, 
+        String bio, MultipartFile photo, String thankYouMessage) throws IOException {
+    
+        // set variables
+        ArtisteProfile artisteProfile = new ArtisteProfile();
+        artisteProfile.setArtisteId(artisteId);
+        artisteProfile.setStageName(artisteStageName);
 
-        ArtisteProfile profile = new ArtisteProfile();
-        profile.setArtisteId(artisteId);
-        profile.setCategories(categories);
-        profile.setBio(bio);
-        profile.setPhoto(photo.getBytes());
-        profile.setThankYouMessage(thankYouMessage);
+        if (categories != null && categories.size() > 0) artisteProfile.setCategories(categories);
+        if (bio != null && !bio.isEmpty()) artisteProfile.setBio(bio);
+        if (photo != null) artisteProfile.setPhoto(photo.getBytes());
+        if (thankYouMessage != null) artisteProfile.setThankYouMessage(thankYouMessage);
+
+        return artisteProfile;
+        
+    }
+
+    // update artiste profile
+    public boolean updateArtisteProfile(String artisteId, String stageName, List<String> categories, 
+        String bio, MultipartFile photo, String thankYouMessage) throws IOException {
+
+        // parse variables to profile
+        ArtisteProfile profile = parseToProfile(artisteId, stageName, categories, 
+            bio, photo, thankYouMessage);
 
         return artisteProfRepo.updateArtisteProfile(profile);
     }
@@ -126,6 +122,20 @@ public class ArtisteProfileService {
     // get thank you message by artiste id
     public String getArtisteThankYouMsgById(String artisteId) {
         return artisteProfRepo.getArtisteThankYouMsgById(artisteId);
+    }
+
+    // get artiste profile by id
+    public ArtisteProfile getArtisteProfileById(String artisteId) {
+        return artisteProfRepo.getArtisteProfileById(artisteId);
+    }
+
+    // get artiste stage name by id
+    public String getArtisteStageNameById(String artisteId) {
+        return artisteProfRepo.getArtisteStageNameById(artisteId);
+    }
+
+    public List<ArtisteProfile> getAllArtisteProfiles() {
+        return artisteProfRepo.getAllArtisteProfiles();
     }
     
 }

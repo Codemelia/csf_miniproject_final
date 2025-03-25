@@ -1,11 +1,12 @@
 .register-card {
-    max-width: 400px;
+    max-width: 600px;
     margin: 30px auto;
     padding: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     justify-content: center;
     align-items: center;
+    background-color: #0000007a;
 }
 
 mat-card-header {
@@ -15,12 +16,12 @@ mat-card-header {
 mat-card-title {
     font-size: 200%;
     margin: 20px auto;
-    color: #000000;
+    color: #FFF;
     font-weight: bold;
     text-shadow: 
         0.8px 0.8px 0px rgba(98, 0, 234, 1),  
         -0.8px -0.8px 0px rgba(255, 49, 210, 1),
-        0px 0px 8px rgba(255, 255, 255, 1); 
+        0px 0px 5px rgba(255, 255, 255, 0.5); 
 }
 
 .full-width {
@@ -50,10 +51,22 @@ mat-card-actions {
 
 /* button styles */
 button {
-    color: white;
     transition: background-color 0.3s ease;
+    margin: 10px auto;
+    text-transform: uppercase;
+    font-weight: bold;
+    box-shadow: 
+        0.8px 0.8px 0px rgba(98, 0, 234, 1),  
+        -0.8px -0.8px 0px rgba(255, 49, 210, 1),
+        0px 0px 5px rgba(255, 255, 255, 1); 
 }
 
 button:hover {
-    background-color: #2c0055;
+    background-color: #6200ea;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Raised shadow effect */
+    transform: translateY(-3px); 
+    box-shadow: 
+        0.8px 0.8px 0px rgba(98, 0, 234, 1),  
+        -0.8px -0.8px 0px rgba(255, 49, 210, 1),
+        0px 0px 5px rgba(255, 255, 255, 1); 
 }

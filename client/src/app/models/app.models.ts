@@ -1,3 +1,5 @@
+import { SafeResourceUrl } from "@angular/platform-browser"
+
 export interface ApiError {
     timestamp: Date
     status: number
@@ -7,7 +9,6 @@ export interface ApiError {
 
 export interface UserRegistration {
     email: string
-    username: string
     password: string
     phoneNumber: string
     role: string 
@@ -65,5 +66,20 @@ export interface ArtisteProfile {
     categories: string[]
     bio: string | null
     photo: Blob | null
+    photoUrl: string | null
+    qrCode: Blob | null
+    qrCodeUrl: string | null
     thankYouMessage: string | null
+}
+
+export interface SpotifyTrack {
+    trackId: string
+    embedUrl: string
+    sanitizedUrl: SafeResourceUrl | null
+}
+
+export interface PlaylistDetails {
+    playlistId: string
+    playlistName: string
+    playlistUrl: string
 }

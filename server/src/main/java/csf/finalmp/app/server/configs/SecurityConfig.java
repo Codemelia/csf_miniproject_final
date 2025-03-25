@@ -3,6 +3,7 @@ package csf.finalmp.app.server.configs;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -21,6 +22,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Value("${frontend.app.url}")
+    private String frontendBaseUrl;
+
     @Autowired
     private JwtAuthenticationFilter jwtFilter;
 
@@ -34,12 +38,10 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/api/auth/**").permitAll() // allow registration and login
-                .requestMatchers("/api/qr/**").permitAll() // permit all access to qr codes
-                .requestMatchers("/api/artistes/**").authenticated() // protect artistes endpoints
-                .requestMatchers("/api/artiste/**").authenticated() // protect artiste endpoints
-                .requestMatchers("/api/tips/**").permitAll() // permit all to allow guest tipping
-                .requestMatchers("/api/stripe/**").permitAll() // permit all for stripe oauth callback
-                .anyRequest().authenticated())
+                .requestMatchers("/api/spotify/oauth/**").permitAll() // permit all for oauth callback
+                .requestMatchers("/api/tips/save/**", "/api/tips/process/**").permitAll() // permit all to allow guest tipping
+                .requestMatchers("/api/stripe/oauth/**").permitAll() // permit all for stripe oauth callback
+                .anyRequest().authenticated()) // any other request authenticated
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -49,7 +51,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200")); // your frontend URL
+        configuration.setAllowedOrigins(Arrays.asList(frontendBaseUrl)); // frontend URL
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true); // Allow cookies to be sent with requests

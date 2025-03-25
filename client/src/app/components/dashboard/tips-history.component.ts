@@ -17,17 +17,19 @@ export class TipsHistoryComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // services
   private tipSvc = inject(TipService)
+  private authStore = inject(AuthStore)
 
   // variables
   tips$!: Observable<Tip[]>
-  totalTips!: number
+  totalTipAmount!: number
   totalTipCount: number = 0
   artisteId: string | null = null
-  
+  isViewInitialised: boolean = false
+
   // tip_id, tipper_name, tipper_message, amount, payment_intent_id, updated_at
   columns: string[] = [
     'tipId', 'tipperName', 'tipperMessage', 
-    'amount', 'paymentIntentId', 'updatedAt'
+    'netAmount', 'commission', 'paymentIntentId', 'updatedAt'
   ]
 
   // pagination
@@ -43,15 +45,24 @@ export class TipsHistoryComponent implements OnInit, AfterViewInit, OnDestroy {
   sortDirection: 'asc' | 'desc' | '' = 'desc'
 
   // sub
-  private pageSub!: Subscription
   private tipSub!: Subscription
 
+  artisteExists: boolean = false
+
   ngOnInit(): void {
+
+    // authentication
+    this.artisteId = this.authStore.extractUIDFromToken()
+    this.checkIfArtisteExists()
+
     this.fetchTips() // fetch tips on init
-    this.pageSub = this.tips$.subscribe(tips => {
-      this.dataSource.data = tips;
-      this.dataSource.paginator?.firstPage() // reset paginator to first page
-    })
+  }
+
+  // checking if artiste exists
+  checkIfArtisteExists(): void {
+    const existString = localStorage.getItem("artisteExists")
+    if (existString) this.artisteExists = JSON.parse(existString)
+      else this.artisteExists = false
   }
 
   // fetch tips for artiste
@@ -62,8 +73,10 @@ export class TipsHistoryComponent implements OnInit, AfterViewInit, OnDestroy {
     this.tipSub = this.tips$.pipe(
       map(
         (tips: Tip[]) => {
-          this.totalTips = tips.reduce((sum, tip) => sum + tip.amount, 0) // get 
+          this.totalTipAmount = tips.reduce((sum, tip) => sum + tip.amount, 0) // get 
           this.totalTipCount = tips.reduce((qty, tip) => qty + 1, 0)
+          this.dataSource.data = tips;
+          this.dataSource.paginator?.firstPage() // reset paginator to first page
         }
       )
     ).subscribe()
@@ -82,6 +95,7 @@ export class TipsHistoryComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
+    this.isViewInitialised = true
     this.dataSource.paginator = this.paginator
     this.dataSource.sort = this.sort
 
@@ -91,7 +105,6 @@ export class TipsHistoryComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.pageSub!.unsubscribe()
     this.tipSub!.unsubscribe()
   }
 
