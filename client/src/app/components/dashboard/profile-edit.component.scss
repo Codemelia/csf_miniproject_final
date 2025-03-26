@@ -47,7 +47,7 @@ mat-card {
     flex-direction: column;
     justify-content: center;
     text-align: center;
-    background-color: #00000000;
+    background-color: #00000062;
     transition: background-color 0.3s ease;
     box-shadow:
         0.8px 0.8px 0px rgba(98, 0, 234, 1),  
@@ -93,10 +93,10 @@ mat-button-toggle-group {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    background-color: #36018000;
+    background-color: #00000065;
     border-radius: 8px;
     padding: 10px;
-    border: 1px solid #ffffff3d;
+    border: 1px solid #ff00f23d;
 }
 
 mat-button-toggle {

@@ -247,8 +247,8 @@ export class ArtisteQuizComponent implements OnInit, OnDestroy {
           if (resp.startsWith('https://')) {
             console.log('>>> Stripe OAuth URL: ', resp as string)
             this.error = null
-            this.isLoading = false
             window.location.href = resp // takes user to url
+            this.isLoading = false
           }
         },
         error: (err) => {

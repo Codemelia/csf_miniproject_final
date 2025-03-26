@@ -67,7 +67,7 @@ const routes: Routes = [
       { path: 'overview', component: OverviewComponent },
       { path: 'tips-history', component: TipsHistoryComponent },
       { path: 'profile-edit', component: ProfileEditComponent },
-      { path: '**', redirectTo: 'overview', pathMatch: 'full' } // Default route
+      { path: '**', redirectTo: 'overview', pathMatch: 'full' } // default route
     ] },
   { path: '**', redirectTo: '/', pathMatch: 'full' }
 ]
