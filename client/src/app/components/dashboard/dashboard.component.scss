@@ -2,8 +2,8 @@
     background-color: #00000080;
     height: 98%;
     display: flex;
-    flex-direction: row; // Explicitly set
-    width: 100%; // Ensure it spans the full viewport
+    flex-direction: row;
+    width: 100%;
     overflow: hidden;
     border-radius: 15px;
     box-sizing: border-box;
@@ -73,7 +73,7 @@ mat-sidenav-content {
     }
 
     &.menu-open {
-        margin-left: 220px; // Shift when menu is open
+        margin-left: 220px;
     }
 }
   
@@ -81,8 +81,8 @@ mat-sidenav-content {
     background-color: #00000000;
     color: #FFFFFF;
     width: 100%;
-    box-sizing: border-box; // Include padding/borders in width
-    transition: none; // Remove width transition, not needed
+    box-sizing: border-box;
+    transition: none;
 }
   
 .header button {
@@ -118,7 +118,7 @@ mat-toolbar {
 .router-wrapper {
     width: 100%;
     max-width: 100%;
-    overflow-x: auto; // Allow horizontal scroll if needed
+    overflow-x: auto;
 }
   
 .spinner-page {
@@ -135,18 +135,140 @@ mat-toolbar {
 
 .quiz-page {
     position: relative;
-    top: 0;
-    left: 0;
-    width: 100%;
+    width: auto;
     max-width: 800px;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 20px auto;
+    margin: 50px auto;
     flex-grow: 1;
 }
   
 mat-spinner {
     --mat-spinner-color: #E91E63;
+}
+
+/* mobile responsive design */
+@media (max-width: 480px) {
+    .db-container {
+        flex-direction: column;
+        height: auto;
+        position: relative;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: 80px;
+        position: relative;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        transition: transform 0.3s ease-in-out;
+        background: linear-gradient(to top, 
+            rgba(98, 0, 234, 0.8), 
+            rgba(255, 49, 210, 0.8));
+    }
+
+    .sidebar mat-toolbar {
+        min-height: 56px;
+        margin-left: 5px;
+        font-size: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .sidebar mat-nav-list {
+        padding-bottom: 20px;
+    }
+
+    .sidebar mat-nav-list a {
+        width: 90%;
+        padding: 8px 10px;
+        font-size: 0.9rem;
+    }
+
+    .sidebar mat-nav-list a mat-icon {
+        margin-right: 8px;
+    }
+
+    mat-sidenav-content {
+        margin-left: 0 !important;
+        height: auto;
+        min-height: 100vh;
+        position: relative;
+    }
+
+    .header {
+        min-height: 56px;
+        padding: 0 10px;
+        position: sticky;
+        top: 0;
+        z-index: 1100;
+    }
+
+    .header mat-toolbar {
+        font-size: 1.5rem;
+        margin-top: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .header button {
+        margin: 0 5px;
+        z-index: 1200;
+    }
+
+    .content {
+        padding: 15px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .router-wrapper {
+        padding: 0 5px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .quiz-page {
+        margin: 20px auto;
+        max-width: 90%;
+    }
+
+    .spinner-page mat-spinner {
+        width: 40px;
+        height: auto;
+    }
+}
+
+@media (max-width: 480px) and (min-height: 1000px) {
+    .sidebar mat-toolbar {
+        min-height: 64px;
+        font-size: 1.8rem;
+    }
+
+    .sidebar mat-nav-list a {
+        padding: 10px 15px;
+        font-size: 1rem;
+    }
+
+    .header mat-toolbar {
+        font-size: 1.8rem;
+        margin-top: 15px;
+    }
+
+    .content {
+        padding: 20px;
+    }
+
+    .quiz-page {
+        margin: 30px auto;
+    }
 }

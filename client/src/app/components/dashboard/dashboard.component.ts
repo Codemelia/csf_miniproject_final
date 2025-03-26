@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ApiError } from '../../models/app.models';
-import { catchError, Subscription, tap, throwError } from 'rxjs';
+import { catchError, EMPTY, Subscription, tap, throwError } from 'rxjs';
 import { AuthStore } from '../../stores/auth.store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ArtisteService } from '../../services/artiste.service';
@@ -75,7 +75,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           this.error = err.error
           this.artisteExists = false
           this.isLoading = false
-          return throwError(() => this.error)
+          console.log('>>> Failed to check if artiste exists')
+          return EMPTY
         })
       ).subscribe()
     } else {

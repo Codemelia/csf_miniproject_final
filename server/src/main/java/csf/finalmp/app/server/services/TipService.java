@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
@@ -122,6 +123,7 @@ public class TipService {
     }
 
     // save tip details after stripe payment is confirmed
+    @Transactional(rollbackFor = Exception.class)
     public String saveTip(Tip confirmedRequest) {
 
         // if tipper id is null, throw exception

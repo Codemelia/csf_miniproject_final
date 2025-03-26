@@ -52,8 +52,9 @@
             </mat-form-field>
         
             <mat-card-actions>
-                <button mat-raised-button color="accent" type="submit" [disabled]="form.invalid">
-                    Register
+                <button mat-raised-button color="accent" type="submit" 
+                    [disabled]="form.invalid || isLoading">
+                    {{ isLoading ? 'Registering...' : 'Register' }}
                 </button>
                 <button mat-raised-button color="primary" [routerLink]="(['/'])">
                     Back to Login

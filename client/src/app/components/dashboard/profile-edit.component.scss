@@ -31,7 +31,7 @@
 }
 
 .form-card {
-    flex: 1; /* Makes the form section take up the remaining space */
+    flex: 1;
     height: 100%;
 }
 
@@ -55,7 +55,7 @@ mat-card {
         0px 0px 5px rgba(255, 255, 255, 1); 
 
     &:hover {
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Raised shadow effect */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         transform: translateY(-3px); 
         box-shadow:
             0.8px 0.8px 0px rgba(98, 0, 234, 1),  
@@ -134,7 +134,7 @@ button {
 
 button:hover {
     background-color: #6200ea;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Raised shadow effect */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     transform: translateY(-3px); 
     box-shadow: 
         0.8px 0.8px 0px rgba(98, 0, 234, 1),  
@@ -212,14 +212,14 @@ mat-spinner {
     color: white;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* Adjusts the positioning of the children from the top */
+    justify-content: flex-start;
     align-items: center;
     overflow-y: auto; 
 
     .search-card,
     .tracks-card,
     .playlist-card {
-        width: 100%; /* Ensure the cards stretch across the container */
+        width: 100%;
         padding: 0 10px;
         transform: none;
         box-shadow: none;
@@ -249,15 +249,10 @@ mat-spinner {
         gap: 10px;
     }
 
-    button {
-        margin-bottom: 0;
-    }
-
     mat-card-content {
         display: flex;
         flex-direction: column;
         justify-content: center;
-        padding: 15px;
     }
 
     mat-card-header {
@@ -315,4 +310,207 @@ mat-spinner {
         }
     }
 
+}
+
+/* mobile responsive design */
+@media (max-width: 480px) {
+    .profile-page {
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+        margin: 5px;
+        gap: 20px;
+    }
+
+    .profile-container {
+        width: 108%;
+    }
+
+    .form-card {
+        flex: none;
+        width: 100%;
+    }
+
+    .form-card mat-card-title {
+        font-size: 1.1rem;
+        margin-bottom: 5px;
+    }
+
+    form {
+        padding: 15px 0;
+        max-width: 100%;
+    }
+
+    .img-input {
+        margin: 0 auto 20px auto;
+    }
+
+    .preview {
+        max-height: 150px;
+        max-width: 150px;
+        margin: 8px auto;
+    }
+
+    .custom-file-input {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+        margin-top: 5px;
+    }
+
+    .categories-input {
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    mat-button-toggle-group {
+        padding: 8px;
+        border: none;
+    }
+
+    mat-button-toggle {
+        margin: 3px;
+        padding: 6px 10px;
+        font-size: 0.85rem;
+    }
+
+    mat-form-field {
+        margin: 8px auto;
+    }
+
+    mat-form-field input,
+    mat-form-field textarea {
+        padding: 8px;
+        font-size: 0.9rem;
+    }
+
+    .form-card button {
+        width: 100%;
+        padding: 8px;
+        font-size: 0.9rem;
+        margin: 5px auto;
+    }
+
+    .qr-section {
+        width: 100%;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .qr-section .qr-card,
+    .qr-section .spotify-container,
+    .form-card {
+        width: 100%;
+        max-width: 400px;
+        height: auto;
+        margin: 0 auto;
+    }
+
+    .qr-section .qr-card {
+        margin-bottom: 10px;
+    }
+
+    .qr-section .qr-card img.preview {
+        max-height: 100px;
+        max-width: 100px;
+        border-radius: 20px;
+    }
+
+    .qr-section .qr-card button {
+        width: 100%;
+        padding: 8px;
+        font-size: 0.9rem;
+    }
+
+    .spotify-container {
+        padding: 0;
+    }
+
+    .spotify-container .search-card,
+    .spotify-container .tracks-card,
+    .spotify-container .playlist-card {
+        padding: 0 5px;
+        max-height: none;
+    }
+
+    .spotify-container mat-card-header {
+        margin: 10px auto;
+    }
+
+    .spotify-container mat-card-title {
+        font-size: 1.1rem;
+    }
+
+    .spotify-container mat-card-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .spotify-container iframe {
+        width: 100%;
+        max-width: 300px;
+        height: 60px;
+        margin-bottom: 5px;
+    }
+
+    .spotify-container button {
+        width: 100%; 
+        padding: 8px;
+        font-size: 0.9rem;
+        margin: 5px auto;
+    }
+
+    .spotify-container .feedback mat-error {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) and (min-height: 1000px) {
+    .form-card {
+        width: 92%;
+    }
+
+    .form-card mat-card-title {
+        font-size: 1.25rem;
+        margin-bottom: 10px;
+    }
+
+    .preview {
+        max-height: 180px;
+        max-width: 180px;
+    }
+
+    .custom-file-input {
+        padding: 10px 20px;
+        font-size: 1rem;
+    }
+
+    mat-button-toggle {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+
+    mat-form-field input,
+    mat-form-field textarea {
+        padding: 10px;
+        font-size: 1rem;
+    }
+
+    .form-card button {
+        padding: 10px;
+        font-size: 1rem;
+    }
+
+    .qr-section .qr-card img.preview {
+        max-height: 120px;
+        max-width: 120px;
+    }
+
+    .spotify-container iframe {
+        height: 80px;
+        margin-bottom: 10px;
+    }
+
+    .spotify-container button {
+        padding: 10px;
+        font-size: 1rem;
+    }
 }

@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
-import { BehaviorSubject, catchError, map, Observable, of, Subject, switchMap, tap, throwError } from "rxjs";
+import { BehaviorSubject, catchError, EMPTY, map, Observable, of, Subject, switchMap, tap, throwError } from "rxjs";
 import { ApiError, AuthResponse, AuthState, DecodedToken, UserLogin, UserRegistration } from "../models/app.models";
 
 import { jwtDecode } from 'jwt-decode';
@@ -68,11 +68,10 @@ export class AuthStore extends ComponentStore<AuthState> {
             }),
             catchError(error => {
                 this.loginResultSubject.next(error.error)
-                return throwError(() => error)
+                return EMPTY
             })
             )
-        )
-        )
+        ))
     )
 
     // register method
@@ -88,7 +87,7 @@ export class AuthStore extends ComponentStore<AuthState> {
             }),
             catchError(error => {
                 this.registrationResultSubject.next(error.error)
-                return throwError(() => error)
+                return EMPTY
             })
             )
         )

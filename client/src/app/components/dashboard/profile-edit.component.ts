@@ -32,7 +32,7 @@ export class ProfileEditComponent implements OnInit, OnDestroy {
   artisteExists: boolean = false
   artisteId: string | null = null
   isLoading: boolean = false // for API loading state
-  error!: ApiError
+  error: ApiError | null = null
   spotifyLoading: boolean = false
 
   // subs
@@ -209,6 +209,8 @@ export class ProfileEditComponent implements OnInit, OnDestroy {
         message: 'Invalid data URL. Please try again.'
       }
       return
+    } else {
+      this.error = null
     }
 
     const arr = dataURL.split(',') // to remove img prefix
@@ -220,6 +222,8 @@ export class ProfileEditComponent implements OnInit, OnDestroy {
         message: 'Invalid data URL. Please try again.'
       }
       return
+    } else {
+      this.error = null
     }
 
     const mimeMatch = arr[0].match(/:(.*?);/);
@@ -231,6 +235,8 @@ export class ProfileEditComponent implements OnInit, OnDestroy {
         message: 'Invalid data URL. Please try again.'
       }
       return
+    } else {
+      this.error = null
     }
     
     const mime = mimeMatch[1] // get mime type
@@ -256,6 +262,7 @@ export class ProfileEditComponent implements OnInit, OnDestroy {
     this.updateSub = this.artisteSvc.updateArtisteProfile(updatedProfile, this.artisteId!)
       .subscribe((response) => {
         if (response == true) {
+          this.error = null
           this.isLoading = false
           console.log('>>> Profile update successful')
           localStorage.removeItem("artisteProfile") // remove from local storage
@@ -292,6 +299,7 @@ export class ProfileEditComponent implements OnInit, OnDestroy {
         this.playlistSub = this.spotifySvc.getPlaylistUrl(this.artisteId!).subscribe({
           next: (url) => {
             console.log('>>> Playlist url retrieved: ', url)
+            this.error = null
             this.playlistUrl = url
             localStorage.setItem('playlistUrl', url)
             this.spotifyLoading = false
@@ -314,6 +322,7 @@ export class ProfileEditComponent implements OnInit, OnDestroy {
     this.oAuthSub = this.spotifySvc.genOAuthUrl(this.artisteId!).subscribe({
       next: (resp) => {
         console.log('>>> Spotify OAuth URL: ', resp as string)
+        this.error = null
         if (resp.startsWith('https://')) {
           window.location.href = resp // takes user to url
           this.spotifyLoading = false

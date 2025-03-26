@@ -59,55 +59,47 @@
 
 }
 
-@media (max-width: 600px) {
-    .popup-content {
-        max-width: 90%;
-        padding: 20px;
-    }
-  
-    .success-icon {
-        font-size: 40px;
-        width: 40px;
-        height: auto;
-    }
-  
-    h2 {
-      font-size: 1.25rem;
-    }
-  
-    p {
-      font-size: 0.9rem;
-    }
-  
-    button {
-      padding: 8px 16px;
-      font-size: 0.9rem;
-    }
-}
-  
-@media (max-width: 400px) {
+/* mobile responsive design */
+@media (max-width: 480px) {
     .popup-content {
         max-width: 85%;
-        padding: 17;
+        padding: 15px;
     }
 
-    .success-icon {
-        font-size: 36px;
-        width: 36px;
-        height: auto;
+    .popup-content h2 {
+        font-size: 1.2rem;
     }
 
-    h2 {
-        font-size: 1.125rem;
-    }
-
-    p {
+    .popup-content p {
         font-size: 0.85rem;
     }
 
-    button {
-        padding: 6px 12px;
+    .popup-content .success-icon {
+        font-size: 36px;
+        width: 36px;
+    }
+
+    .popup-content button {
+        padding: 8px 14px;
         font-size: 0.85rem;
     }
 }
-  
+
+@media (max-width: 480px) and (min-height: 1000px) {
+    .popup-content {
+        padding: 20px;
+    }
+
+    .popup-content h2 {
+        font-size: 1.25rem;
+    }
+
+    .popup-content p {
+        font-size: 0.9rem;
+    }
+
+    .popup-content .success-icon {
+        font-size: 40px;
+        width: 40px;
+    }
+}

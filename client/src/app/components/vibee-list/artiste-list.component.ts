@@ -16,7 +16,7 @@ export class ArtisteListComponent implements OnInit, OnDestroy {
 
   artistes: ArtisteProfile[] = []
   isLoading = true
-  error!: ApiError
+  error: ApiError | null = null
   searchTerm: string = ''
   filteredArtistes: ArtisteProfile[] = []
 
@@ -34,8 +34,9 @@ export class ArtisteListComponent implements OnInit, OnDestroy {
     this.title.setTitle('Vibees')
 
     this.artisteId = this.authStore.extractUserRoleFromToken()
-    this.artisteSub = this.artisteSvc.getAllArtisteProfiles(this.artisteId!).subscribe({
+    this.artisteSub = this.artisteSvc.getAllArtisteProfiles().subscribe({
       next: (data) => {
+        this.error = null
         this.artistes = data
         this.artistes.forEach(
           (artiste) => {
@@ -44,12 +45,11 @@ export class ArtisteListComponent implements OnInit, OnDestroy {
               artiste.photoUrl = `data:${mimeType};base64,${artiste.photo}` // convert to data url
             }
 
-            if (artiste.stageName != null && artiste.stageName.length > 0) {
-              this.filteredArtistes = [
-                ...this.filteredArtistes, // only add artiste if they have valid stage name
-                artiste
-              ]
-            }
+            this.filteredArtistes = [
+              ...this.filteredArtistes, // only add artiste if they have valid stage name
+              artiste
+            ]
+            console.log('>>> Filtered artistes: ', this.filteredArtistes)
           }
         )
         this.isLoading = false

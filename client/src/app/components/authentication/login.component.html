@@ -1,7 +1,7 @@
 <div class="full">
     <section class="hero">
         <h1>VIBEY: Where Vibes Meet Rewards</h1>
-        <p class="tagline">Support Vibees (local artistes) as Vibers (supporters), unlock special playlists, and enjoy sponsor perks!</p>
+        <p class="tagline">Support Vibees (local artistes) as Vibers (supporters), unlock special playlists, and enjoy exclusive perks!</p>
     </section>
     
     <mat-card class="login-card">
@@ -28,8 +28,9 @@
                 </mat-form-field>
             
                 <mat-card-actions>
-                    <button mat-raised-button color="accent" type="submit" [disabled]="form.invalid">
-                        Login
+                    <button mat-raised-button color="accent" [disabled]="form.invalid || isLoading" 
+                        (click)="login()">
+                        {{ isLoading ? 'Logging in...' : 'Login' }}
                     </button>
                     <button mat-raised-button color="primary" type="button" [routerLink]="(['/register'])">
                         New User

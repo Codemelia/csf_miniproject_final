@@ -24,13 +24,14 @@ export class RegisterComponent implements OnInit, OnDestroy {
   private title = inject(Title)
   
   // error obj
-  protected error!: ApiError
+  protected error: ApiError | null = null
 
   // subscription
   protected regisSub?: Subscription
 
   // success message
   successMsg: string | null = null
+  isLoading: boolean = false
 
   ngOnInit(): void {
 
@@ -42,10 +43,14 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.regisSub = this.authStore.registrationResult$.subscribe(response => {
       if ('userId' in response) {
         this.successMsg = response.message // prompts user to login after successful registration
+        this.error = null
+        this.form.reset()
+        this.isLoading = false
         setTimeout(() => this.router.navigate(['/']), 2000)
       } else {
         this.error = response
         this.successMsg = null
+        this.isLoading = false
       }
     })
   }
@@ -70,6 +75,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   // register method - sends user regis details to auth store for saving
   register() {
     if (this.form.valid) {
+      this.isLoading = true
       const user: UserRegistration = this.form.value;
       this.authStore.register(user);
     }

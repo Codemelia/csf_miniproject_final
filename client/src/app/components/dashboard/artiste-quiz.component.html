@@ -66,8 +66,8 @@
                 maxlength="150"></textarea>
             <mat-hint align="end">{{ thankYouMessageInput?.value?.length || 0 }}/150</mat-hint>
         </mat-form-field>
+        <button mat-raised-button color="primary" (click)="saveData()" style="margin-top: 15px;">Set Up Stripe</button>
         <button mat-raised-button color="warn" (click)="previousStep()">Back</button>
-        <button mat-raised-button color="primary" (click)="saveData()" style="margin-top: 15px;">Save and Set Up Stripe</button>
     </div>
     <div class="step" *ngIf="step === 6">
         <mat-card-subtitle>Step 6: Set Up Your Stripe Account</mat-card-subtitle>
@@ -79,11 +79,10 @@
             </button>
         </mat-card-actions>
     </div>
-    <div *ngIf="error" class="feedback">
-        <mat-error *ngIf="error">{{ error.message }}</mat-error>
+    <div *ngIf="isLoading" class="spinner-page">
+        <mat-spinner></mat-spinner>
+    </div>
+    <div *ngIf="error && !isLoading" class="feedback">
+        <mat-error>{{ error.message || 'An error occurred. Please try again.' }}</mat-error>
     </div>
 </mat-card>
-
-<div *ngIf="isLoading" class="spinner-page">
-    <mat-spinner></mat-spinner>
-</div>

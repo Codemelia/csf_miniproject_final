@@ -86,7 +86,7 @@ export class ArtisteService {
   }
 
   // get all artiste profiles
-  getAllArtisteProfiles(artisteId: string): Observable<ArtisteProfile[]> {
+  getAllArtisteProfiles(): Observable<ArtisteProfile[]> {
     return this.http.get<ArtisteProfile[]>(`/api/artistes`,
       { headers: this.authStore.getJsonHeaders() })
   }

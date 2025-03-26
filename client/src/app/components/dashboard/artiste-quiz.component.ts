@@ -45,7 +45,7 @@ export class ArtisteQuizComponent implements OnInit, OnDestroy {
   photoUrl: string | null = null
   fileTooLarge: boolean = false
 
-  error!: ApiError
+  error: ApiError | null = null
 
   onboardingUrl: string | null = null
 
@@ -67,17 +67,19 @@ export class ArtisteQuizComponent implements OnInit, OnDestroy {
   }
 
   nextStep() {
-      if (this.step < this.totalSteps) {
-        this.step++;
-        this.progress = (this.step / this.totalSteps) * 100
-      }
+    this.error = null
+    if (this.step < this.totalSteps) {
+      this.step++;
+      this.progress = (this.step / this.totalSteps) * 100
+    }
   }
 
   previousStep() {
-      if (this.step > 1) {
-        this.step--;
-        this.progress = (this.step / this.totalSteps) * 100
-      }
+    this.error = null
+    if (this.step > 1) {
+      this.step--;
+      this.progress = (this.step / this.totalSteps) * 100
+    }
   }
 
   // for image preview (ui feedback)
@@ -123,6 +125,8 @@ export class ArtisteQuizComponent implements OnInit, OnDestroy {
         message: 'Invalid stage name. Please enter a valid stage name to continue.'
       }
       return
+    } else {
+      this.error = null
     }
 
     if (this.photo) {
@@ -150,6 +154,8 @@ export class ArtisteQuizComponent implements OnInit, OnDestroy {
         message: 'Invalid data URL'
       }
       return
+    } else {
+      this.error = null
     }
   
     const arr = dataURL.split(',') // to remove img prefix
@@ -161,6 +167,8 @@ export class ArtisteQuizComponent implements OnInit, OnDestroy {
         message: 'Invalid data URL'
       }
       return
+    } else {
+      this.error = null
     }
   
     const mimeMatch = arr[0].match(/:(.*?);/);
@@ -172,6 +180,8 @@ export class ArtisteQuizComponent implements OnInit, OnDestroy {
         message: 'Invalid data URL'
       }
       return
+    } else {
+      this.error = null
     }
     
     const mime = mimeMatch[1] // get mime type
@@ -222,7 +232,6 @@ export class ArtisteQuizComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           this.error = err.error
-          console.log(this.error)
           this.isLoading = false
         }
       })
@@ -237,14 +246,15 @@ export class ArtisteQuizComponent implements OnInit, OnDestroy {
         next: (resp) => {
           if (resp.startsWith('https://')) {
             console.log('>>> Stripe OAuth URL: ', resp as string)
-            window.location.href = resp // takes user to url
+            this.error = null
             this.isLoading = false
+            window.location.href = resp // takes user to url
           }
         },
         error: (err) => {
           this.isLoading = false
           this.error = err.error
-          console.log('>>> Stripe OAuth URL creation failed: ', this.error.message)
+          console.log('>>> Stripe OAuth URL creation failed: ', this.error)
         }
       })
     }

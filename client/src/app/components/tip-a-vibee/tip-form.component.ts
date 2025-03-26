@@ -42,7 +42,7 @@ export class TipFormComponent implements OnInit, OnDestroy {
   cardComplete: boolean = false
 
   // feedback messages for view
-  error!: ApiError
+  error: ApiError | null = null
   private dialog = inject(MatDialog)
   private dialogRef!: MatDialogRef<DialogPopupComponent, any>
 
@@ -90,6 +90,8 @@ export class TipFormComponent implements OnInit, OnDestroy {
         message: 'Payment system failed to initialise. Please refresh the page.'
       }
       return
+    } else {
+      this.error = null
     }
 
     // mount card element
@@ -139,6 +141,8 @@ export class TipFormComponent implements OnInit, OnDestroy {
           error: 'Stripe Card Error',
           message: event.error.message
         }
+      } else {
+        this.error = null
       }
     })
   }
@@ -176,6 +180,8 @@ export class TipFormComponent implements OnInit, OnDestroy {
       }
       this.dialogRef.close() // close dialog on error
       return
+    } else {
+      this.error = null
     }
 
     // take in form values
@@ -206,6 +212,8 @@ export class TipFormComponent implements OnInit, OnDestroy {
       }
       this.dialogRef.close() // close dialog on error
       return
+    } else {
+      this.error = null
     }
 
     const paymentMethodId: string = methodResponse.paymentMethod.id
@@ -233,6 +241,8 @@ export class TipFormComponent implements OnInit, OnDestroy {
           }
           this.dialogRef.close() // close dialog on error
           return
+        } else {
+          this.error = null
         }
 
         this.tipperId = tipResponse.tipperId // assign tipper id from tip response
@@ -259,6 +269,7 @@ export class TipFormComponent implements OnInit, OnDestroy {
             tap(thankYouMessage => { // method returns artiste's thank you message as response
               console.log('>>> Payment successful')
                 if (this.stripe) this.mountCardElement(this.stripe) // remount card element
+                this.error = null
                 this.form.reset() // reset form when payment goes through
                 this.dialogRef.close() // close dialog on error
                 this.onPaymentSuccess(thankYouMessage) // send artiste ty message to dialog and open

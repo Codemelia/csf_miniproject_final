@@ -169,11 +169,6 @@ public class SpotifyService {
 
     }
 
-    // save access token
-    public void updateAccessToken(String artisteId, String accessToken) {
-        spotifyRepo.updateAccessToken(artisteId, accessToken);
-    }
-
     // check if artiste has linked spotify
     public boolean isSpotifyLinked(String artisteId) {
         return spotifyRepo.artisteExists(artisteId);
@@ -444,6 +439,7 @@ public class SpotifyService {
 
         // save and return access token
         String accessToken = responseJson.getString("access_token");
+        System.out.printf(">>> Updating access token: %s", accessToken);
         spotifyRepo.updateAccessToken(artisteId, accessToken);
         return accessToken;
 

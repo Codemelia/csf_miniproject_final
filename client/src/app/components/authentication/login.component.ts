@@ -25,13 +25,14 @@ export class LoginComponent implements OnInit, OnDestroy {
   private title = inject(Title)
   
   // error obj
-  protected error!: ApiError
+  protected error: ApiError | null = null
 
   // subscription
   protected loginSub?: Subscription
 
   // success message
   successMsg: string | null = null
+  isLoading: boolean = false
 
   ngOnInit(): void {
 
@@ -43,11 +44,16 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.loginSub = this.authStore.loginResult$.subscribe(
       response => {
         if ('token' in response) {
+          this.isLoading = false
+          this.error = null
           this.successMsg = 'Login successful! Welcome back.'
           console.log('>>> User login successful')
+          this.form.reset()
           this.router.navigate(['/home'])
         } else {
+          this.successMsg = null
           this.error = response
+          this.isLoading = false
           console.error('>>> User login failed')
         }
       }
@@ -67,6 +73,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   // log in - sends user details to auth store for validation
   login() {
     if (this.form.valid) {
+      this.isLoading = true
       const user = this.form.value
       this.authStore.login(user)
     }
@@ -74,7 +81,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   // unsub
   ngOnDestroy(): void {
-      this.loginSub?.unsubscribe()
+    this.loginSub?.unsubscribe()
   }
 
 }
