@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ApiError, UserLogin } from '../../models/app.models';
 import { AuthStore } from '../../stores/auth.store';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-login',
@@ -21,6 +22,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   // services
   private router = inject(Router)
   private authStore = inject(AuthStore)
+  private title = inject(Title)
   
   // error obj
   protected error!: ApiError
@@ -32,6 +34,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   successMsg: string | null = null
 
   ngOnInit(): void {
+
+    this.title.setTitle('Login')
+
     this.createForm() // create form on init
 
     // subscribe to login result on init

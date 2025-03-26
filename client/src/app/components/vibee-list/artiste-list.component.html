@@ -12,7 +12,7 @@
         <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
 
-    <div *ngIf="!isLoading && !error" class="vibee-grid">
+    <div *ngIf="!isLoading && !error && filterArtistes.length > 0" class="vibee-grid">
       <mat-card *ngFor="let vibee of filteredArtistes" class="vibee-card">
         <mat-card-header>
           <img mat-card-avatar [src]="vibee.photoUrl || '/default_profile_pic.png'" alt="Profile Photo">

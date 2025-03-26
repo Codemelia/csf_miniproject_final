@@ -10,6 +10,7 @@ import { environment } from '../../../environments/environment';
 import { emailOrEmptyValidator } from '../../validatorfns/email-or-empty.validator';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DialogPopupComponent } from './dialog-popup.component';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-tip',
@@ -57,7 +58,11 @@ export class TipFormComponent implements OnInit, OnDestroy {
   // userid from token
   protected tipperId: string | null = null
 
+  private title = inject(Title)
+
   async ngOnInit() {
+
+    this.title.setTitle('Tip Form')
 
     // create form on init
     this.form = this.createTipFrom()

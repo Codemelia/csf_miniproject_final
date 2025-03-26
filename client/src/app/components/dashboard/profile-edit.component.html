@@ -94,7 +94,7 @@
                     <form [formGroup]="spotifyForm" (submit)="searchTracks()">
                         <mat-form-field>
                             <mat-label>Search Tracks</mat-label>
-                            <input matInput formControlName="searchQuery" placeholder="Type to search Spotify tracks">
+                            <input matInput formControlName="searchQuery" placeholder="Type to search">
                         </mat-form-field>
                         <button mat-raised-button type="submit" [disabled]="spotifyForm.get('searchQuery')?.value.length < 2">
                             Search

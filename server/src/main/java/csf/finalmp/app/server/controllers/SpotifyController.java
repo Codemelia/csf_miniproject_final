@@ -59,6 +59,7 @@ public class SpotifyController {
         if (error != null || code == null || state == null) {
             logger.warning(">>> Spotify error occurred");
             response.sendRedirect("%s/dashboard/profile-edit".formatted(frontendBaseUrl));
+            return;
         }
 
         logger.info(">>> Callback from Spotify OAuth received: %s | %s".formatted(code, state));

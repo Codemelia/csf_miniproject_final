@@ -1,9 +1,9 @@
 {
   "name": "client",
   "short_name": "client",
-  "theme_color": "#1976d2",
-  "background_color": "#fafafa",
-  "display": "standalone",
+  "theme_color": "#222831",
+  "background_color": "#222831",
+  "display": "fullscreen",
   "scope": "./",
   "start_url": "./",
   "icons": [

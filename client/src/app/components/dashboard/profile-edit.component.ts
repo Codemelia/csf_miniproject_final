@@ -382,14 +382,19 @@ export class ProfileEditComponent implements OnInit, OnDestroy {
     this.saveSub = this.spotifySvc.savePlaylist(this.artisteId!, this.selectedTracks)
     .subscribe({
         next: (details) => {
-            console.log('>>> Playlist saved successfully')
-            this.playlistDetails = details
-            this.spotifyLoading = false
+          console.log('>>> Playlist saved successfully')
+          this.playlistDetails = details          
+          this.playlistUrl = this.playlistDetails.playlistUrl
+          localStorage.setItem('playlistUrl', this.playlistUrl)
+          this.selectedTracks = []
+          this.spotifyLoading = false
+          this.snackBar.open('Playlist saved successfully!', 'Close', { duration: 3000 })
         },
         error: (err) => {
             console.error('>>> Error saving playlist: ', err)
             this.spotifyError = err.error
             this.spotifyLoading = false
+            this.snackBar.open('Failed to save playlist', 'Close', { duration: 3000 })
         }
     })
   }

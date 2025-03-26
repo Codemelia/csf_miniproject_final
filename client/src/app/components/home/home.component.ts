@@ -1,5 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { AuthStore } from '../../stores/auth.store';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-home',
@@ -10,6 +11,7 @@ import { AuthStore } from '../../stores/auth.store';
 export class HomeComponent implements OnInit {
 
   private authStore = inject(AuthStore)
+  private title = inject(Title)
 
   errorMsg: string | null = null
   userId: string | null = null
@@ -18,6 +20,8 @@ export class HomeComponent implements OnInit {
   isVibee: boolean = false
   
   ngOnInit(): void {
+
+    this.title.setTitle('Home')
 
     // retrieve user id and role from token
     this.userId = this.authStore.extractUIDFromToken()

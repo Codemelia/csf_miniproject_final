@@ -4,6 +4,7 @@ import { catchError, Subscription, tap, throwError } from 'rxjs';
 import { AuthStore } from '../../stores/auth.store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ArtisteService } from '../../services/artiste.service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,6 +18,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   private authStore = inject(AuthStore)
   protected artisteSvc = inject(ArtisteService)
   private cdr = inject(ChangeDetectorRef)
+  private title = inject(Title)
 
   // subscriptions
   private artisteSub!: Subscription
@@ -31,6 +33,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   isMenuCollapsed = false
 
   ngOnInit(): void {
+
+    this.title.setTitle('Dashboard')
 
     // authentication
     this.artisteId = this.authStore.extractUIDFromToken()

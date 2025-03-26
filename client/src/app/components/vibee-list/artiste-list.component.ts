@@ -4,6 +4,7 @@ import { ArtisteService } from '../../services/artiste.service';
 import { AuthStore } from '../../stores/auth.store';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-artiste-list',
@@ -22,6 +23,7 @@ export class ArtisteListComponent implements OnInit, OnDestroy {
   private artisteSvc = inject(ArtisteService)
   private authStore = inject(AuthStore)
   private router = inject(Router)
+  private title = inject(Title)
 
   artisteId: string | null = null
 
@@ -29,6 +31,8 @@ export class ArtisteListComponent implements OnInit, OnDestroy {
   private artisteSub!: Subscription
 
   ngOnInit() {
+    this.title.setTitle('Vibees')
+
     this.artisteId = this.authStore.extractUserRoleFromToken()
     this.artisteSub = this.artisteSvc.getAllArtisteProfiles(this.artisteId!).subscribe({
       next: (data) => {
@@ -37,11 +41,17 @@ export class ArtisteListComponent implements OnInit, OnDestroy {
           (artiste) => {
             if (artiste.photo) {
               const mimeType = this.artisteSvc.getImageMimeType(artiste.photo.toString())
-              artiste.photoUrl = `data:${mimeType};base64,${artiste.photo}`
+              artiste.photoUrl = `data:${mimeType};base64,${artiste.photo}` // convert to data url
+            }
+
+            if (artiste.stageName != null && artiste.stageName.length > 0) {
+              this.filteredArtistes = [
+                ...this.filteredArtistes, // only add artiste if they have valid stage name
+                artiste
+              ]
             }
           }
         )
-        this.filteredArtistes = [...this.artistes];
         this.isLoading = false
       },
       error: (err) => {

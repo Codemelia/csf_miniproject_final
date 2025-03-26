@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AuthStore } from '../../stores/auth.store';
 import { ApiError, UserRegistration } from '../../models/app.models';
 import { Subscription } from 'rxjs';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-register',
@@ -20,6 +21,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   // services
   private router = inject(Router)
   private authStore = inject(AuthStore)
+  private title = inject(Title)
   
   // error obj
   protected error!: ApiError
@@ -31,6 +33,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
   successMsg: string | null = null
 
   ngOnInit(): void {
+
+    this.title.setTitle('Registration')
+
     this.createForm() // create form on init
 
     // subscribe to regis result on init

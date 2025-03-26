@@ -7,12 +7,16 @@
       "installMode": "prefetch",
       "resources": {
         "files": [
-          "/vibey_logo.png",
-          "/index.csr.html",
           "/index.html",
-          "/manifest.webmanifest",
-          "/*.css",
-          "/*.js"
+          "/manifest.json",
+          "/**/*.css",
+          "/**/*.js",
+          "/**/*.jpg",
+          "/**/*.png",
+          "/**/*.woff",
+          "/**/*.woff2",
+          "https://fonts.googleapis.com/*", 
+          "https://fonts.gstatic.com/*"
         ]
       }
     },
@@ -26,5 +30,9 @@
         ]
       }
     }
+  ],
+  "navigationUrls": [
+    "/**",
+    "!/api/**"
   ]
 }

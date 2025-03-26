@@ -7,11 +7,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,9 +19,6 @@ import csf.finalmp.app.server.services.ArtisteTransactionService;
 import csf.finalmp.app.server.services.StripeService;
 import jakarta.servlet.http.HttpServletResponse;
 
-@CrossOrigin(originPatterns = "http://localhost:4200", allowedHeaders = "*",
-    methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE},
-    allowCredentials = "true")
 @RestController
 @RequestMapping(path = "/api/stripe", produces = MediaType.APPLICATION_JSON_VALUE)
 public class StripeController {
@@ -68,6 +63,7 @@ public class StripeController {
         if (error != null || code == null || state == null) {
             logger.warning(">>> Stripe error occurred");
             response.sendRedirect("%s/dashboard/overview".formatted(frontendBaseUrl));
+            return;
         }
 
         logger.info(">>> Callback from Stripe OAuth received: %s | %s".formatted(code, state));
